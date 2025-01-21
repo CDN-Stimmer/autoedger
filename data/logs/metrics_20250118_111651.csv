@@ -1,0 +1,3 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type
+2025-01-18 11:55:49.649496,0.00,0.00,602.9,0,Claude-Saturday Pleasure.mp3,hooray_started
+2025-01-18 12:14:35.205211,0.00,0.00,796.9,0,Claude -Sunday Fun Time.mp3,hooray_started

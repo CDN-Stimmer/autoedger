@@ -1,0 +1,13 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type
+2025-01-18 18:52:16.176633,0.00,0.00,796.7,0,EFun-800-Sign-StrokeMe1-75.Mp3,hooray_started
+2025-01-18 18:52:42.550529,0.00,0.00,796.7,0,EFun-800-Sign-StrokeMe1-75.Mp3,hooray_started
+2025-01-18 18:53:48.053283,0.00,0.00,796.7,0,EFun-800-Sign-StrokeMe1-75.Mp3,hooray_started
+2025-01-18 19:02:45.673962,0.00,0.00,710.6,0,Claude-claude.mp3,hooray_started
+2025-01-18 19:03:19.926545,0.00,0.00,710.6,0,Claude-claude.mp3,hooray_started
+2025-01-18 19:03:54.805877,0.00,0.00,710.6,0,Claude-claude.mp3,hooray_started
+2025-01-18 19:04:41.302841,0.00,0.00,710.6,0,Claude-claude.mp3,hooray_started
+2025-01-18 19:19:39.540061,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe1-50.Mp3,hooray_started
+2025-01-18 19:19:53.664463,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe1-50.Mp3,hooray_started
+2025-01-18 19:20:08.291168,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe1-50.Mp3,hooray_started
+2025-01-18 19:20:24.163829,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe1-50.Mp3,hooray_started
+2025-01-18 19:20:45.292971,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe1-50.Mp3,hooray_started

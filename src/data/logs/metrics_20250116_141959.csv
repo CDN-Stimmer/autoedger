@@ -1,0 +1,822 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type
+2025-01-16 14:20:00.309915,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:00.365106,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:00.464372,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:00.557384,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:00.655762,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:00.756545,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:00.857031,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:00.957614,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:01.058064,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:01.157274,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:01.252003,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:01.350350,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:01.452229,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:01.551496,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:01.649863,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:01.759025,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:01.856660,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:01.954035,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:02.049833,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:02.149994,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:02.253221,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:02.355027,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:02.454015,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:02.554990,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:02.655286,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:02.762648,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:02.861207,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:02.957505,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:03.059058,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:03.163402,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:03.251509,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:03.353604,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:03.454954,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:03.560617,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:03.661695,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:03.759308,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:03.857649,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:03.960425,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:04.060372,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:04.160954,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:04.251902,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:04.353863,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:04.460529,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:04.561098,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:04.661708,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:04.762535,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:04.860306,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:04.960040,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:05.058544,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:05.162527,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:05.264588,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:05.354091,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:05.455019,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:05.563332,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:05.651618,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:05.764491,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:05.853293,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:05.952305,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:06.053446,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:06.157258,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:06.258935,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:06.359346,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:06.458947,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:06.556373,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:06.654792,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:06.755402,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:06.859839,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:06.958566,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:07.056632,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:07.157660,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:07.258670,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:07.363905,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:07.457618,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:07.560756,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:07.658174,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:07.763931,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:07.853180,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:07.952870,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:08.071551,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:08.155988,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:08.256691,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:08.356219,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:08.456410,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:08.556497,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:08.661116,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:08.764448,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:08.863268,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:08.959322,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:09.056789,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:09.156915,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:09.256289,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:09.356643,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:09.456812,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:09.556882,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:09.656790,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:09.760874,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:09.860464,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:09.960895,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:10.061111,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:10.160458,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:10.258849,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:10.357479,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:10.457740,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:10.555221,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:10.654638,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:10.756012,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:10.856036,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:10.955523,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:11.054674,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:11.154741,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:11.253304,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:11.372265,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:11.456488,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:11.558666,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:11.660672,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:11.774264,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:11.858889,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:11.957151,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:12.057552,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:12.155933,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:12.257763,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:12.356652,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:12.460147,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:12.559098,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:12.656113,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:12.759151,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:12.865450,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:12.954451,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:13.060592,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:13.160594,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:13.259929,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:13.358912,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:13.462428,-0.78,0.00,0.0,0,None,data
+2025-01-16 14:20:13.562110,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:13.661824,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:13.754764,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:13.855985,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:13.954670,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:14.057177,-0.88,0.00,0.0,0,None,data
+2025-01-16 14:20:14.158553,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:14.257844,-0.83,0.00,0.0,0,None,data
+2025-01-16 14:20:14.417600,-0.83,0.00,0.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:14.453464,-0.83,0.00,0.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:14.554424,-0.83,0.25,2347.1,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:14.654840,-0.88,0.26,2605.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:14.764751,-0.83,0.27,2196.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:14.861929,-0.83,0.32,2045.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:14.965254,-0.83,0.31,1485.8,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.053591,-0.78,0.32,1399.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.169159,-0.83,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.256418,-0.88,0.43,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.359840,-0.83,0.40,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.457439,-0.83,0.40,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.562247,-0.83,0.32,2217.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.661829,-0.78,0.33,1722.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.759788,-0.88,0.26,1485.8,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.864489,-0.78,0.29,1571.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:15.963295,-0.83,0.26,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.061365,-0.83,0.27,2433.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.168771,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.254355,-0.83,0.39,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.369261,-0.88,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.455334,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.554225,-0.83,0.40,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.655989,-0.88,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.756430,-0.88,0.32,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.856847,-0.83,0.25,2304.1,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:16.956499,-0.88,0.26,2584.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.056547,-0.88,0.29,2476.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.155686,-0.83,0.31,2088.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.256147,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.370515,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.459457,-0.78,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.555336,-0.83,0.26,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.658727,-0.78,0.39,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.763657,-0.88,0.27,2519.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.863722,-0.83,0.26,2088.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:17.964222,-0.83,0.32,1765.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.061522,-0.83,0.32,1421.2,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.158799,-0.83,0.27,1421.2,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.262431,-0.78,0.27,1981.1,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.360365,-0.83,0.35,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.462602,-0.88,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.562771,-0.83,0.42,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.663840,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.760685,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.861274,-0.83,0.40,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:18.963130,-0.83,0.25,1658.1,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.065468,-0.88,0.26,2110.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.163989,-0.88,0.32,2519.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.264486,-0.83,0.31,2584.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.361368,-0.78,0.28,2261.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.462695,-0.83,0.35,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.560807,-0.78,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.654918,-0.78,0.41,1399.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.756933,-0.88,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.854169,-0.88,0.40,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:19.969751,-0.83,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.058630,-0.83,0.31,2605.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.158750,-0.83,0.32,2411.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.264979,-0.83,0.32,1808.8,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.362459,-0.83,0.32,1421.2,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.455946,-0.83,0.26,1399.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.555234,-0.83,0.30,1636.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.658707,-0.88,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.764602,-0.78,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.859872,-0.83,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:20.959737,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.062065,-0.88,0.39,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.159463,-0.88,0.29,1442.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.260011,-0.83,0.32,1442.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.359446,-0.78,0.32,1916.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.461220,-0.88,0.28,2497.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.558719,-0.83,0.25,2562.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.654772,-0.78,0.28,2540.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.755239,-0.83,0.43,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.859687,-0.83,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:21.959467,-0.83,0.41,1399.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.059087,-0.94,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.158704,-0.83,0.35,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.258268,-0.78,0.29,2390.2,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.355227,-0.83,0.30,2605.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.455995,-0.88,0.32,2433.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.573441,-0.78,0.27,1679.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.661830,-0.78,0.32,1442.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.759971,-0.88,0.26,1399.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.862380,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:22.960460,-0.78,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.064787,-0.88,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.155407,-0.88,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.257332,-0.78,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.364963,-0.83,0.31,1571.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.460551,-0.83,0.29,1485.8,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.557613,-0.73,0.31,1421.2,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.662229,-0.83,0.26,2067.2,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.757700,-0.83,0.31,2347.1,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.866111,-0.83,0.35,2605.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:23.963161,-0.83,0.39,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.057692,-0.83,0.40,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.157914,-0.83,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.266329,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.364588,-0.88,0.39,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.464525,-0.88,0.32,2196.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.564796,-0.88,0.30,2540.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.660185,-0.83,0.29,2605.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.758340,-0.83,0.32,2454.8,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.857354,-0.83,0.32,1894.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:24.959278,-0.78,0.30,1507.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.058762,-0.83,0.34,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.167901,-0.83,0.39,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.262948,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.363561,-0.88,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.461265,-0.78,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.560579,-0.78,0.32,2067.2,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.660913,-0.78,0.31,1615.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.758886,-0.83,0.27,1507.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.859229,-0.83,0.30,1442.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:25.959190,-0.88,0.32,1701.1,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.063032,-0.78,0.30,2454.8,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.159671,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.260161,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.355422,-0.88,0.39,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.463917,-0.78,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.561698,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.673572,-0.83,0.27,1679.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.762986,-0.83,0.32,2153.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.861037,-0.88,0.30,2519.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:26.966624,-0.83,0.27,2584.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.062171,-0.83,0.26,2239.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.161697,-0.83,0.27,1765.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.265814,-0.83,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.359954,-0.83,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.459801,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.561737,-0.78,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.659985,-0.83,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.758746,-0.83,0.41,2584.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.861677,-0.78,0.32,2239.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:27.959611,-0.83,0.26,1938.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.059463,-0.83,0.27,1528.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.161649,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.261123,-0.94,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.359667,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.471637,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.579128,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.665386,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.767513,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.859260,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:28.964669,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.056732,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.159897,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.267208,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.357181,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.462312,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.561323,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.666103,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.769099,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.870471,-0.78,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:29.958003,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.061554,-0.78,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.168591,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.266723,-0.78,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.366811,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.468183,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.560687,-0.78,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.657667,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.767674,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.858334,-0.78,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:30.969083,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.066027,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.168736,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.272102,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.374625,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.463135,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.567080,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.660150,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.765481,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.868524,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:31.968152,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.066677,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.165262,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.266582,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.360102,-0.78,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.460138,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.560712,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.664899,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.769028,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.868759,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:32.973122,-0.83,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.059353,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.158451,-0.88,0.26,1550.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.267587,-0.83,0.32,1679.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.363966,-0.83,0.31,2131.8,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.463974,-0.88,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.561212,-0.83,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.663177,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.761491,-0.83,0.40,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.858658,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:33.967906,-0.83,0.28,1464.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.067083,-0.83,0.26,1808.8,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.163501,-0.83,0.26,2282.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.263591,-0.83,0.28,2584.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.360097,-0.83,0.28,2584.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.463429,-0.88,0.31,2131.8,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.564124,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.663687,-0.83,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.764776,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.866975,-0.88,0.43,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:34.966696,-0.88,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.068929,-0.78,0.30,2584.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.171325,-0.83,0.27,2411.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.259122,-0.83,0.32,2282.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.360264,-0.88,0.32,1679.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.460293,-0.88,0.30,1421.2,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.560048,-0.83,0.27,1528.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.662079,-0.88,0.42,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.760898,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.865900,-0.83,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:35.963508,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.068305,-0.78,0.39,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.164169,-0.83,0.32,1464.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.264253,-0.88,0.29,1421.2,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.366819,-0.83,0.26,1765.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.467958,-0.78,0.25,2239.5,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.559400,-0.83,0.32,2497.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.667755,-0.83,0.32,2519.4,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.768493,-0.83,0.40,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.866437,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:36.966927,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.061561,-0.83,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.162535,-0.83,0.35,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.268538,-0.83,0.31,2368.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.364601,-0.83,0.30,2584.0,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.467042,-0.83,0.27,2433.3,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.566734,-0.83,0.26,2024.1,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.671399,-0.83,0.26,1571.9,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.763900,-0.83,0.29,1399.7,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.865484,-0.83,0.41,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:37.963662,-0.83,0.37,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.065172,-0.83,0.38,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.165162,-0.88,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.261301,-0.78,0.36,2002.6,0,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.285614,0.00,0.00,2002.6,1,TJ finisher triphase prostate.mp3,hooray_complete
+2025-01-16 14:20:38.361654,-0.83,0.30,1873.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.462097,-0.83,0.32,1485.8,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.564400,-0.83,0.29,1421.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.668628,-0.83,0.27,1722.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.768439,-0.83,0.25,2217.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.870312,-0.83,0.27,2562.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:38.969222,-0.78,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.069342,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.166674,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.268021,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.369902,-0.88,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.469195,-0.78,0.31,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.570749,-0.83,0.30,2347.1,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.672701,-0.78,0.31,2584.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.775619,-0.83,0.28,2476.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.869589,-0.83,0.26,2045.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:39.960684,-0.83,0.26,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.075212,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.160528,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.266927,-0.88,0.45,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.365403,-0.78,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.465994,-0.83,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.565060,-0.83,0.33,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.664189,-0.83,0.28,1894.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.765136,-0.88,0.31,1464.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.864014,-0.83,0.30,1399.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:40.967581,-0.88,0.27,1701.1,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.065561,-0.83,0.25,2174.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.163721,-0.83,0.35,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.263434,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.365939,-0.88,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.464649,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.568950,-0.88,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.670571,-0.88,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.761745,-0.83,0.26,1851.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.863655,-0.83,0.29,2304.1,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:41.959491,-0.78,0.27,2540.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.069924,-0.83,0.29,2497.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.159573,-0.83,0.30,2390.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.263042,-0.83,0.33,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.363494,-0.78,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.463571,-0.88,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.564260,-0.83,0.31,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.666946,-0.83,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.767408,-0.88,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.864706,-0.78,0.25,2390.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:42.970652,-0.83,0.27,1916.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.067490,-0.83,0.30,1528.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.168892,-0.83,0.31,1399.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.269987,-0.83,0.28,1658.1,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.366379,-0.83,0.31,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.467164,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.564740,-0.83,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.667438,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.773340,-0.83,0.42,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.862787,-0.83,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:43.966720,-0.83,0.26,1442.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.063180,-0.83,0.26,1808.8,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.167659,-0.88,0.28,2282.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.268276,-0.83,0.31,2584.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.366218,-0.83,0.30,2540.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.466716,-0.83,0.30,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.565965,-0.88,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.665989,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.767667,-0.88,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.864315,-0.83,0.44,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:44.963821,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.062844,-0.83,0.27,2605.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.166893,-0.83,0.25,2411.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.264761,-0.88,0.26,1959.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.363654,-0.88,0.29,1550.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.473592,-0.88,0.32,1421.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.563582,-0.88,0.30,1636.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.669025,-0.83,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.766961,-0.83,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.864444,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:45.971244,-0.78,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.063039,-0.83,0.42,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.171661,-0.83,0.28,1464.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.266209,-0.88,0.26,1421.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.368366,-0.78,0.26,1765.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.471885,-0.88,0.27,2261.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.570883,-0.88,0.30,2584.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.664637,-0.73,0.31,2519.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.765164,-0.83,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.861121,-0.83,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:46.960860,-0.88,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.071978,-0.88,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.172063,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.273749,-0.83,0.30,2368.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.375723,-0.83,0.27,2584.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.476469,-0.88,0.25,2433.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.564467,-0.78,0.26,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.664934,-0.83,0.29,1571.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.766603,-0.83,0.33,1399.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.868222,-0.88,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:47.971003,-0.83,0.32,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.069996,-0.83,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.166689,-0.88,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.266498,-0.83,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.369483,-0.78,0.28,1873.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.469868,-0.88,0.29,1485.8,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.565924,-0.88,0.26,1421.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.663853,-0.83,0.25,1744.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.763856,-0.83,0.27,2196.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.864350,-0.78,0.30,2540.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:48.961202,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.070211,-0.83,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.165071,-0.78,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.272209,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.371629,-0.88,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.468781,-0.83,0.30,1873.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.568749,-0.83,0.31,2347.1,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.671361,-0.83,0.28,2584.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.774006,-0.83,0.26,2454.8,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.875930,-0.78,0.26,2045.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:49.977149,-0.83,0.28,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.065212,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.164960,-0.88,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.265161,-0.83,0.45,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.365338,-0.88,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.469885,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.567541,-0.83,0.31,2368.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.666174,-0.88,0.31,1894.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.765477,-0.78,0.30,1507.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.868411,-0.83,0.27,1399.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:50.964335,-0.78,0.25,1701.1,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.064408,-0.83,0.26,2174.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.167029,-0.88,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.266160,-0.83,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.365842,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.464929,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.563415,-0.88,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.672213,-0.88,0.33,1464.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.771246,-0.83,0.29,1851.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.864992,-0.83,0.32,2325.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:51.962715,-0.83,0.28,2584.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.069173,-0.83,0.26,2476.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.164958,-0.83,0.26,2088.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.264114,-0.83,0.35,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.363948,-0.78,0.40,1399.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.461765,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.564739,-0.88,0.29,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.664912,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.766240,-0.88,0.35,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.865624,-0.88,0.27,2390.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:52.967923,-0.88,0.30,1938.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.065997,-0.83,0.30,1528.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.162081,-0.83,0.28,1399.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.266043,-0.78,0.26,1679.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.365483,-0.88,0.33,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.466925,-0.83,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.562739,-0.78,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.673155,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.765236,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.869380,-0.83,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:53.970846,-0.83,0.26,1442.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.073531,-0.83,0.29,1808.8,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.164088,-0.83,0.31,2282.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.264803,-0.78,0.30,2562.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.366451,-0.78,0.27,2497.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.473827,-0.83,0.31,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.566580,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.665659,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.764646,-0.78,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.863540,-0.83,0.43,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:54.961830,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.069550,-0.83,0.25,2605.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.173559,-0.83,0.27,2411.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.270685,-0.83,0.29,1959.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.365175,-0.88,0.31,1550.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.464922,-0.83,0.28,1399.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.568577,-0.88,0.30,1636.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.669702,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.771976,-0.88,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.861642,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:55.962873,-0.88,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.067738,-0.94,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.170006,-0.83,0.26,1442.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.269738,-0.83,0.26,1442.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.371630,-0.83,0.27,1765.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.470541,-0.83,0.31,2261.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.570069,-0.88,0.30,2540.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.661519,-0.78,0.29,2519.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.771440,-0.78,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.870158,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:56.967456,-0.88,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.067799,-0.78,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.167765,-0.88,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.265531,-0.73,0.27,2368.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.361702,-0.78,0.25,2605.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.466846,-0.83,0.26,2454.8,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.564736,-0.78,0.29,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.665973,-0.78,0.31,1550.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.767654,-0.88,0.30,1399.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.870605,-0.88,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:57.972282,-0.83,0.32,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.073904,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.163284,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.268319,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.371743,-0.83,0.28,1851.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.471870,-0.83,0.26,1464.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.573196,-0.83,0.25,1421.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.664276,-0.88,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.768328,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.870522,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:58.974618,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.065928,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.166031,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.267017,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.371453,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.476963,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.563937,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.665523,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.766351,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.865906,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:20:59.963920,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.070689,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.172675,-0.88,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.273001,-0.88,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.369708,-0.88,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.465198,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.563717,-0.88,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.664400,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.772463,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.871130,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:00.969664,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.065525,-0.88,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.165539,-0.88,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.265962,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.375257,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.466667,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.567628,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.672451,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.773966,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.874451,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:01.975215,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.075685,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.164328,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.267045,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.366744,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.466664,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.566836,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.664107,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.767693,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.865045,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:02.974456,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.073196,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.175404,-0.88,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.267017,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.371307,-0.78,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.474314,-0.88,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.578562,-0.83,0.32,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.666103,-0.83,0.00,1593.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.772378,-0.83,0.32,2067.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.870065,-0.83,0.31,2519.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:03.970362,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.070284,-0.83,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.168118,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.270592,-0.83,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.371494,-0.83,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.473960,-0.83,0.33,1873.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.572628,-0.83,0.28,2347.1,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.666048,-0.83,0.26,2584.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.774867,-0.88,0.26,2476.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.870099,-0.88,0.32,2196.4,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:04.975252,-0.88,0.32,1615.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.072913,-0.88,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.172080,-0.88,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.271846,-0.88,0.42,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.370074,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.469582,-0.83,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.570336,-0.83,0.37,2368.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.674687,-0.83,0.30,1894.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.776076,-0.83,0.27,1485.8,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.883778,-0.78,0.25,1421.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:05.969602,-0.83,0.31,1571.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.067490,-0.88,0.32,2024.1,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.180718,-0.78,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.267440,-0.78,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.366296,-0.83,0.37,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.475973,-0.83,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.575277,-0.78,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.670274,-0.88,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.765904,-0.88,0.31,1830.3,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.866038,-0.88,0.28,2325.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:06.972469,-0.83,0.26,2584.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.068748,-0.83,0.26,2497.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.170452,-0.78,0.31,2239.5,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.273631,-0.83,0.39,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.373578,-0.83,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.466464,-0.83,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.566573,-0.88,0.28,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.666200,-0.78,0.36,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.766978,-0.83,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.876055,-0.78,0.32,2390.2,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:07.971268,-0.83,0.30,1938.0,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.071485,-0.83,0.27,1528.9,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.170323,-0.83,0.26,1399.7,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.270949,-0.83,0.26,1679.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.370079,-0.83,0.34,1981.1,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.468570,-0.83,0.41,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.567078,-0.83,0.40,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.667839,-0.88,0.38,2002.6,1,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.728445,0.00,0.00,2002.6,2,TJ finisher triphase prostate.mp3,hooray_complete
+2025-01-16 14:21:08.771403,-0.83,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.872893,-0.83,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:08.977102,-0.83,0.32,1421.2,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.065420,-0.88,0.32,1787.3,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.171204,-0.83,0.29,2282.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.266509,-0.83,0.27,2562.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.363756,-0.78,0.25,2519.4,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.474805,-0.83,0.35,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.572742,-0.83,0.42,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.673350,-0.83,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.768013,-0.83,0.39,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.876014,-0.83,0.42,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:09.974427,-0.83,0.36,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.072066,-0.83,0.31,2584.0,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.173626,-0.83,0.32,2519.4,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.270393,-0.83,0.31,1959.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.370185,-0.83,0.28,1550.4,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.470037,-0.78,0.26,1399.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.570729,-0.83,0.31,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.676766,-0.83,0.45,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.773909,-0.83,0.42,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.872163,-0.83,0.40,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:10.968829,-0.78,0.38,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.066054,-0.88,0.36,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.164633,-0.83,0.26,1442.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.276106,-0.83,0.32,1421.2,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.371723,-0.78,0.32,1765.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.472261,-0.78,0.30,2239.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.569268,-0.78,0.27,2584.0,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.665558,-0.83,0.30,2540.9,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.777245,-0.83,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.873245,-0.83,0.42,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:11.970424,-0.88,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.066905,-0.83,0.40,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.174468,-0.83,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.266212,-0.83,0.25,2368.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.366282,-0.83,0.31,2584.0,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.465546,-0.78,0.32,2519.4,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.566112,-0.78,0.31,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.666481,-0.83,0.29,1571.9,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.766311,-0.83,0.29,1399.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.866563,-0.83,0.36,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:12.966986,-0.83,0.36,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.067375,-0.83,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.166787,-0.83,0.40,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.265877,-0.83,0.38,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.366364,-0.83,0.26,1873.4,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.477011,-0.83,0.26,1464.3,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.575477,-0.88,0.31,1399.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.674136,-0.83,0.32,1722.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.774460,-0.88,0.31,2196.4,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.871614,-0.83,0.29,2562.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:13.972258,-0.88,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.070812,-0.83,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.168723,-0.83,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.267772,-0.88,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.374650,-0.83,0.40,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.470224,-0.88,0.27,1894.9,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.565326,-0.83,0.26,2347.1,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.665611,-0.78,0.26,2605.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.775625,-0.83,0.32,2540.9,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.874809,-0.83,0.32,2045.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:14.970531,-0.83,0.30,1593.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.070720,-0.83,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.170692,-0.88,0.36,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.270530,-0.83,0.44,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.371026,-0.83,0.42,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.471576,-0.83,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.572128,-0.83,0.31,2347.1,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.670617,-0.83,0.27,1916.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.769814,-0.88,0.25,1485.8,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.866544,-0.88,0.31,1399.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:15.964953,-0.83,0.33,1593.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.065838,-0.88,0.32,2174.9,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.165646,-0.83,0.38,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.265139,-0.88,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.366282,-0.83,0.36,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.465919,-0.83,0.40,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.572832,-0.78,0.42,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.671817,-0.83,0.36,1442.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.769844,-0.83,0.28,1851.9,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.868742,-0.78,0.26,2304.1,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:16.967766,-0.88,0.26,2584.0,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.065857,-0.83,0.32,2562.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.174796,-0.83,0.32,2088.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.272007,-0.78,0.39,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.370638,-0.88,0.38,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.468629,-0.83,0.36,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.567312,-0.83,0.25,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.666107,-0.83,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.771351,-0.83,0.39,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.871684,-0.83,0.30,2390.2,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:17.972034,-0.83,0.27,1959.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.067038,-0.83,0.25,1507.3,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.170959,-0.88,0.26,1421.2,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.265803,-0.78,0.32,1550.4,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.374960,-0.83,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.478881,-0.83,0.39,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.566712,-0.88,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.683713,-0.78,0.36,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.769281,-0.83,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.869947,-0.88,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:18.980758,-0.88,0.32,1464.3,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.073774,-0.83,0.29,1808.8,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.171501,-0.88,0.26,2261.0,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.270988,-0.83,0.25,2584.0,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.376319,-0.83,0.31,2584.0,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.475534,-0.88,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.576775,-0.88,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.674921,-0.88,0.39,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.770785,-0.83,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.870128,-0.83,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:19.967368,-0.83,0.40,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.065582,-0.83,0.32,2584.0,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.177189,-0.83,0.31,2433.3,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.276422,-0.83,0.28,1959.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.376925,-0.83,0.26,1528.9,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.475777,-0.83,0.26,1399.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.574641,-0.88,0.35,1528.9,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.674265,-0.78,0.44,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.771533,-0.83,0.40,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.875096,-0.78,0.38,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:20.982130,-0.83,0.36,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.075978,-0.88,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.171197,-0.88,0.32,1550.4,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.277245,-0.88,0.32,1421.2,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.367406,-0.88,0.30,1765.7,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.470138,-0.83,0.27,2261.0,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.566694,-0.88,0.25,2562.5,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.666773,-0.83,0.32,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.768103,-0.88,0.42,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.868954,-0.78,0.41,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:21.969249,-0.83,0.39,2002.6,2,TJ finisher triphase prostate.mp3,data
+2025-01-16 14:21:22.069752,-0.83,0.37,2002.6,2,TJ finisher triphase prostate.mp3,data

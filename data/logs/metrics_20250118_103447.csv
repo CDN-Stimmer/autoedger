@@ -1,0 +1,6 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type
+2025-01-18 10:35:42.224070,0.00,0.00,1302.8,0,Sybianne19.mp3,hooray_started
+2025-01-18 10:36:00.227916,0.00,0.00,1302.8,0,Sybianne19.mp3,hooray_started
+2025-01-18 10:36:38.280569,0.00,0.00,850.6,0,EFun-800-Vibe 25 A - Vibe 25 B.Mp3,hooray_started
+2025-01-18 10:36:58.766088,0.00,0.00,850.6,0,EFun-800-Vibe 25 A - Vibe 25 B.Mp3,hooray_started
+2025-01-18 10:37:39.219775,0.00,0.00,602.9,0,tjenkins - for merlot_vin.mp3,hooray_started

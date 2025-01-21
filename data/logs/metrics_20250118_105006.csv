@@ -1,0 +1,4 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type
+2025-01-18 10:50:22.534172,0.00,0.00,710.6,0,Claude-SSG-C.37--Puissance.mp3,hooray_started
+2025-01-18 10:50:37.413555,0.00,0.00,699.8,0,Claude-SSG-C.37--Puissance.mp3,hooray_started
+2025-01-18 10:52:01.663057,0.00,0.00,710.6,0,Claude-Saturday Pleasure.mp3,hooray_started

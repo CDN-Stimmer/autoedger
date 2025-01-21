@@ -1,0 +1,3 @@
+"""
+Hardware integration module.
+""" 
