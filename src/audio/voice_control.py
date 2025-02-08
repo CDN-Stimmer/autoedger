@@ -22,6 +22,8 @@ class VoiceController(QObject):
             "more": self._handle_volume_up,
             "down": self._handle_volume_down,
             "less": self._handle_volume_down,
+            "max": self._handle_volume_max,
+            "half": self._handle_volume_half,
             "pause": self._handle_pause,
             "playback": self._handle_playback,
             "stop": self._handle_stop,
@@ -152,4 +154,12 @@ class VoiceController(QObject):
         
     def _handle_yes(self):
         """Handle the yes command"""
-        self.command_recognized.emit("yes") 
+        self.command_recognized.emit("yes")
+        
+    def _handle_volume_max(self):
+        """Handle the max volume command"""
+        self.command_recognized.emit("max")
+        
+    def _handle_volume_half(self):
+        """Handle the half volume command"""
+        self.command_recognized.emit("half") 

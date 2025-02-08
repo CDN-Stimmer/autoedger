@@ -6,6 +6,7 @@ import numpy as np
 import soundfile as sf
 import time
 import threading
+import asyncio
 
 class QtAudioPlayer(QObject):
     playback_started = Signal(str)  # Emits filename
@@ -56,7 +57,7 @@ class QtAudioPlayer(QObject):
         self.player.errorOccurred.connect(self._handle_error)
         self.player.positionChanged.connect(self._handle_position_change)
         self.player.mediaStatusChanged.connect(self._handle_media_status_change)
-        self.player.playbackStateChanged.connect(self._handle_state_change)
+        self.player.playbackStateChanged.connect(self._on_state_changed)
         
         # Connect internal control signals
         self._pause_player.connect(self.player.pause)
@@ -452,29 +453,27 @@ class QtAudioPlayer(QObject):
         self._hooray_thread = threading.Thread(target=run_cycle, daemon=True)
         self._hooray_thread.start()
         
-    def _handle_state_change(self, state):
+    def _on_state_changed(self, state):
         """Handle player state changes."""
         self.logger.debug(f"Player state changed to: {state}")
         
-        if state == QMediaPlayer.PlayingState:
-            # Start periodic audio analysis
-            if not self.analysis_timer.isActive():
-                self.logger.debug("Starting audio analysis timer")
-                self.analysis_timer.start()  # Start directly instead of using signal
-            name = os.path.basename(self.current_file) if self.current_file else ""
-            self.logger.debug(f"Emitting playback_started with name: {name}")
-            self.playback_started.emit(name)
-            
-        elif state == QMediaPlayer.StoppedState:
-            if self.analysis_timer.isActive():
-                self.logger.debug("Stopping audio analysis timer")
-                self.analysis_timer.stop()  # Stop directly instead of using signal
+        if state == QMediaPlayer.PlaybackState.StoppedState:
+            self.logger.debug("Stopping audio analysis timer")
+            self.analysis_timer.stop()
             self.logger.debug("Emitting playback_stopped")
+            # Emit the signal directly since it's not actually a coroutine
             self.playback_stopped.emit()
+        elif state == QMediaPlayer.PlaybackState.PlayingState:
+            self.analysis_timer.start()
             
-        elif state == QMediaPlayer.PausedState:
-            self.logger.debug("Player paused")
-        
+    async def _emit_playback_stopped(self):
+        """Helper to emit playback stopped signal asynchronously."""
+        try:
+            # Emit the signal directly since it's not actually a coroutine
+            self.playback_stopped.emit()
+        except Exception as e:
+            self.logger.error(f"Error emitting playback stopped: {e}")
+            
     def play_file(self, file_path):
         """Play a specific audio file."""
         if not os.path.exists(file_path):

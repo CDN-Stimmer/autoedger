@@ -1,250 +1,142 @@
 import logging
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QFrame, QLabel,
-    QSlider, QSpinBox, QCheckBox, QPushButton, QGroupBox
+    QSlider, QSpinBox, QCheckBox, QPushButton, QGroupBox, QMessageBox
 )
 from PySide6.QtCore import Qt, Slot, QTimer
 from hardware.dg_device import Channel, WaveParameters
+from hardware.dg_audio_adapter import DGAudioAdapter
+from .device_selection_dialog import DeviceSelectionDialog
 import asyncio
 import qasync
+import time
 
 class DGControlWidget(QWidget):
     """Widget for controlling DG device parameters."""
     
-    def __init__(self, dg_adapter, parent=None):
+    def __init__(self, audio_adapter: DGAudioAdapter, parent=None):
         super().__init__(parent)
-        self.dg_adapter = dg_adapter
+        self._adapter = audio_adapter
         self.logger = logging.getLogger(__name__)
-        self._sync_enabled = False
-        self._last_channel_a_volume = 100  # Set default volume to 100
-        self._last_channel_b_volume = 100  # Set default volume to 100
-        self._user_volume_change = False
+        
         self._setup_ui()
-        
-        # Connect to device signals
-        self.dg_adapter.device.connection_changed.connect(self._on_connection_changed)
-        
-        # Set up timer for strength updates
-        self._strength_timer = QTimer()
-        self._strength_timer.timeout.connect(self._update_strengths)
-        self._strength_timer.start(2000)  # Update every 2 seconds
 
-        # Flag to track if we're currently updating strengths
+        if self._adapter is None:
+            # If no adapter is provided, add a warning label and disable interactive elements
+            warning = QLabel("Coyote module not active")
+            warning.setAlignment(Qt.AlignCenter)
+            self.layout().addWidget(warning)
+            self.setDisabled(True)
+        else:
+            # Connect to device signals
+            self._adapter.device.connection_changed.connect(self._on_connection_changed)
+            self._adapter.device.devices_discovered.connect(self._on_devices_discovered)
+            
+            # Create timer for strength updates
+            self._strength_timer = QTimer()
+            self._strength_timer.setInterval(500)  # increased to 500ms to reduce command flooding
+            self._strength_timer.timeout.connect(self._update_strengths)
+            
+            # Create error recovery timer
+            self._error_recovery_timer = QTimer()
+            self._error_recovery_timer.setInterval(2000)  # 2 second interval
+            self._error_recovery_timer.timeout.connect(self._check_error_recovery)
+            self._error_recovery_timer.start()
+            
+            # Initialize channels asynchronously
+            QTimer.singleShot(0, self._async_init)
+        
+        self._sync_enabled = False
+        self._user_changing_volume = False
         self._updating_strengths = False
-        
-        # Get the existing event loop
-        self.loop = asyncio.get_event_loop()
-
-        # Initialize channel strengths
-        if self.channel_a_enabled.isChecked():
-            self.loop.create_task(self.dg_adapter.device.set_strength(Channel.A, self._last_channel_a_volume))
-            self.channel_a_volume.setValue(self._last_channel_a_volume)
-        if self.channel_b_enabled.isChecked():
-            self.loop.create_task(self.dg_adapter.device.set_strength(Channel.B, self._last_channel_b_volume))
-            self.channel_b_volume.setValue(self._last_channel_b_volume)
+        self._last_volume_a = 0
+        self._last_volume_b = 0
+        self._current_task = None
+        self._device_selection_lock = asyncio.Lock()
+        self._selected_device = None
+        self._connection_lock = asyncio.Lock()
+        self._connecting = False
+        self._last_error_time = 0
+        self._error_count = 0
+        self._last_successful_update = 0
+        self._channel_a_state = {'enabled': False, 'strength': 0, 'last_update': 0}
+        self._channel_b_state = {'enabled': False, 'strength': 0, 'last_update': 0}
+        # Cache for last sent strength values to avoid redundant updates
+        self._last_sent_strength_a = None
+        self._last_sent_strength_b = None
 
     def _setup_ui(self):
-        # Create main layout
-        main_layout = QVBoxLayout(self)
-        
-        # Create frame
-        frame = QFrame()
-        frame.setFrameStyle(QFrame.StyledPanel)
-        frame_layout = QVBoxLayout(frame)
-        
-        # Create title
-        title = QLabel("DG Device Control")
+        # Create the main layout for the DG Control widget
+        layout = QVBoxLayout(self)
+
+        # Optional: Add a title label
+        title = QLabel("DG Control")
         title.setAlignment(Qt.AlignCenter)
-        frame_layout.addWidget(title)
-        
-        # Create sync mode control
-        sync_container = QWidget()
-        sync_layout = QHBoxLayout(sync_container)
-        sync_layout.setContentsMargins(5, 0, 5, 0)
-        
-        self.sync_checkbox = QCheckBox("Sync Mode")
-        self.sync_checkbox.setToolTip("When enabled, Channel B mirrors Channel A")
-        self.sync_checkbox.setStyleSheet("""
-            QCheckBox {
-                font-weight: bold;
-                color: #4CAF50;
-            }
-            QCheckBox:checked {
-                color: #45a049;
-            }
-        """)
-        self.sync_checkbox.stateChanged.connect(self._on_sync_changed)
-        sync_layout.addWidget(self.sync_checkbox)
-        
-        frame_layout.addWidget(sync_container)
-        
-        # Create intensity controls
-        intensity_group = QGroupBox("Intensity Scaling")
-        intensity_layout = QVBoxLayout(intensity_group)
-        
-        # Base intensity scale
-        base_layout = QHBoxLayout()
-        base_layout.addWidget(QLabel("Max Intensity:"))
+        layout.addWidget(title)
+
+        # Add a slider for Base Intensity Scale
+        base_label = QLabel("Base Intensity Scale")
+        layout.addWidget(base_label)
+
         self.base_scale = QSlider(Qt.Horizontal)
         self.base_scale.setRange(0, 100)
-        self.base_scale.setValue(70)
-        # We'll connect this in the main window
-        base_layout.addWidget(self.base_scale)
-        self.base_value = QLabel("70%")
-        base_layout.addWidget(self.base_value)
-        intensity_layout.addLayout(base_layout)
+        self.base_scale.setValue(70)  # Default value
+        layout.addWidget(self.base_scale)
+
+        # You can add more DG control related UI elements here if needed
         
-        # Pulse range
-        pulse_layout = QHBoxLayout()
-        pulse_layout.addWidget(QLabel("Pulse Range:"))
-        self.pulse_range = QSlider(Qt.Horizontal)
-        self.pulse_range.setRange(0, 50)
-        self.pulse_range.setValue(30)
-        self.pulse_range.valueChanged.connect(self._update_parameters)
-        pulse_layout.addWidget(self.pulse_range)
-        self.pulse_value = QLabel("±30%")
-        pulse_layout.addWidget(self.pulse_value)
-        intensity_layout.addLayout(pulse_layout)
-        
-        frame_layout.addWidget(intensity_group)
-        
-        # Create frequency controls
-        freq_group = QGroupBox("Frequency Range")
-        freq_layout = QVBoxLayout(freq_group)
-        
-        # Min frequency
-        min_freq_layout = QHBoxLayout()
-        min_freq_layout.addWidget(QLabel("Min Frequency:"))
-        self.min_freq = QSlider(Qt.Horizontal)
-        self.min_freq.setRange(1, 200)
-        self.min_freq.setValue(2)
-        self.min_freq.valueChanged.connect(self._update_parameters)
-        min_freq_layout.addWidget(self.min_freq)
-        self.min_freq_value = QLabel("2 Hz")
-        self.min_freq_value.setMinimumWidth(50)
-        min_freq_layout.addWidget(self.min_freq_value)
-        freq_layout.addLayout(min_freq_layout)
-        
-        # Max frequency
-        max_freq_layout = QHBoxLayout()
-        max_freq_layout.addWidget(QLabel("Max Frequency:"))
-        self.max_freq = QSlider(Qt.Horizontal)
-        self.max_freq.setRange(1, 200)
-        self.max_freq.setValue(20)
-        self.max_freq.valueChanged.connect(self._update_parameters)
-        max_freq_layout.addWidget(self.max_freq)
-        self.max_freq_value = QLabel("20 Hz")
-        self.max_freq_value.setMinimumWidth(50)
-        max_freq_layout.addWidget(self.max_freq_value)
-        freq_layout.addLayout(max_freq_layout)
-        
-        # Add frequency validation
-        self.min_freq.valueChanged.connect(self._validate_frequency_range)
-        self.max_freq.valueChanged.connect(self._validate_frequency_range)
-        
-        frame_layout.addWidget(freq_group)
-        
-        # Create channel controls
-        channel_group = QGroupBox("Channel Control")
-        channel_layout = QVBoxLayout(channel_group)
-        
-        # Channel A
-        channel_a_layout = QHBoxLayout()
-        self.channel_a_enabled = QCheckBox("Channel A")
-        self.channel_a_enabled.setChecked(True)
-        self.channel_a_enabled.stateChanged.connect(self._on_channel_changed)
-        channel_a_layout.addWidget(self.channel_a_enabled)
-        
-        # Channel A volume
-        self.channel_a_volume = QSlider(Qt.Horizontal)
-        self.channel_a_volume.setRange(0, 255)
-        self.channel_a_volume.setValue(0)
-        self.channel_a_volume.valueChanged.connect(self._on_volume_changed)
-        channel_a_layout.addWidget(self.channel_a_volume)
-        self.channel_a_volume_label = QLabel("0")
-        channel_a_layout.addWidget(self.channel_a_volume_label)
-        
-        channel_layout.addLayout(channel_a_layout)
-        
-        # Channel B
-        channel_b_layout = QHBoxLayout()
-        self.channel_b_enabled = QCheckBox("Channel B")
-        self.channel_b_enabled.setChecked(False)
-        self.channel_b_enabled.stateChanged.connect(self._on_channel_changed)
-        channel_b_layout.addWidget(self.channel_b_enabled)
-        
-        # Channel B volume
-        self.channel_b_volume = QSlider(Qt.Horizontal)
-        self.channel_b_volume.setRange(0, 255)
-        self.channel_b_volume.setValue(0)
-        self.channel_b_volume.valueChanged.connect(self._on_volume_changed)
-        channel_b_layout.addWidget(self.channel_b_volume)
-        self.channel_b_volume_label = QLabel("0")
-        channel_b_layout.addWidget(self.channel_b_volume_label)
-        
-        channel_layout.addLayout(channel_b_layout)
-        
-        frame_layout.addWidget(channel_group)
-        
-        # Add frame to main layout
-        main_layout.addWidget(frame)
-        
-        # Update DG adapter with initial parameters
-        self._update_parameters()
+        # Set the layout
+        self.setLayout(layout)
 
     @Slot()
-    def _on_channel_changed(self):
+    async def _on_channel_changed(self):
         """Handle channel enable/disable."""
         try:
             # Update enabled channels
-            self.dg_adapter.enabled_channels = []
+            self._adapter.enabled_channels = []
             
             # Handle Channel A
             if self.channel_a_enabled.isChecked():
-                self.dg_adapter.enabled_channels.append(Channel.A)
+                self._adapter.enabled_channels.append(Channel.A)
                 # Restore last known volume for channel A
-                if self._last_channel_a_volume > 0:
-                    self.logger.debug(f"Enabling Channel A with volume: {self._last_channel_a_volume}")
-                    self.loop.create_task(self.dg_adapter.device.set_strength(Channel.A, self._last_channel_a_volume))
-                    self.channel_a_volume.setValue(self._last_channel_a_volume)
+                if self._last_volume_a > 0:
+                    self.logger.debug(f"Enabling Channel A with volume: {self._last_volume_a}")
+                    await self._adapter.set_channel_strength(Channel.A, self._last_volume_a)
+                    self.channel_a_volume.setValue(self._last_volume_a)
             else:
                 # Set strength to 0
                 self.logger.debug("Disabling Channel A")
-                self.loop.create_task(self.dg_adapter.device.set_strength(Channel.A, 0))
+                await self._adapter.set_channel_strength(Channel.A, 0)
                 # Reset wave parameters
                 zero_params = WaveParameters(frequencies=[0]*4, intensities=[0]*4)
-                self.loop.create_task(self.dg_adapter.device.set_wave_parameters(Channel.A, zero_params))
+                await self._adapter.set_wave_parameters(Channel.A, zero_params)
                 # Reset volume slider
                 self.channel_a_volume.setValue(0)
             
             # Handle Channel B
             if self.channel_b_enabled.isChecked():
-                self.dg_adapter.enabled_channels.append(Channel.B)
-                # In sync mode, use channel A's volume
+                self._adapter.enabled_channels.append(Channel.B)
                 if self._sync_enabled:
-                    volume = self._last_channel_a_volume
-                    self.logger.debug(f"Enabling Channel B in sync mode with volume: {volume}")
+                    if self.channel_b_volume.value() > 0:
+                        volume = self._last_volume_a
+                        self.logger.debug(f"Enabling Channel B in sync mode with channel A volume: {volume}")
+                    else:
+                        volume = 0
+                        self.logger.debug("Channel B volume is zero in sync mode, disabling channel B")
                 else:
-                    volume = self._last_channel_b_volume
+                    volume = self._last_volume_b
                     self.logger.debug(f"Enabling Channel B with volume: {volume}")
                 if volume > 0:
-                    self.loop.create_task(self.dg_adapter.device.set_strength(Channel.B, volume))
+                    await self._adapter.set_channel_strength(Channel.B, volume)
                     self.channel_b_volume.setValue(volume)
-            else:
-                # Set strength to 0
-                self.logger.debug("Disabling Channel B")
-                self.loop.create_task(self.dg_adapter.device.set_strength(Channel.B, 0))
-                # Reset wave parameters
-                zero_params = WaveParameters(frequencies=[0]*4, intensities=[0]*4)
-                self.loop.create_task(self.dg_adapter.device.set_wave_parameters(Channel.B, zero_params))
-                # Reset volume slider
-                self.channel_b_volume.setValue(0)
+                else:
+                    await self._disable_channel(Channel.B)
                 
         except Exception as e:
             self.logger.error(f"Error updating channels: {e}")
     
     @Slot()
-    def _update_parameters(self):
+    async def _update_parameters(self):
         """Update DG adapter parameters based on current control values."""
         try:
             # Update base scale label
@@ -263,12 +155,12 @@ class DGControlWidget(QWidget):
             
             # Update adapter parameters
             # Base intensity is now handled by main window
-            self.dg_adapter.intensity_pulse_range = pulse_range / 100.0
-            self.dg_adapter.min_frequency = min_freq
-            self.dg_adapter.max_frequency = max_freq
+            self._adapter.intensity_pulse_range = pulse_range / 100.0
+            self._adapter.min_frequency = min_freq
+            self._adapter.max_frequency = max_freq
             
             # Update channels
-            self._on_channel_changed()
+            await self._on_channel_changed()
                 
         except Exception as e:
             print(f"Error updating parameters: {e}")
@@ -289,119 +181,372 @@ class DGControlWidget(QWidget):
         except Exception as e:
             print(f"Error validating frequency range: {e}")
     
-    @Slot()
-    def _on_volume_changed(self):
+    @Slot(int)
+    def _on_volume_changed(self, value):
         """Handle volume slider changes."""
         try:
-            self._user_volume_change = True
-            
-            # Store the user's volume settings
-            if self.channel_a_enabled.isChecked():
-                self._last_channel_a_volume = self.channel_a_volume.value()
-            if self.channel_b_enabled.isChecked() and not self._sync_enabled:
-                self._last_channel_b_volume = self.channel_b_volume.value()
-            
-            # Update volume labels
-            self.channel_a_volume_label.setText(str(self.channel_a_volume.value()))
-            self.channel_b_volume_label.setText(str(self.channel_b_volume.value()))
-            
-            # Update device strengths
-            if self.channel_a_enabled.isChecked():
-                volume_a = self.channel_a_volume.value()
-                self.logger.info(f"Setting Channel A strength to {volume_a}")
-                self.loop.create_task(self.dg_adapter.device.set_strength(Channel.A, volume_a))
-                # In sync mode, apply channel A volume to channel B if it's enabled
-                if self._sync_enabled and self.channel_b_enabled.isChecked():
-                    self.logger.info(f"Setting Channel B strength to {volume_a} (sync mode)")
-                    self.loop.create_task(self.dg_adapter.device.set_strength(Channel.B, volume_a))
-                    self.channel_b_volume.setValue(volume_a)  # Update B slider to match A
-            
-            # Update channel B if it's enabled and not in sync mode
-            if self.channel_b_enabled.isChecked() and not self._sync_enabled:
-                volume_b = self.channel_b_volume.value()
-                self.logger.info(f"Setting Channel B strength to {volume_b}")
-                self.loop.create_task(self.dg_adapter.device.set_strength(Channel.B, volume_b))
+            if not self._adapter.device.is_connected:
+                return
                 
-        except Exception as e:
-            self.logger.error(f"Error updating volume: {e}")
-            
-        finally:
-            # Reset the user volume change flag after a short delay
-            QTimer.singleShot(100, self._reset_user_volume_change)
-            
-    def _reset_user_volume_change(self):
-        """Reset the user volume change flag."""
-        self._user_volume_change = False
-        
-    @Slot()
-    def _update_strengths(self):
-        """Update strength displays from device."""
-        if self._updating_strengths or self._user_volume_change:
-            return
-            
-        try:
-            self._updating_strengths = True
-            
-            if self.dg_adapter.device.is_connected:
-                # Update channel A strength if enabled
-                if self.channel_a_enabled.isChecked():
-                    strength_a = self.dg_adapter.device._current_strengths[Channel.A]
-                    current_a = self.channel_a_volume.value()
-                    if current_a != strength_a:
-                        self.logger.info(f"Updating Channel A strength display from {current_a} to {strength_a}")
-                        self._last_channel_a_volume = strength_a
-                        self.channel_a_volume.setValue(strength_a)
-                        
-                # Update channel B strength if enabled and not in sync mode
-                if self.channel_b_enabled.isChecked() and not self._sync_enabled:
-                    strength_b = self.dg_adapter.device._current_strengths[Channel.B]
-                    current_b = self.channel_b_volume.value()
-                    if current_b != strength_b:
-                        self.logger.info(f"Updating Channel B strength display from {current_b} to {strength_b}")
-                        self._last_channel_b_volume = strength_b
-                        self.channel_b_volume.setValue(strength_b)
+            # Update labels
+            if self.sender() == self.channel_a_volume:
+                self.channel_a_volume_label.setText(str(value))
+                # If sync mode is enabled, also update channel B's slider
+                if self._adapter.sync_enabled and self.channel_b_enabled.isChecked():
+                    self.channel_b_volume.setValue(value)
+            else:  # Channel B
+                self.channel_b_volume_label.setText(str(value))
+                
+            # Only send strength updates if playing
+            if not self._adapter._is_playing:
+                return
+                
+            # Handle Channel A
+            if self.sender() == self.channel_a_volume and Channel.A in self._adapter.enabled_channels:
+                asyncio.create_task(self._adapter.set_channel_strength(Channel.A, value))
+                # If sync mode is enabled, also update Channel B
+                if self._adapter.sync_enabled and Channel.B in self._adapter.enabled_channels:
+                    asyncio.create_task(self._adapter.set_channel_strength(Channel.B, value))
+                    
+            # Handle Channel B (only if not in sync mode)
+            elif self.sender() == self.channel_b_volume and not self._adapter.sync_enabled:
+                if Channel.B in self._adapter.enabled_channels:
+                    asyncio.create_task(self._adapter.set_channel_strength(Channel.B, value))
                     
         except Exception as e:
-            self.logger.error(f"Error updating strengths: {e}")
-        finally:
-            self._updating_strengths = False
-            
-    def closeEvent(self, event):
-        """Handle widget close."""
-        self._strength_timer.stop()
-        super().closeEvent(event) 
-
-    @Slot(bool)
-    def _on_connection_changed(self, connected: bool):
-        """Handle connection state changes."""
-        if connected:
-            self.logger.info("Device connected, initializing parameters and strengths")
-            self._update_parameters()  # Update parameters when connected
-            
-            # Initialize channel strengths
-            if self.channel_a_enabled.isChecked():
-                self.loop.create_task(self.dg_adapter.device.set_strength(Channel.A, self._last_channel_a_volume))
-                self.channel_a_volume.setValue(self._last_channel_a_volume)
-            if self.channel_b_enabled.isChecked():
-                self.loop.create_task(self.dg_adapter.device.set_strength(Channel.B, self._last_channel_b_volume))
-                self.channel_b_volume.setValue(self._last_channel_b_volume)
-                
-            self._strength_timer.start()  # Start strength updates
-        else:
-            self.logger.info("Device disconnected, stopping strength updates")
-            self._strength_timer.stop()  # Stop strength updates when disconnected
+            self.logger.error(f"Error handling volume change: {e}")
 
     @Slot(int)
     def _on_sync_changed(self, state):
         """Handle sync mode toggle."""
-        self.dg_adapter.sync_enabled = bool(state)
+        try:
+            self._adapter.sync_enabled = bool(state)
+            
+            # Update UI elements
+            self.channel_b_volume.setEnabled(not state)
+            
+            if state and self.channel_b_enabled.isChecked():
+                # When enabling sync mode, update Channel B to match A
+                if self.channel_a_enabled.isChecked():
+                    self.channel_b_volume.setValue(self.channel_a_volume.value())
+                    if self._adapter._is_playing:
+                        asyncio.create_task(self._adapter.set_channel_strength(Channel.B, self.channel_a_volume.value()))
+                else:
+                    # If Channel A is disabled, disable Channel B
+                    self.channel_b_enabled.setChecked(False)
+                    
+        except Exception as e:
+            self.logger.error(f"Error handling sync mode change: {e}")
+
+    @Slot(bool)
+    def _on_channel_a_enabled_changed(self, enabled: bool):
+        """Handle Channel A enable/disable."""
+        try:
+            if enabled:
+                self._adapter.enable_channel(Channel.A)
+                # Only send non-zero strength if playing and volume > 0
+                if self._adapter._is_playing and self.channel_a_volume.value() > 0:
+                    asyncio.create_task(self._adapter.set_channel_strength(Channel.A, self.channel_a_volume.value()))
+            else:
+                self._adapter.disable_channel(Channel.A)
+                # If sync mode is enabled, also disable Channel B
+                if self._adapter.sync_enabled and self.channel_b_enabled.isChecked():
+                    self.channel_b_enabled.setChecked(False)
+                    
+        except Exception as e:
+            self.logger.error(f"Error handling Channel A enable change: {e}")
+
+    @Slot(bool)
+    def _on_channel_b_enabled_changed(self, enabled: bool):
+        """Handle Channel B enable/disable."""
+        try:
+            if enabled:
+                self._adapter.enable_channel(Channel.B)
+                # Only send non-zero strength if playing
+                if self._adapter._is_playing:
+                    if self._adapter.sync_enabled:
+                        # In sync mode, use Channel A's value
+                        strength = self.channel_a_volume.value()
+                    else:
+                        strength = self.channel_b_volume.value()
+                    if strength > 0:
+                        asyncio.create_task(self._adapter.set_channel_strength(Channel.B, strength))
+            else:
+                self._adapter.disable_channel(Channel.B)
+                
+        except Exception as e:
+            self.logger.error(f"Error handling Channel B enable change: {e}")
+
+    @Slot()
+    async def _update_strengths(self):
+        """Periodically send updated strength values to the device."""
+        try:
+            self.logger.debug(f"_update_strengths called: is_playing={getattr(self._adapter, 'is_playing', False)}, channel_b_enabled={self.channel_b_enabled.isChecked()}, sync_enabled={self._adapter.sync_enabled}, last_volume_a={self._last_volume_a}, last_volume_b={self._last_volume_b}")
+            
+            # Only update strengths if audio is playing
+            if not getattr(self._adapter, 'is_playing', False):
+                return
+            
+            # Determine strength for Channel A based on its slider
+            strength_a = self._last_volume_a
+            
+            # Determine strength for Channel B:
+            # If Channel B is enabled, then determine its strength based on sync mode.
+            # Otherwise, force its strength to 0
+            if self.channel_b_enabled.isChecked():
+                if self._adapter.sync_enabled:
+                    strength_b = strength_a
+                else:
+                    strength_b = self._last_volume_b
+            else:
+                strength_b = 0
+            
+            self.logger.debug(f"Calculated strengths: Channel A = {strength_a}, Channel B = {strength_b}")
+            
+            # Optional: Add caching logic to avoid sending redundant updates
+            if self._last_sent_strength_a != strength_a:
+                await self._adapter.set_channel_strength(Channel.A, strength_a)
+                self._last_sent_strength_a = strength_a
+            
+            if self._last_sent_strength_b != strength_b:
+                await self._adapter.set_channel_strength(Channel.B, strength_b)
+                self._last_sent_strength_b = strength_b
+        except Exception as e:
+            self.logger.error(f"Error in _update_strengths: {e}")
+
+    def closeEvent(self, event):
+        """Handle widget close."""
+        try:
+            # Stop strength timer
+            self._strength_timer.stop()
+            
+            # Create task to disable channels
+            asyncio.create_task(self._handle_close())
+            
+        except Exception as e:
+            self.logger.error(f"Error during close: {e}")
+            
+        super().closeEvent(event)
         
-        # Update UI elements based on sync mode
-        if state:
-            # When sync is enabled, disable channel B controls
-            if hasattr(self, 'channel_b_group'):
-                self.channel_b_group.setEnabled(False)
+    async def _handle_close(self):
+        """Handle async operations during close."""
+        try:
+            # Ensure all channels are disabled
+            await self._disable_channel(Channel.A)
+            await self._disable_channel(Channel.B)
+            
+            # Let pending tasks complete
+            for task in list(self._adapter._pending_tasks):
+                if not task.done():
+                    task.cancel()
+                    
+        except Exception as e:
+            self.logger.error(f"Error during close cleanup: {e}")
+
+    @Slot(bool)
+    def _on_connection_changed(self, connected: bool):
+        """Handle connection state changes."""
+        self.logger.info(f"Connection state changed: {connected}")
+        
+        if connected:
+            self.logger.info("Device connected, initializing parameters and strengths")
+            # Initialize device
+            asyncio.create_task(self._initialize_device())
         else:
-            # When sync is disabled, enable channel B controls
-            if hasattr(self, 'channel_b_group'):
-                self.channel_b_group.setEnabled(True) 
+            self.logger.info("Device disconnected, stopping strength updates")
+            self._strength_timer.stop()
+            
+        # Update UI state
+        self._update_ui_state()
+
+    def _async_init(self):
+        """Initialize channels asynchronously."""
+        try:
+            # Start with both channels disabled
+            self.channel_a_enabled.setChecked(False)
+            self.channel_b_enabled.setChecked(False)
+            
+            # Start adapter
+            self._adapter.start()
+            
+        except Exception as e:
+            self.logger.error(f"Error during async initialization: {e}")
+
+    @Slot()
+    async def _on_playback_started(self):
+        """Handle playback start."""
+        try:
+            # Only proceed if we have enabled channels
+            if not self.channel_a_enabled.isChecked() and not self.channel_b_enabled.isChecked():
+                return
+                
+            # Initialize enabled channels with zero strength
+            if self.channel_a_enabled.isChecked():
+                asyncio.create_task(self._adapter.set_channel_strength(Channel.A, 0))
+                
+            if self.channel_b_enabled.isChecked():
+                if self._adapter.sync_enabled:
+                    # In sync mode, use Channel A's value
+                    strength = self.channel_a_volume.value()
+                else:
+                    strength = self.channel_b_volume.value()
+                asyncio.create_task(self._adapter.set_channel_strength(Channel.B, 0))
+                
+        except Exception as e:
+            self.logger.error(f"Error handling playback start: {e}")
+
+    @Slot()
+    async def _on_playback_stopped(self):
+        """Handle playback stop."""
+        try:
+            # Disable all channels
+            if self.channel_a_enabled.isChecked():
+                asyncio.create_task(self._adapter.set_channel_strength(Channel.A, 0))
+                
+            if self.channel_b_enabled.isChecked():
+                asyncio.create_task(self._adapter.set_channel_strength(Channel.B, 0))
+                
+        except Exception as e:
+            self.logger.error(f"Error handling playback stop: {e}")
+
+    async def _initialize_device(self):
+        """Initialize device after connection."""
+        try:
+            # Update UI state
+            self._update_ui_state()
+            
+            # Start with both channels disabled
+            self.channel_a_enabled.setChecked(False)
+            self.channel_b_enabled.setChecked(False)
+            
+            # Start adapter
+            self._adapter.start()
+            
+        except Exception as e:
+            self.logger.error(f"Error initializing device: {e}")
+
+    def _update_ui_state(self):
+        """Update UI elements based on current state."""
+        is_connected = self._adapter.device.is_connected
+        
+        # Update button states
+        self.connect_button.setEnabled(not self._connecting)
+        self.connect_button.setText("Disconnect" if is_connected else "Select Device")
+        
+        # Update channel controls
+        self.channel_a_enabled.setEnabled(is_connected)
+        self.channel_b_enabled.setEnabled(is_connected)
+        
+        # Update volume sliders
+        self.channel_a_volume.setEnabled(is_connected)
+        self.channel_b_volume.setEnabled(is_connected and not self._adapter.sync_enabled)
+        
+        # Update other controls
+        self.sync_checkbox.setEnabled(is_connected)
+        self.base_scale.setEnabled(is_connected)
+        self.pulse_range.setEnabled(is_connected)
+        self.min_freq.setEnabled(is_connected)
+        self.max_freq.setEnabled(is_connected)
+
+    @Slot(list)
+    def _on_devices_discovered(self, devices):
+        """Handle device discovery."""
+        # This signal is emitted when devices are discovered
+        # We don't need to do anything here since the dialog handles the device list
+        pass 
+
+    async def _show_device_selection(self):
+        """Show device selection dialog."""
+        try:
+            # Only scan if we're not connected
+            if not self._adapter.device.is_connected:
+                devices = await self._adapter.device.scan_devices()
+                if not devices:
+                    self.logger.warning("No devices found")
+                    return
+                    
+                # Show device selection dialog
+                dialog = DeviceSelectionDialog(devices, self)
+                dialog.device_selected.connect(self._on_device_selected)
+                dialog.exec()
+            else:
+                self.logger.info("Already connected to device - skipping scan")
+        except Exception as e:
+            self.logger.error(f"Error showing device selection: {e}")
+
+    def _on_connect_clicked(self):
+        """Handle connect button click."""
+        if self._adapter.device.is_connected:
+            self.logger.info("Already connected to device")
+            return
+            
+        # Start device discovery
+        asyncio.create_task(self._show_device_selection())
+        
+    @Slot(object)
+    def _on_device_selected(self, device):
+        """Handle device selection."""
+        if not device:
+            self.logger.warning("No device selected")
+            return
+            
+        self._selected_device = device
+        self.logger.info(f"Selected device: {device.name} ({device.address})")
+        # Wait for device selection dialog to close before connecting
+        QTimer.singleShot(100, lambda: asyncio.create_task(self._connect_to_selected_device()))
+
+    async def _connect_to_selected_device(self):
+        """Connect to the selected device."""
+        try:
+            if not self._selected_device:
+                self.logger.warning("No device selected")
+                return
+
+            self.logger.info(f"Connecting to {self._selected_device.name} ({self._selected_device.address})")
+            
+            # Disable UI elements during connection
+            self._connecting = True
+            self._update_ui_state()
+            
+            # Connect to device
+            if await self._adapter.device.connect_to_device(self._selected_device):
+                self.logger.info(f"Successfully connected to {self._selected_device.name}")
+                
+                # Schedule parameter updates and strength initialization for next event loop iteration
+                asyncio.get_event_loop().call_soon(lambda: asyncio.create_task(self._initialize_device()))
+            else:
+                self.logger.error("Failed to connect to device")
+                
+        except Exception as e:
+            self.logger.error(f"Error connecting to device: {e}")
+        finally:
+            self._connecting = False
+            self._update_ui_state() 
+
+    def _check_error_recovery(self):
+        """Check if error recovery is needed and attempt recovery if necessary."""
+        try:
+            current_time = time.time()
+            
+            # Check if we haven't had a successful update in a while
+            if (current_time - self._last_successful_update) > 5.0:  # 5 seconds threshold
+                self.logger.warning("No successful updates for 5 seconds, attempting recovery")
+                self._error_count += 1
+                
+                # If we've had too many errors, try reconnecting
+                if self._error_count > 3:
+                    self.logger.error("Too many errors, attempting reconnect")
+                    self._error_count = 0
+                    asyncio.create_task(self._adapter.device.reconnect())
+                    return
+                    
+                # Otherwise just try resetting the channels
+                for channel in self._adapter.enabled_channels:
+                    asyncio.create_task(self._adapter.reset_channel(channel))
+            
+            # Reset error count if we've had recent successful updates
+            elif (current_time - self._last_error_time) > 10.0:  # 10 seconds without errors
+                self._error_count = 0
+                
+        except Exception as e:
+            self.logger.error(f"Error in recovery check: {e}") 

@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, 
-                                 QHBoxLayout, QPushButton, QLabel, QFrame, QSpacerItem, QSizePolicy, QSlider, QSpinBox)
+                                 QHBoxLayout, QPushButton, QLabel, QFrame, QSpacerItem, QSizePolicy, QSlider, QSpinBox, QStatusBar)
 from PySide6.QtCore import Qt, Slot, QTimer
 from PySide6.QtGui import QIcon, QKeyEvent
 from .widgets.audio_control_widget import AudioControlWidget
@@ -17,9 +17,12 @@ import asyncio
 import qasync
 import time
 import json
+from .widgets.device_selection_dialog import DeviceSelectionDialog
+from hardware.dg_device import DGDevice
+from .coyote_window import CoyoteWindow
 
 class MainWindow(QMainWindow):
-    def __init__(self, logger):
+    def __init__(self, logger, audio_player, dg_adapter):
         super().__init__()
         self.logger = logger
         self.is_waiting = False
@@ -43,8 +46,18 @@ class MainWindow(QMainWindow):
         # Mode-related state variables
         self.current_mode = "medium"  # Default mode
         
-        # Create audio player
-        self.audio_player = QtAudioPlayer(self.logger)
+        # Store provided components
+        self.audio_player = audio_player
+        self.dg_adapter = dg_adapter
+        # Ensure the main window has a status bar
+        if self.statusBar() is None:
+            from PySide6.QtWidgets import QStatusBar
+            self.setStatusBar(QStatusBar())
+
+        if self.dg_adapter is None:
+            self.launchCoyoteButton = QPushButton("Launch Coyote Module")
+            self.launchCoyoteButton.clicked.connect(self.launch_coyote_module)
+            self.statusBar().addPermanentWidget(self.launchCoyoteButton)
         self.current_file = None
         self.favorites = self._load_favorites()
         
@@ -52,11 +65,9 @@ class MainWindow(QMainWindow):
         self.voice_controller = VoiceController(self.logger)
         self.voice_controller.command_recognized.connect(self._handle_voice_command)
         
-        # Create DG adapter
-        self.dg_adapter = DGAudioAdapter(self.audio_player, self.logger)
-        
-        # Connect DG adapter signals
-        self.dg_adapter.device.connection_changed.connect(self._on_connection_changed)
+        # Connect DG adapter signals if the coyote module is already launched
+        if self.dg_adapter is not None:
+            self.dg_adapter.device.connection_changed.connect(self._on_connection_changed)
         
         # Get the existing event loop
         self.loop = asyncio.get_event_loop()
@@ -330,7 +341,7 @@ class MainWindow(QMainWindow):
         # Create audio control widget
         self.audio_control = AudioControlWidget(self.audio_player)
         right_layout.addWidget(self.audio_control)
-        
+
         # Connect favorites toggle
         self.audio_control.favorites_button.clicked.connect(self._on_show_favorites_clicked)
 
@@ -382,9 +393,14 @@ class MainWindow(QMainWindow):
         self.serial_monitor.serial_monitor.pressure_updated.connect(self.viz_manager.update)
         self.serial_monitor.serial_monitor.pressure_updated.connect(self._on_pressure_updated)
 
-        # Start serial monitor
-        self.serial_monitor.serial_monitor.port = "/dev/cu.usbmodem170307301"
-        self.serial_monitor.serial_monitor.start()
+        # Start serial monitor with error handling
+        try:
+            self.serial_monitor.serial_monitor.port = "/dev/cu.usbmodem170307301"
+            self.serial_monitor.serial_monitor.start()
+        except Exception as e:
+            self.logger.error(f"Failed to start serial monitor: {e}")
+            self.status_label.setText("Device Not Connected")
+            self.status_label.setStyleSheet("color: #ff4444")  # Red text for error
 
         # Connect audio player signals
         self.audio_player.playback_started.connect(self._on_playback_started)
@@ -518,6 +534,21 @@ class MainWindow(QMainWindow):
         
         mode_layout.addWidget(mode_buttons)
         left_layout.addWidget(mode_container)
+
+        # Create device manager
+        self.device = DGDevice()
+        self.device.connection_changed.connect(self._on_connection_changed)
+        self.device.connection_error.connect(self._on_connection_error)
+        
+        # Create connect button
+        self.connect_button = QPushButton("Connect Device")
+        self.connect_button.clicked.connect(self._show_device_selection)
+        left_layout.addWidget(self.connect_button)
+        
+        # Create status label
+        self.status_label = QLabel("Not Connected")
+        self.status_label.setAlignment(Qt.AlignCenter)
+        left_layout.addWidget(self.status_label)
 
     def _toggle_serial_monitor(self):
         """Toggle the visibility of the serial monitor."""
@@ -732,8 +763,8 @@ class MainWindow(QMainWindow):
             if hasattr(self, 'audio_player'):
                 self.audio_player.stop_playback()
 
-            # Stop DG adapter
-            if hasattr(self, 'dg_adapter'):
+            # Stop DG adapter if active
+            if self.dg_adapter is not None:
                 asyncio.create_task(self.dg_adapter.stop())
             
             # Stop serial monitor
@@ -771,14 +802,20 @@ class MainWindow(QMainWindow):
         if connected:
             self.connection_label.setText("DG: Connected")
             self.connection_label.setStyleSheet("font-size: 14px; padding: 10px; color: #44ff44")
+            self.status_label.setText("Connected")
+            self.connect_button.setEnabled(False)
         else:
             self.connection_label.setText("DG: Disconnected")
-            self.connection_label.setStyleSheet("font-size: 14px; padding: 10px; color: #ff4444") 
+            self.connection_label.setStyleSheet("font-size: 14px; padding: 10px; color: #ff4444")
+            self.status_label.setText("Disconnected")
+            self.connect_button.setEnabled(True)
+            self.connect_button.setText("Connect Device")
 
     async def _start_dg_adapter(self):
         """Start the DG adapter."""
         try:
-            self.dg_adapter.start()
+            if self.dg_adapter is not None:
+                self.dg_adapter.start()
         except Exception as e:
             self.logger.error(f"Error starting DG adapter: {e}") 
 
@@ -793,8 +830,8 @@ class MainWindow(QMainWindow):
             audio_max = self.audio_control.volume_slider.value() / 100.0
             self.audio_player.set_volume(audio_max * self._master_volume)
         
-        # Scale DG volume (base intensity)
-        if hasattr(self, 'dg_control'):
+        # Scale DG volume (base intensity) only if dg_adapter is available
+        if hasattr(self, 'dg_control') and self.dg_adapter is not None:
             dg_max = self.dg_control.base_scale.value() / 100.0
             self.dg_adapter.base_intensity_scale = dg_max * self._master_volume
 
@@ -806,7 +843,8 @@ class MainWindow(QMainWindow):
     def _on_dg_volume_changed(self, value):
         """Handle DG volume (base intensity) change."""
         dg_max = value / 100.0
-        self.dg_adapter.base_intensity_scale = dg_max * self._master_volume 
+        if self.dg_adapter is not None:
+            self.dg_adapter.base_intensity_scale = dg_max * self._master_volume 
 
     def update_hold_button_style(self):
         """Update the hold button style based on active state."""
@@ -1243,6 +1281,16 @@ class MainWindow(QMainWindow):
                 self._adjust_volume(0.1)
             elif command == "down":
                 self._adjust_volume(-0.1)
+            elif command == "max":
+                self.logger.info("Setting volume to maximum")
+                self.master_volume_slider.setValue(100)
+                self._on_master_volume_changed(100)
+            elif command == "half":
+                current_value = self.master_volume_slider.value()
+                new_value = max(0, current_value // 2)  # Integer division to halve the volume
+                self.logger.info(f"Reducing volume by half from {current_value}% to {new_value}%")
+                self.master_volume_slider.setValue(new_value)
+                self._on_master_volume_changed(new_value)
             elif command == "skip":
                 self.audio_player.play_random_file()
             elif command == "pause":
@@ -1262,6 +1310,19 @@ class MainWindow(QMainWindow):
                 
         except Exception as e:
             self.logger.error(f"Error handling voice command: {e}")
+
+    def _adjust_volume(self, delta):
+        """Adjust the master volume by a relative amount."""
+        try:
+            current_value = self.master_volume_slider.value()
+            # Convert delta from 0-1 scale to percentage points
+            delta_percent = int(delta * 100)
+            new_value = max(0, min(100, current_value + delta_percent))
+            self.logger.info(f"Adjusting volume from {current_value}% to {new_value}%")
+            self.master_volume_slider.setValue(new_value)
+            self._on_master_volume_changed(new_value)
+        except Exception as e:
+            self.logger.error(f"Error adjusting volume: {e}")
 
     def showEvent(self, event):
         """Override showEvent to start voice control when window is shown"""
@@ -1356,3 +1417,83 @@ class MainWindow(QMainWindow):
         
         # Update file dropdown
         self._populate_file_dropdown()
+
+    @Slot()
+    async def _show_device_selection(self):
+        """Show the device selection dialog."""
+        try:
+            self.logger.info("Starting device scan...")
+            self.connect_button.setEnabled(False)
+            self.connect_button.setText("Scanning...")
+            
+            # Scan for devices
+            devices = await self.device.scan_devices()
+            
+            if not devices:
+                self.logger.warning("No devices found")
+                self.status_label.setText("No devices found")
+                self.connect_button.setEnabled(True)
+                self.connect_button.setText("Connect Device")
+                return
+                
+            # Show device selection dialog
+            dialog = DeviceSelectionDialog(devices, self)
+            dialog.device_selected.connect(self._on_device_selected)
+            
+            if dialog.exec() == DeviceSelectionDialog.Rejected:
+                # User clicked refresh or closed dialog
+                self.logger.info("Device selection cancelled - retrying scan")
+                await self._show_device_selection()
+                return
+                
+        except Exception as e:
+            self.logger.error(f"Error in device selection: {e}")
+            self.status_label.setText(f"Error: {str(e)}")
+        finally:
+            self.connect_button.setEnabled(True)
+            self.connect_button.setText("Connect Device")
+            
+    @Slot(object)
+    async def _on_device_selected(self, device):
+        """Handle device selection."""
+        try:
+            self.logger.info(f"Connecting to device: {device.name or 'Unknown'} ({device.address})")
+            self.status_label.setText("Connecting...")
+            self.connect_button.setEnabled(False)
+            
+            success = await self.device.connect_to_device(device)
+            
+            if success:
+                self.logger.info("Successfully connected to device")
+                self.status_label.setText("Connected")
+            else:
+                self.logger.error("Failed to connect to device")
+                self.status_label.setText("Connection failed")
+                self.connect_button.setEnabled(True)
+                
+        except Exception as e:
+            self.logger.error(f"Error connecting to device: {e}")
+            self.status_label.setText(f"Error: {str(e)}")
+            self.connect_button.setEnabled(True)
+            
+    @Slot(str)
+    def _on_connection_error(self, error: str):
+        """Handle connection errors."""
+        self.logger.error(f"Connection error: {error}")
+        self.status_label.setText(f"Error: {error}")
+        self.connect_button.setEnabled(True)
+        self.connect_button.setText("Connect Device")
+
+    def launch_coyote_module(self):
+        """Launch the coyote module."""
+        if self.dg_adapter is None:
+            try:
+                from src.plugins.coyote import init_coyote
+                self.dg_adapter = init_coyote(self.audio_player, self.logger)
+                self.logger.info("Coyote module initialized from UI")
+            except Exception as e:
+                self.logger.error(f"Error initializing coyote module: {e}")
+                return
+        # Create and show the separate window for coyote module
+        self.coyote_window = CoyoteWindow(self.logger, self.dg_adapter, parent=self)
+        self.coyote_window.show()
