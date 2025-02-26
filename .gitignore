@@ -1,12 +1,55 @@
-# Python
+# Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Application specific
+src/data/model/*
+!src/data/model/.gitkeep
+src/data/audio/*
+!src/data/audio/.gitkeep
+logs/peak_performers/*
+!logs/peak_performers/.gitkeep
+
+# Audio files - exclude all mp3 and wav files in the audio directory
+src/audio/*.mp3
+src/audio/*.wav
+src/audio/*.Mp3
+src/audio/000000faves/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+
+# PyInstaller
+*.spec
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Python
 *.so
 .Python
-build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -16,27 +59,5 @@ parts/
 sdist/
 var/
 wheels/
-*.egg-info/
 .installed.cfg
-*.egg
-
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-._*
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Project specific
-data/logs/
-data/visualization/
-logs/
-*.h5
-*.wav
-*.mp3
-*.mov 
+*.egg 

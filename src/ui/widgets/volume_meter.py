@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPainter, QColor, QLinearGradient
 import logging
@@ -6,8 +6,8 @@ import logging
 class VolumeMeter(QWidget):
     def __init__(self, label="", parent=None):
         super().__init__(parent)
-        self.setMinimumWidth(30)
-        self.setMinimumHeight(150)
+        self.setMinimumWidth(150)  # Swapped dimensions
+        self.setMinimumHeight(30)  # Swapped dimensions
         self.logger = logging.getLogger(__name__)
         
         # Set background color
@@ -17,16 +17,16 @@ class VolumeMeter(QWidget):
         self.setPalette(palette)
         
         # Create layout for label
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 5)  # Add bottom margin for spacing
+        layout = QHBoxLayout(self)  # Changed to horizontal layout
+        layout.setContentsMargins(5, 0, 0, 0)  # Add left margin for spacing
         layout.setSpacing(2)  # Reduce spacing
         
-        # Add label at the bottom
+        # Add label at the left
         self.label = QLabel(label)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("color: white; font-weight: bold; font-size: 10px;")
-        layout.addStretch()  # Push label to bottom
         layout.addWidget(self.label)
+        layout.addStretch()  # Push label to left
         
         # Volume level (0.0 to 1.0)
         self._level = 0.0
@@ -60,34 +60,34 @@ class VolumeMeter(QWidget):
             painter.setRenderHint(QPainter.Antialiasing)
             
             # Calculate meter dimensions
-            width = self.width()
-            height = self.height() - self.label.height() - 10  # Leave space for label and margins
-            x = 2  # Add margin
-            y = 5  # Start from top with margin
-            meter_width = width - 4  # Account for margins
+            width = self.width() - self.label.width() - 10  # Leave space for label and margins
+            height = self.height()
+            x = self.label.width() + 5  # Start after label with margin
+            y = 2  # Add margin
+            meter_height = height - 4  # Account for margins
             
-            self.logger.debug(f"{self.label.text()} meter painted - height: {height}, level_height: {int(height * self._level)}")
+            self.logger.debug(f"{self.label.text()} meter painted - width: {width}, level_width: {int(width * self._level)}")
             
-            # Create gradient
-            gradient = QLinearGradient(x, y + height, x, y)
+            # Create gradient (horizontal)
+            gradient = QLinearGradient(x, y, x + width, y)
             for pos, color in self._colors:
                 gradient.setColorAt(pos, color)
                 
             # Draw background
             painter.setPen(Qt.NoPen)
             painter.setBrush(QColor(30, 30, 30))
-            painter.drawRect(x, y, meter_width, height)
+            painter.drawRect(x, y, width, meter_height)
             
             # Draw level
-            if height > 0:  # Only draw level if we have positive height
+            if width > 0:  # Only draw level if we have positive width
                 painter.setBrush(gradient)
-                level_height = int(height * self._level)
-                painter.drawRect(x, y + height - level_height, meter_width, level_height)
+                level_width = int(width * self._level)
+                painter.drawRect(x, y, level_width, meter_height)
                 
                 # Draw peak indicator
-                peak_y = y + height - int(height * self._peak_level)
+                peak_x = x + int(width * self._peak_level)
                 painter.setPen(QColor(255, 255, 255))
-                painter.drawLine(x, peak_y, x + meter_width, peak_y)
+                painter.drawLine(peak_x, y, peak_x, y + meter_height)
                 
         except Exception as e:
             self.logger.error(f"Error painting volume meter: {e}")
