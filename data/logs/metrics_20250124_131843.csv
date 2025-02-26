@@ -1,0 +1,2 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type,playhead_time
+2025-01-24 13:19:35.933840,0.00,0.00,570.6,0,Claude-SSG-C.56-of 005.head torture.mp3,hooray_started,6.5

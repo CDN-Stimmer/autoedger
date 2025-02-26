@@ -1,0 +1,4 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type,playhead_time
+2025-01-20 08:28:15.439481,0.00,0.00,710.6,0,finisher 1.mp3,hooray_started,29.0
+2025-01-20 08:28:33.687132,0.00,0.00,710.6,0,finisher 1.mp3,hooray_started,47.3
+2025-01-20 08:28:51.198267,0.00,0.00,602.9,0,Sybianne7.mp3,hooray_started,2.7

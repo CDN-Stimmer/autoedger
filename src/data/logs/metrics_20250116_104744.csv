@@ -1,0 +1,401 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type
+2025-01-16 10:47:44.924476,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:44.924601,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:45.121294,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:45.121422,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:45.211485,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:45.310145,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:45.409553,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:45.510535,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:45.611124,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:45.709741,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:45.811395,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:45.913209,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:46.009983,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:46.106867,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:46.207668,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:46.308358,-0.99,0.00,0.0,0,None,data
+2025-01-16 10:47:46.414101,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:46.509658,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:46.611232,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:46.709622,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:46.812740,-0.73,0.00,0.0,0,None,data
+2025-01-16 10:47:46.912809,-0.73,0.00,0.0,0,None,data
+2025-01-16 10:47:47.012318,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:47.117283,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:47.205982,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:47.310946,-0.99,0.00,0.0,0,None,data
+2025-01-16 10:47:47.411168,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:47.509990,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:47.609345,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:47.711767,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:47.807334,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:47.913370,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:48.012427,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:48.111708,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:48.214271,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:48.316059,-0.88,0.00,0.0,0,None,data
+2025-01-16 10:47:48.413532,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:48.515023,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:48.616233,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:48.716590,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:48.815987,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:48.920073,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:49.007646,-0.94,0.00,0.0,0,None,data
+2025-01-16 10:47:49.108052,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:49.206882,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:49.314917,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:49.413896,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:49.510275,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:49.616363,-0.78,0.00,0.0,0,None,data
+2025-01-16 10:47:49.711843,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:49.816166,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:49.906175,-0.83,0.00,0.0,0,None,data
+2025-01-16 10:47:52.965399,-0.88,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.965527,-0.73,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.965602,-0.88,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.965672,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.965734,-0.78,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.965794,-0.88,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.965856,-0.78,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.965919,-0.78,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.965982,-0.78,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966044,-0.88,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966102,-0.88,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966162,-0.88,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966221,-0.78,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966280,-0.88,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966339,-0.78,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966411,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966471,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966530,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966589,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966648,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966707,-0.78,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966767,-0.88,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966827,-0.78,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966892,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.966954,-0.88,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.967014,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.967074,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.967133,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.967193,-0.78,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:52.967253,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.010784,-0.83,0.00,0.0,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.112991,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.212491,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.313603,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.414136,-0.88,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.513336,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.612074,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.710205,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.815065,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:53.915855,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.008391,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.117698,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.215610,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.316876,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.415837,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.515329,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.614368,-0.78,0.27,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.710257,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.833982,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:54.916795,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.014496,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.112763,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.210002,-0.88,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.308201,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.408500,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.514253,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.617241,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.715449,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.816051,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:55.906198,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.014753,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.118837,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.217883,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.316865,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.414446,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.512855,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.612117,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.714874,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.814425,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:56.916259,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.014663,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.111536,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.209388,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.309689,-0.94,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.408742,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.511019,-0.88,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.611903,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.713748,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.814752,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:57.913256,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.018610,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.113655,-0.78,0.27,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.217858,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.319196,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.420986,-0.73,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.507665,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.617977,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.714780,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.813338,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:58.916208,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.016513,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.118342,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.214793,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.312429,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.415828,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.510333,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.609492,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.709683,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.852424,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:47:59.917723,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.017860,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.112379,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.211542,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.313017,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.414743,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.515446,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.617263,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.716227,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.812904,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:00.908072,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.015937,-0.88,0.27,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.113430,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.212290,-0.73,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.312211,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.419917,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.519305,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.621162,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.721329,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.811580,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:01.914061,-0.94,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.014951,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.114972,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.218034,-0.88,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.319714,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.421424,-0.73,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.510105,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.619244,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.717156,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.819026,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:02.918558,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.019334,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.119408,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.207934,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.319161,-0.88,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.410083,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.508872,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.613888,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.711858,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.811238,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:03.913137,-0.73,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.007084,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.116808,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.212200,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.309785,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.408748,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.513055,-0.83,0.27,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.617559,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.712769,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.815376,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:04.917245,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.015728,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.114551,-0.88,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.215290,-0.94,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.315420,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.418678,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.521756,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.618786,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.714828,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.815364,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:05.914894,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.016527,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.115724,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.215833,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.313570,-0.73,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.416129,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.515437,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.616712,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.720925,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.809403,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:06.917402,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.013155,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.111841,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.218550,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.314311,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.413833,-0.83,0.27,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.513898,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.616846,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.716320,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.817032,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:07.915283,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.013761,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.112484,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.221198,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.310251,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.421210,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.509895,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.619400,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.714425,-0.94,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.817517,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:08.910340,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.020600,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.119030,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.217654,-0.83,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.318635,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.421053,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.517305,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.618138,-0.88,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.715324,-0.78,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.822293,-0.88,0.28,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:09.912475,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.021285,-0.83,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.114515,-0.78,0.29,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.218428,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.317476,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.422272,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.520690,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.620201,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.718119,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.814195,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:10.912291,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.010834,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.111266,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.220370,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.319285,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.413902,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.514181,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.613194,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.710229,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.821274,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:11.919653,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.017528,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.120954,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.220304,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.315950,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.412052,-0.73,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.511399,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.611156,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.711933,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.812260,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:12.913694,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.023767,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.122736,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.221903,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.319171,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.419897,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.512404,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.617181,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.716950,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.814292,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:13.913489,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.011517,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.127601,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.224286,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.315081,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.412867,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.512124,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.613374,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.718867,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.834598,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:14.916283,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.016576,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.115801,-0.73,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.211906,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.311952,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.412314,-0.73,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.519435,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.619246,-0.73,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.719793,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.820556,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:15.922734,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.023015,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.121232,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.219976,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.314182,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.412206,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.513087,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.612742,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.712730,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.812308,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:16.911493,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.011212,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.124039,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.222241,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.320485,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.420402,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.518339,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.615653,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.716030,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.815406,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:17.923916,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.011981,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.122253,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.222846,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.321207,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.417291,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.515831,-0.73,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.614075,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.713065,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.821772,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:18.919222,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.019666,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.119986,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.220272,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.318071,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.417136,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.515325,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.615872,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.715843,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.821670,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:19.915006,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.013954,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.112464,-0.73,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.212766,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.323927,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.421766,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.519985,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.617150,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.713837,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.825625,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:20.924355,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.024352,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.122768,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.221969,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.323652,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.421874,-0.94,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.524006,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.622205,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.717900,-0.73,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.814331,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:21.922034,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.020019,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.122845,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.214287,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.314511,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.413691,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.524361,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.622395,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.722275,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.823631,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:22.923422,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.024202,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.123518,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.220567,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.321225,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.424567,-0.78,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.523313,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.612387,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.714643,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.812611,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:23.926014,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:24.012299,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:24.125111,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:24.224022,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:24.321722,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:24.411985,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:24.523714,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:24.621821,-0.83,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data
+2025-01-16 10:48:24.719573,-0.88,0.30,2196.4,0,TJ One Hour Ejacumatic.mp3,data

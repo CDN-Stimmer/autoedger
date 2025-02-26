@@ -1,0 +1,2 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type,playhead_time
+2025-01-29 10:37:11.271144,0.00,0.00,602.9,0,Claude-SSG-C.7--Dynamique.mp3,hooray_started,6.0

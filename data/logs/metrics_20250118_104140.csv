@@ -1,0 +1,3 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type
+2025-01-18 10:41:47.314990,0.00,0.00,796.9,0,Pounder-03 - Stroke 1-50-50 - Pound 3.mp3,hooray_started
+2025-01-18 10:42:04.812617,0.00,0.00,1216.6,0,Claude-SSG-C.5- head torture.mp3,hooray_started

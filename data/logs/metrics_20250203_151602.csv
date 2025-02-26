@@ -1,0 +1,2 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type,playhead_time
+2025-02-03 15:16:40.819304,0.00,0.00,602.9,0,Sybianne8.mp3,hooray_started,1.6

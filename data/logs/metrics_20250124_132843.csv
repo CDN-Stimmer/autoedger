@@ -1,0 +1,4 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type,playhead_time
+2025-01-24 13:33:46.522869,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe0-50.Mp3,hooray_started,299.9
+2025-01-24 13:33:58.308090,0.00,0.00,172.3,0,JV Arrow.mp3,hooray_started,10.9
+2025-01-24 13:34:17.041315,0.00,0.00,667.5,0,JV Arrow.mp3,hooray_started,29.6
