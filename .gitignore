@@ -1,54 +1,18 @@
-# Python bytecode
+# Logs
+*.log
+src/data/logs/
+logs/
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
 
 # Distribution / packaging
 dist/
 build/
-*.egg-info/
-
-# Virtual environments
-venv/
-env/
-ENV/
-
-# IDE specific files
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Application specific
-src/data/model/*
-!src/data/model/.gitkeep
-src/data/audio/*
-!src/data/audio/.gitkeep
-logs/peak_performers/*
-!logs/peak_performers/.gitkeep
-
-# Audio files - exclude all mp3 and wav files in the audio directory
-src/audio/*.mp3
-src/audio/*.wav
-src/audio/*.Mp3
-src/audio/000000faves/
-
-# OS specific
-.DS_Store
-Thumbs.db
-
-# Environment variables
-.env
-
-# PyInstaller
-*.spec
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Python
-*.so
-.Python
 develop-eggs/
 downloads/
 eggs/
@@ -58,6 +22,37 @@ lib64/
 parts/
 sdist/
 var/
-wheels/
+*.egg-info/
 .installed.cfg
-*.egg 
+*.egg
+wheels/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.env
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Audio files
+*.mp3
+*.wav
+*.ogg
+
+# Personal data
+**/personal/
+**/private/ 
