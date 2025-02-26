@@ -11,8 +11,8 @@ import asyncio
 from PySide6.QtWidgets import QApplication, QMessageBox
 from PySide6.QtCore import Signal, QObject
 from qasync import QEventLoop
-from src.ui.main_window import MainWindow
-from src.audio.qt_player import QtAudioPlayer
+from ui.main_window import MainWindow
+from audio.qt_player import QtAudioPlayer
 
 def setup_logging():
     """Set up logging configuration."""

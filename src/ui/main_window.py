@@ -3,9 +3,9 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout,
                                  QScrollArea, QGridLayout)
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QIcon
-from src.ui.widgets.audio_control_widget import AudioControlWidget
-from src.audio.voice_control import VoiceController
-from src.ui.device_dialog import DeviceSelectionDialog
+from ui.widgets.audio_control_widget import AudioControlWidget
+from audio.voice_control import VoiceController
+from ui.device_dialog import DeviceSelectionDialog
 import os
 
 class MainWindow(QMainWindow):
@@ -171,10 +171,10 @@ class MainWindow(QMainWindow):
         
         if command in ["hooray", "edge", "now"]:
             self.audio_control._on_hooray()
-            elif command == "hold":
+        elif command == "hold":
             self.audio_control._on_hold()
-            elif command == "skip":
-                self.audio_player.play_random_file()
+        elif command == "skip":
+            self.audio_player.play_random_file()
         elif command in ["up", "more"]:
             current = self.audio_control.volume_slider.value()
             self.audio_control.volume_slider.setValue(min(100, current + 10))
@@ -185,14 +185,14 @@ class MainWindow(QMainWindow):
             self.audio_control.volume_slider.setValue(100)
         elif command == "half":
             self.audio_control.volume_slider.setValue(50)
-            elif command == "pause":
+        elif command == "pause":
             if hasattr(self.audio_player, 'player'):
-                    self.audio_player.player.pause()
-            elif command == "playback":
+                self.audio_player.player.pause()
+        elif command == "playback":
             if hasattr(self.audio_player, 'player'):
-                    self.audio_player.player.play()
-            elif command == "stop":
-                self.audio_player.stop_playback()
+                self.audio_player.player.play()
+        elif command == "stop":
+            self.audio_player.stop_playback()
         elif command in ["easy", "easy_mode"]:
             self.logger.info("Voice command: Switching to Easy mode")
             self.audio_control._on_easy_mode()
@@ -219,5 +219,5 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         """Handle window close event."""
         # Stop voice control when window is closed
-            self.voice_controller.stop_listening()
+        self.voice_controller.stop_listening()
         super().closeEvent(event)
