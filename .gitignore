@@ -53,6 +53,10 @@ Thumbs.db
 *.wav
 *.ogg
 
+# Exception for favorites directory
+!src/data/audio/000000faves/
+!src/data/audio/000000faves/*.mp3
+
 # Personal data
 **/personal/
 **/private/ 
