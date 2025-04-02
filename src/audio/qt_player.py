@@ -47,6 +47,7 @@ class QtAudioPlayer(QObject):
         self.favorites = set()
         self.audio_files = []
         self.wait_time = 5  # Default wait time in seconds
+        self._explicit_stop = False  # Flag to track explicit stop vs natural end
         
         # Create timer for updating time and generating dummy audio data
         self.update_timer = QTimer(self)
@@ -61,8 +62,8 @@ class QtAudioPlayer(QObject):
     
     @property
     def file_list(self):
-        """Get the list of audio files (alias for audio_files)."""
-        return self.audio_files
+        """Get the sorted list of audio files."""
+        return sorted(self.audio_files)
     
     def _scan_audio_files(self):
         """Scan for audio files in the data directory and src/audio directory."""
@@ -171,7 +172,9 @@ class QtAudioPlayer(QObject):
     
     def stop_playback(self):
         """Stop playback."""
+        self._explicit_stop = True  # Set flag before stopping
         self.player.stop()
+        self.current_file = None  # Clear the current file
         self.logger.info("Playback stopped")
     
     def play_random_file(self):
@@ -314,15 +317,32 @@ class QtAudioPlayer(QObject):
         """Handle playback state change events."""
         if state == QMediaPlayer.PlayingState:
             self.playback_started.emit()
+            self._explicit_stop = False  # Reset flag when playback starts
         elif state == QMediaPlayer.PausedState:
             self.playback_paused.emit()
         elif state == QMediaPlayer.StoppedState:
             self.playback_stopped.emit()
             
-            # If loop is enabled and we have a current file, restart playback
-            if self.loop_enabled and self.current_file:
-                self.load_file(self.current_file)
-                self.play()
+            # Only handle automatic progression if it's not an explicit stop
+            if not self._explicit_stop and self.current_file:
+                # If loop is enabled and we have a current file, restart playback
+                if self.loop_enabled:
+                    self.load_file(self.current_file)
+                    self.play()
+                # If not looping and we have a current file, play the next track
+                else:
+                    # Find the current file in the list
+                    try:
+                        current_index = self.file_list.index(self.current_file)
+                        # Play next file (wrap around to beginning if at end)
+                        next_index = (current_index + 1) % len(self.file_list)
+                        self.load_file(self.file_list[next_index])
+                        self.play()
+                    except ValueError:
+                        # If current file not found in list, play first file
+                        if self.file_list:
+                            self.load_file(self.file_list[0])
+                            self.play()
     
     # Add missing methods needed by AudioControlWidget
     def play_file(self, file_path):

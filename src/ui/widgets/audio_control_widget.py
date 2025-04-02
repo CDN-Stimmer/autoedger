@@ -455,13 +455,10 @@ class AudioControlWidget(QWidget):
         filenames = []
         for file_path in self.audio_player.file_list:
             filename = os.path.basename(file_path)
-            if not self.favorites_button.isChecked() or self.audio_player.is_favorite(filename):
+            if not self.favorites_button.isChecked() or self.audio_player.is_favorite(file_path):
                 filenames.append(filename)
         
-        # Sort filenames alphabetically
-        filenames.sort()
-        
-        # Add sorted files to combo box
+        # Add files to combo box
         for filename in filenames:
             self.file_combo.addItem(filename)
                 
@@ -477,16 +474,20 @@ class AudioControlWidget(QWidget):
         if not audio_data:
             return
             
-        # Calculate average amplitude from the audio data
-        amplitude = sum(audio_data) / len(audio_data)
+        # Calculate RMS (Root Mean Square) amplitude from the audio data
+        # This gives us a more accurate representation of the audio level
+        squared_sum = sum(sample * sample for sample in audio_data)
+        rms = (squared_sum / len(audio_data)) ** 0.5
         
-        # Scale amplitude to make the meters more responsive
-        scaled_amplitude = min(1.0, amplitude * 2.5)  # Multiply by 2.5 to make it more sensitive
-        self.logger.debug(f"Received audio data - raw amplitude: {amplitude:.3f}, scaled: {scaled_amplitude:.3f}")
+        # Scale the RMS value to a reasonable range (0-1)
+        # Using a smaller scaling factor to prevent maxing out
+        scaled_level = min(1.0, rms * 1.5)  # Reduced from 2.5 to 1.5
+        
+        self.logger.debug(f"Audio level - RMS: {rms:.3f}, scaled: {scaled_level:.3f}")
         
         # Update both meters with the same value since we're using mono audio
-        self.left_meter.set_level(scaled_amplitude)
-        self.right_meter.set_level(scaled_amplitude)
+        self.left_meter.set_level(scaled_level)
+        self.right_meter.set_level(scaled_level)
 
     def show_yes_triggered(self):
         """Show the yes indicator for 2 seconds."""
@@ -619,33 +620,42 @@ class AudioControlWidget(QWidget):
     def _on_play_next(self):
         """Handle play next button click."""
         if not self.audio_player.file_list:
+            self.logger.warning("No files available in the list")
             return
             
         current_file = self.audio_player.current_file
         if not current_file:
-            # If no file is playing, play the first file
+            self.logger.info("No file currently playing, starting with first file")
             self._play_file_at_index(0)
             return
             
-        # Find the current file in the list
-        current_files = [f for f in self.audio_player.file_list 
-                        if not self.favorites_button.isChecked() or 
-                        self.audio_player.is_favorite(os.path.basename(f))]
+        # Get the sorted file list
+        sorted_files = sorted(self.audio_player.file_list)
+        self.logger.debug(f"Current file: {os.path.basename(current_file)}")
+        self.logger.debug(f"Total files in list: {len(sorted_files)}")
+        
+        # Find the current file in the sorted list
         try:
-            current_index = current_files.index(current_file)
+            current_index = sorted_files.index(current_file)
+            self.logger.debug(f"Current file index: {current_index}")
+            
             # Play next file (wrap around to beginning if at end)
-            next_index = (current_index + 1) % len(current_files)
-            self.audio_player.play_file(current_files[next_index])
+            next_index = (current_index + 1) % len(sorted_files)
+            next_file = sorted_files[next_index]
+            self.logger.debug(f"Playing next file: {os.path.basename(next_file)}")
+            
+            self.audio_player.play_file(next_file)
         except ValueError:
+            self.logger.warning(f"Current file {os.path.basename(current_file)} not found in sorted list")
             # If current file not found in list, play first file
-            if current_files:
-                self.audio_player.play_file(current_files[0])
-                
+            if sorted_files:
+                self.logger.info("Playing first file in list")
+                self.audio_player.play_file(sorted_files[0])
+        
     def _play_file_at_index(self, index):
-        """Play file at specified index in the filtered list."""
-        current_files = [f for f in self.audio_player.file_list 
-                        if not self.favorites_button.isChecked() or 
-                        self.audio_player.is_favorite(os.path.basename(f))]
-        if current_files and 0 <= index < len(current_files):
-            self.audio_player.play_file(current_files[index])
+        """Play file at specified index in the sorted file list."""
+        sorted_files = sorted(self.audio_player.file_list)
+        if sorted_files and 0 <= index < len(sorted_files):
+            self.logger.debug(f"Playing file at index {index}: {os.path.basename(sorted_files[index])}")
+            self.audio_player.play_file(sorted_files[index])
         
