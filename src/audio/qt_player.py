@@ -3,6 +3,9 @@ import logging
 import random
 from PySide6.QtCore import QObject, Signal, Slot, QUrl, QTimer
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
+from mutagen.mp3 import MP3
+from mutagen.wave import WAVE
+from mutagen import File as MutagenFile, MutagenError
 
 class QtAudioPlayer(QObject):
     """
@@ -14,7 +17,7 @@ class QtAudioPlayer(QObject):
     playback_position_changed = Signal(int)  # Position in milliseconds
     playback_duration_changed = Signal(int)  # Duration in milliseconds
     volume_changed = Signal(float)  # Volume level (0.0 to 1.0)
-    time_updated = Signal(int, int)  # Current position and duration in milliseconds
+    time_updated = Signal(int)  # Current position in milliseconds
     audio_data_ready = Signal(list)  # Audio data for visualization
     favorites_changed = Signal()  # Signal emitted when favorites list changes
     
@@ -257,8 +260,91 @@ class QtAudioPlayer(QObject):
         return self.player.position()
     
     def get_duration(self):
-        """Get the duration of the current media in milliseconds."""
-        return self.player.duration()
+        """Get the duration of the current file in SECONDS using mutagen."""
+        if self.current_file:
+            try:
+                audio = MutagenFile(self.current_file)
+                if audio and audio.info:
+                    self.logger.debug(f"Mutagen duration for {self.current_file}: {audio.info.length:.2f}s")
+                    return audio.info.length # Returns duration in seconds
+                else:
+                     self.logger.warning(f"Mutagen could not read info for: {self.current_file}")
+            except MutagenError as e:
+                self.logger.error(f"Mutagen error reading duration for {self.current_file}: {e}")
+            except Exception as e:
+                 self.logger.error(f"Unexpected error getting duration for {self.current_file} with mutagen: {e}")
+        # Fallback or if no file loaded
+        # QMediaPlayer duration can be unreliable, especially at start
+        qt_duration_ms = self.player.duration()
+        if qt_duration_ms > 0:
+            self.logger.warning(f"Falling back to QMediaPlayer duration: {qt_duration_ms} ms")
+            return qt_duration_ms / 1000.0 # Convert ms to seconds
+        return 0.0 # Default to 0 seconds if unavailable
+    
+    def get_file_duration(self, file_path):
+        """Get the duration of a specific file in SECONDS using mutagen, with fallback."""
+        if not os.path.exists(file_path):
+            self.logger.error(f"File not found for duration check: {file_path}")
+            return 0.0
+        
+        mutagen_duration = 0.0
+        try:
+            # Try specific format handlers first
+            file_ext = os.path.splitext(file_path)[1].lower()
+            if file_ext == '.mp3':
+                audio = MP3(file_path)
+            elif file_ext == '.wav':
+                audio = WAVE(file_path)
+            else:
+                # Fall back to generic MutagenFile for other formats
+                audio = MutagenFile(file_path)
+            
+            if audio and audio.info:
+                mutagen_duration = audio.info.length # Returns duration in seconds
+                self.logger.debug(f"Mutagen duration for {file_path}: {mutagen_duration:.2f}s")
+                return mutagen_duration
+            else:
+                self.logger.warning(f"Mutagen could not read info for: {file_path}")
+        except MutagenError as e:
+            self.logger.warning(f"Mutagen failed for {file_path}. Attempting QMediaPlayer fallback.")
+        except Exception as e:
+            self.logger.error(f"Unexpected error getting duration for {file_path} with mutagen: {e}")
+        
+        # --- Fallback Logic --- 
+        # If it's the currently loaded file, use the current player
+        if self.current_file == file_path:
+            qt_duration_ms = self.player.duration()
+            if qt_duration_ms > 0:
+                self.logger.warning(f"Using current QMediaPlayer duration as fallback: {qt_duration_ms} ms")
+                return qt_duration_ms / 1000.0
+        
+        # Last resort: Create a temporary player and wait for duration
+        self.logger.warning("Creating temporary QMediaPlayer for duration check...")
+        temp_player = QMediaPlayer()
+        temp_output = QAudioOutput()  # Create a temporary audio output
+        temp_player.setAudioOutput(temp_output)  # Set the audio output
+        
+        try:
+            temp_player.setSource(QUrl.fromLocalFile(file_path))
+            # Wait up to 2 seconds for duration to be available
+            for _ in range(20):  # 20 * 100ms = 2 seconds
+                qt_duration_ms = temp_player.duration()
+                if qt_duration_ms > 0:
+                    self.logger.debug(f"Temporary player reported duration: {qt_duration_ms} ms")
+                    return qt_duration_ms / 1000.0
+                QTimer.singleShot(100, lambda: None)  # Wait 100ms
+            
+            self.logger.warning(f"Could not get duration for {file_path} after timeout")
+            return 0.0
+        except Exception as e:
+            self.logger.error(f"Error during temporary QMediaPlayer duration check: {e}")
+            return 0.0
+        finally:
+            temp_output.setVolume(0)  # Mute before cleanup
+            temp_player.stop()  # Stop playback
+            temp_player.setSource(QUrl())  # Clear source
+            temp_output = None  # Remove audio output
+            temp_player = None  # Allow player to be cleaned up
     
     def set_volume(self, volume):
         """
@@ -279,38 +365,53 @@ class QtAudioPlayer(QObject):
     
     def is_playing(self):
         """Check if audio is currently playing."""
-        return self.player.playbackState() == QMediaPlayer.PlayingState
+        return self.player.playbackState() == QMediaPlayer.PlaybackState.PlayingState
     
     def is_paused(self):
         """Check if audio is currently paused."""
-        return self.player.playbackState() == QMediaPlayer.PausedState
+        return self.player.playbackState() == QMediaPlayer.PlaybackState.PausedState
+    
+    def is_looping(self):
+        """Check if loop mode is enabled."""
+        return self.loop_enabled
     
     def get_current_file(self):
-        """Get the path of the currently loaded file."""
+        """Get the currently loaded file path."""
         return self.current_file
     
     def _update_time_and_audio(self):
         """Update time and generate dummy audio data for visualization."""
-        position = self.player.position()
-        duration = self.player.duration()
-        
-        # Emit time update signal
-        self.time_updated.emit(position, duration)
-        
-        # Generate dummy audio data for visualization (random values between 0 and 1)
-        if self.is_playing():
-            audio_data = [random.random() for _ in range(64)]
-            self.audio_data_ready.emit(audio_data)
+        if self.player.playbackState() == QMediaPlayer.PlaybackState.PlayingState or \
+           self.player.playbackState() == QMediaPlayer.PlaybackState.PausedState:
+            
+            position_ms = self.player.position() # Current position from player
+            # duration_sec = self.get_duration() # Get accurate duration using mutagen (if needed)
+            
+            # Emit only position update signal
+            self.time_updated.emit(position_ms)
+            
+            # Generate dummy audio data for visualization (random values between 0 and 1)
+            if self.is_playing():
+                audio_data = [random.random() for _ in range(64)] # Keep visualization simple for now
+                self.audio_data_ready.emit(audio_data)
+        # else: # Optional: If stopped, maybe emit 0 position?
+            # self.time_updated.emit(0) 
     
     @Slot(int)
-    def _on_position_changed(self, position):
-        """Handle position change events."""
-        self.playback_position_changed.emit(position)
+    def _on_position_changed(self, position_ms):
+        """Handle position change events from QMediaPlayer (in ms)."""
+        # This signal might be less frequent/reliable than timer, keep timer for UI updates
+        self.logger.debug(f"QMediaPlayer positionChanged signal: {position_ms} ms")
+        # We primarily rely on the timer (_update_time_and_audio) for UI updates
+        # self.playback_position_changed.emit(position_ms) # Can re-enable if needed
     
     @Slot(int)
-    def _on_duration_changed(self, duration):
-        """Handle duration change events."""
-        self.playback_duration_changed.emit(duration)
+    def _on_duration_changed(self, duration_ms):
+        """Handle duration change events from QMediaPlayer (in ms)."""
+        # This can be unreliable, especially for VBR or at the start.
+        self.logger.debug(f"QMediaPlayer durationChanged signal: {duration_ms} ms")
+        # We use mutagen for reliable duration, so we might ignore this signal
+        # self.playback_duration_changed.emit(duration_ms) # Can re-enable if needed
     
     @Slot(QMediaPlayer.PlaybackState)
     def _on_state_changed(self, state):
@@ -414,4 +515,48 @@ class QtAudioPlayer(QObject):
         # Stop timer when target is reached
         if self.hooray_volume_current >= self.hooray_volume_target:
             self.hooray_timer.stop()
-            self.logger.debug("Hooray volume increase complete") 
+            self.logger.debug("Hooray volume increase complete")
+    
+    def play_previous(self):
+        """Play the previous audio file in the list."""
+        if not self.file_list:
+            self.logger.warning("No audio files available to play previous")
+            return
+
+        current_index = -1
+        if self.current_file:
+            try:
+                current_index = self.file_list.index(self.current_file)
+            except ValueError:
+                self.logger.warning("Current file not found in list, cannot determine previous.")
+                current_index = 0 # Default to playing file before the first if current not found
+        
+        if current_index != -1:
+            prev_index = (current_index - 1 + len(self.file_list)) % len(self.file_list) # Wrap around backward
+            self.logger.info(f"Playing previous file (index {prev_index}): {self.file_list[prev_index]}")
+            self.play_file(self.file_list[prev_index])
+        else: # No current file, play the last file
+             self.logger.info("No current file, playing last file in list.")
+             self.play_file(self.file_list[-1])
+
+    def play_next(self):
+        """Play the next audio file in the list."""
+        if not self.file_list:
+            self.logger.warning("No audio files available to play next")
+            return
+
+        current_index = -1
+        if self.current_file:
+            try:
+                current_index = self.file_list.index(self.current_file)
+            except ValueError:
+                self.logger.warning("Current file not found in list, cannot determine next.")
+                # Fall through to play the first file
+        
+        if current_index != -1:
+            next_index = (current_index + 1) % len(self.file_list) # Wrap around forward
+            self.logger.info(f"Playing next file (index {next_index}): {self.file_list[next_index]}")
+            self.play_file(self.file_list[next_index])
+        else: # No current file, play the first file
+             self.logger.info("No current file, playing first file in list.")
+             self.play_file(self.file_list[0]) 

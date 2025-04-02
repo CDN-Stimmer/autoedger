@@ -1,10 +1,11 @@
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                                  QLabel, QSlider, QFrame, QSpinBox, QComboBox, QGroupBox)
-from PySide6.QtCore import Qt, Slot, QTimer
+from PySide6.QtCore import Qt, Slot, QTimer, QSize
 from .volume_meter import VolumeMeter
 import os
 import logging
-from PySide6.QtGui import QColor
+from PySide6.QtGui import QColor, QIcon, QFont
+from PySide6.QtMultimedia import QMediaPlayer
 
 class AudioControlWidget(QWidget):
     def __init__(self, audio_player, parent=None):
@@ -20,457 +21,518 @@ class AudioControlWidget(QWidget):
         # Connect audio player signals
         self.logger.debug("Connecting audio player signals")
         self.audio_player.playback_started.connect(self._on_playback_started)
+        self.audio_player.playback_paused.connect(self._on_playback_paused)
         self.audio_player.playback_stopped.connect(self._on_playback_stopped)
         self.audio_player.time_updated.connect(self._on_time_updated)
         self.audio_player.audio_data_ready.connect(self._on_audio_data)
         self.audio_player.volume_changed.connect(self._on_volume_update)
         self.audio_player.favorites_changed.connect(self._update_file_list)
+        self.audio_player.playback_duration_changed.connect(self._on_duration_changed)
         self.logger.debug("Audio player signals connected")
         
         # Create main layout
-        main_layout = QVBoxLayout(self)
+        layout = QVBoxLayout(self)
+        layout.setSpacing(12)
+        layout.setContentsMargins(0, 0, 0, 0)
         
-        # Create frame
-        frame = QFrame()
-        frame.setFrameStyle(QFrame.StyledPanel)
-        frame_layout = QVBoxLayout(frame)
-        
-        # Create title
-        title = QLabel("Audio Control")
-        title.setAlignment(Qt.AlignCenter)
-        frame_layout.addWidget(title)
-        
-        # Create current file display
-        self.current_file_label = QLabel("No file playing")
-        self.current_file_label.setStyleSheet("""
-            QLabel {
-                font-size: 14px;
-                font-weight: bold;
-                color: #2196F3;
-                padding: 5px;
-                background: #E3F2FD;
-                border-radius: 3px;
+        # Create playback info section with reduced height
+        info_frame = QFrame()
+        info_frame.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border-radius: 8px;
+                padding: 2px 6px;
+                max-height: 40px;
             }
         """)
-        self.current_file_label.setAlignment(Qt.AlignCenter)
-        frame_layout.addWidget(self.current_file_label)
+        info_layout = QHBoxLayout(info_frame)
+        info_layout.setSpacing(6)
+        info_layout.setContentsMargins(6, 2, 6, 2)  # Minimal padding
         
-        # Create hooray counter
-        counter_layout = QHBoxLayout()
-        counter_label = QLabel("Hooray Count:")
-        counter_label.setStyleSheet("font-size: 14px; font-weight: bold;")
+        # View switching buttons
+        self.voice_view_button = QPushButton("🎙️") # Microphone symbol
+        # self.voice_view_button.setIcon(QIcon("src/ui/icons/mic.png"))
+        # self.voice_view_button.setIconSize(QSize(16, 16))
+        self.voice_view_button.setFixedSize(28, 28)
+        self.voice_view_button.setCheckable(True)
+        self.voice_view_button.setStyleSheet("""
+            QPushButton {
+                background-color: #f8f9fa;
+                border-radius: 14px;
+                border: none;
+                padding: 4px;
+                color: #5f6368; /* Ensure symbol is visible */
+                font-size: 14px; /* Adjust font size for symbol */
+            }
+            QPushButton:hover {
+                background-color: #e8f0fe;
+            }
+            QPushButton:pressed {
+                background-color: #e1e8ed;
+            }
+            QPushButton:checked {
+                background-color: #1a73e8;
+                color: white;
+            }
+        """)
+        self.voice_view_button.clicked.connect(self._switch_to_voice_view)
+        info_layout.addWidget(self.voice_view_button)
+        
+        # Status section (left side)
+        status_layout = QVBoxLayout()
+        status_layout.setSpacing(0)  # Minimal spacing between labels
+        
+        # Now Playing label with smaller font
+        self.playing_label = QLabel("No file playing")
+        self.playing_label.setStyleSheet("""
+            QLabel {
+                color: #1a73e8;
+                font-size: 11px;
+                font-weight: 500;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+            }
+        """)
+        status_layout.addWidget(self.playing_label)
+        
+        # Voice Status with smaller font
+        self.voice_status = QLabel("Listening...")
+        self.voice_status.setStyleSheet("""
+            QLabel {
+                color: #34a853;
+                font-size: 9px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+            }
+        """)
+        status_layout.addWidget(self.voice_status)
+        
+        info_layout.addLayout(status_layout)
+        
+        # Counter (right side)
+        counter_container = QHBoxLayout()
+        counter_container.setContentsMargins(0, 0, 0, 0)
+        counter_container.setAlignment(Qt.AlignCenter)
         self.hooray_counter = QLabel("0")
         self.hooray_counter.setStyleSheet("""
             QLabel {
-                font-size: 24px;
-                font-weight: bold;
-                color: #4CAF50;
-                padding: 10px;
-                background: #E8F5E9;
-                border: 2px solid #4CAF50;
-                border-radius: 5px;
-                min-width: 50px;
+                color: #34a853;
+                font-size: 14px;
+                font-weight: 500;
+                padding: 2px 6px;
+                background: #f1f8f1;
+                border-radius: 4px;
+                min-width: 20px;
+                text-align: center;
             }
         """)
         self.hooray_counter.setAlignment(Qt.AlignCenter)
-        counter_layout.addWidget(counter_label)
-        counter_layout.addWidget(self.hooray_counter)
-        counter_layout.addStretch()
-        frame_layout.addLayout(counter_layout)
+        counter_container.addWidget(self.hooray_counter)
+        info_layout.addLayout(counter_container)
         
-        # Create playback controls
-        controls_layout = QHBoxLayout()
+        layout.addWidget(info_frame)
         
-        # Add favorites button
-        self.favorite_button = QPushButton("♡")  # Empty heart
-        self.favorite_button.setCheckable(True)
-        self.favorite_button.setStyleSheet("""
-            QPushButton {
-                font-size: 18px;
-                padding: 5px;
-                min-width: 40px;
-                background-color: #f0f0f0;
-            }
-            QPushButton:checked {
-                color: #FF4081;
-                background-color: #FFE0E9;
+        # File selection and controls
+        controls_frame = QFrame()
+        controls_frame.setStyleSheet("""
+            QFrame {
+                background-color: #e8f0fe;
+                border-radius: 12px;
+                padding: 12px;
             }
         """)
-        self.favorite_button.clicked.connect(self._on_favorite_clicked)
-        controls_layout.addWidget(self.favorite_button)
+        controls_frame_layout = QVBoxLayout(controls_frame)
+        controls_frame_layout.setSpacing(12)
         
-        # Add favorites filter toggle
-        self.favorites_button = QPushButton("Show Favorites")
-        self.favorites_button.setCheckable(True)
+        # File selection row
+        file_row = QHBoxLayout()
+        self.favorites_button = QPushButton("♥")  # Heart symbol for favorites
         self.favorites_button.setStyleSheet("""
             QPushButton {
-                padding: 5px;
-                background-color: #f0f0f0;
+                font-size: 18px;
+                padding: 6px;
+                border: none;
+                border-radius: 8px;
+                background: #f8f9fa;
+                color: #5f6368;
+                min-width: 32px;
             }
             QPushButton:checked {
-                background-color: #FFD700;
+                background: #fce8e6;
+                color: #ea4335;
             }
         """)
+        self.favorites_button.setCheckable(True)
         self.favorites_button.clicked.connect(self._update_file_list)
-        controls_layout.addWidget(self.favorites_button)
         
-        # Add file selection dropdown
         self.file_combo = QComboBox()
-        self.file_combo.setMinimumWidth(200)  # Make it wide enough to show filenames
-        controls_layout.addWidget(self.file_combo)
+        self.file_combo.setStyleSheet("""
+            QComboBox {
+                padding: 8px;
+                border: 1px solid #dadce0;
+                border-radius: 8px;
+                background: white;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+            }
+            QComboBox::drop-down {
+                border: none;
+            }
+            QComboBox::down-arrow {
+                image: url(resources/down-arrow.png);
+            }
+        """)
         
-        # Add play selected button
-        self.play_selected_button = QPushButton("Play Selected")
-        self.play_selected_button.clicked.connect(self._on_play_selected)
-        self.play_selected_button.setEnabled(False)  # Disabled until files are loaded
-        controls_layout.addWidget(self.play_selected_button)
+        file_row.addWidget(self.favorites_button)
+        file_row.addWidget(self.file_combo)
+        controls_frame_layout.addLayout(file_row)
         
-        # Add play next button
-        self.play_next_button = QPushButton("Play Next")
-        self.play_next_button.clicked.connect(self._on_play_next)
-        controls_layout.addWidget(self.play_next_button)
+        # Playback controls
+        controls_layout = QHBoxLayout()
+        controls_layout.setSpacing(8)
         
-        self.play_button = QPushButton("Play Random")
-        self.play_button.clicked.connect(self.audio_player.play_random_file)
+        # Play button
+        self.play_button = QPushButton("▶")  # Play symbol
+        self.play_button.setFixedSize(40, 40)
+        self.play_button.setStyleSheet("""
+            QPushButton {
+                background-color: #1a73e8;
+                border-radius: 20px;
+                border: none;
+                color: white; /* Ensure symbol is visible */
+                font-size: 18px; /* Adjust font size for symbol */
+            }
+            QPushButton:hover {
+                background-color: #1557b0;
+            }
+            QPushButton:pressed {
+                background-color: #174ea6;
+            }
+            QPushButton:checked {
+                background-color: #1557b0;
+            }
+        """)
         controls_layout.addWidget(self.play_button)
         
-        self.stop_button = QPushButton("Stop")
-        self.stop_button.clicked.connect(self.audio_player.stop_playback)
+        # Next button
+        self.next_button = QPushButton("⏭")  # Next symbol
+        self.next_button.setFixedSize(40, 40)
+        self.next_button.setStyleSheet(self.play_button.styleSheet().replace("#1a73e8", "#f8f9fa").replace("white", "#5f6368").replace("#1557b0", "#e8f0fe").replace("#174ea6", "#e1e8ed")) # Base style on play, but use secondary colors
+        controls_layout.addWidget(self.next_button)
+        
+        # Random button
+        self.random_button = QPushButton("🔀") # Shuffle symbol
+        self.random_button.setFixedSize(40, 40)
+        self.random_button.setStyleSheet(self.next_button.styleSheet()) # Reuse style from Next
+        controls_layout.addWidget(self.random_button)
+        
+        # Stop button
+        self.stop_button = QPushButton("⏹") # Stop symbol
+        self.stop_button.setFixedSize(40, 40)
+        self.stop_button.setStyleSheet(self.next_button.styleSheet()) # Reuse style from Next
         controls_layout.addWidget(self.stop_button)
         
-        self.loop_button = QPushButton("Loop")
+        # Loop button
+        self.loop_button = QPushButton("🔁") # Repeat symbol
+        self.loop_button.setFixedSize(40, 40)
+        self.loop_button.setStyleSheet(self.next_button.styleSheet()) # Reuse style from Next
         self.loop_button.setCheckable(True)
-        self.loop_button.clicked.connect(self.audio_player.toggle_loop)
         controls_layout.addWidget(self.loop_button)
         
-        frame_layout.addLayout(controls_layout)
-
-        # Create position slider
-        position_layout = QHBoxLayout()
-        position_label = QLabel("Position:")
-        position_layout.addWidget(position_label)
+        # Add playback controls to layout
+        controls_layout.addStretch()
+        controls_layout.addWidget(self.play_button)
+        controls_layout.addWidget(self.next_button)
+        controls_layout.addWidget(self.random_button)
+        controls_layout.addWidget(self.stop_button)
+        controls_layout.addWidget(self.loop_button)
+        controls_layout.addStretch()
         
+        # Add controls layout to main controls layout
+        controls_frame_layout.addLayout(controls_layout)
+        
+        # Progress bar and time labels
+        progress_container = QFrame()
+        progress_container.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border-radius: 8px;
+                padding: 8px;
+            }
+        """)
+        progress_layout = QVBoxLayout(progress_container)
+        progress_layout.setSpacing(4)
+        
+        # Time labels
+        time_labels = QHBoxLayout()
+        self.current_time = QLabel("0:00")
+        self.current_time.setStyleSheet("""
+            QLabel {
+                color: #5f6368;
+                font-size: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+            }
+        """)
+        self.total_time = QLabel("0:00")
+        self.total_time.setStyleSheet(self.current_time.styleSheet())
+        time_labels.addWidget(self.current_time)
+        time_labels.addStretch()
+        time_labels.addWidget(self.total_time)
+        progress_layout.addLayout(time_labels)
+        
+        # Position slider
         self.position_slider = QSlider(Qt.Horizontal)
-        self.position_slider.setRange(0, 1000)  # Use 1000 steps for smooth scrubbing
-        self.position_slider.setValue(0)
+        self.position_slider.setStyleSheet("""
+            QSlider::groove:horizontal {
+                border: 1px solid #dadce0;
+                height: 4px;
+                background: #e8f0fe;
+                border-radius: 2px;
+            }
+            QSlider::handle:horizontal {
+                background: #1a73e8;
+                border: none;
+                width: 12px;
+                height: 12px;
+                margin: -4px 0;
+                border-radius: 6px;
+            }
+            QSlider::sub-page:horizontal {
+                background: #1a73e8;
+                border-radius: 2px;
+            }
+        """)
+        self.position_slider.setRange(0, 0)  # Initialize with zero range
         self.position_slider.sliderPressed.connect(self._on_position_slider_pressed)
         self.position_slider.sliderReleased.connect(self._on_position_slider_released)
         self.position_slider.valueChanged.connect(self._on_position_changed)
-        position_layout.addWidget(self.position_slider)
+        progress_layout.addWidget(self.position_slider)
         
-        self.time_label = QLabel("0:00 / 0:00")
-        position_layout.addWidget(self.time_label)
+        controls_frame_layout.addWidget(progress_container)
         
-        frame_layout.addLayout(position_layout)
-        
-        # Create control settings group
-        settings_group = QGroupBox("Control Settings")
-        settings_layout = QVBoxLayout()
-        
-        # Hold Drop control
-        hold_layout = QHBoxLayout()
-        hold_label = QLabel("Hold Drop:")
-        self.hold_drop_slider = QSlider(Qt.Horizontal)
-        self.hold_drop_slider.setRange(0, 100)
-        self.hold_drop_slider.setValue(20)
-        self.hold_drop_value = QLabel("20%")
-        hold_layout.addWidget(hold_label)
-        hold_layout.addWidget(self.hold_drop_slider)
-        hold_layout.addWidget(self.hold_drop_value)
-        settings_layout.addLayout(hold_layout)
-        
-        # Wait Time control
-        wait_layout = QHBoxLayout()
-        wait_label = QLabel("Wait Time:")
-        self.wait_time_slider = QSlider(Qt.Horizontal)
-        self.wait_time_slider.setRange(1, 30)
-        self.wait_time_slider.setValue(5)
-        self.wait_time_value = QLabel("5s")
-        wait_layout.addWidget(wait_label)
-        wait_layout.addWidget(self.wait_time_slider)
-        wait_layout.addWidget(self.wait_time_value)
-        settings_layout.addLayout(wait_layout)
-        
-        settings_group.setLayout(settings_layout)
-        frame_layout.addWidget(settings_group)
-        
-        # Create action buttons
-        action_layout = QHBoxLayout()
-        
-        # Hooray button
-        self.hooray_button = QPushButton("HOORAY!")
-        self.hooray_button.setStyleSheet("""
-            QPushButton {
-                background-color: #4CAF50;
-                color: white;
-                font-size: 18px;
-                font-weight: bold;
-                padding: 15px;
-                border-radius: 5px;
-            }
-            QPushButton:pressed {
-                background-color: #45a049;
+        # Volume control
+        volume_container = QFrame()
+        volume_container.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border-radius: 8px;
+                padding: 8px;
             }
         """)
-        self.hooray_button.clicked.connect(self._on_hooray)
-        action_layout.addWidget(self.hooray_button)
+        volume_layout = QHBoxLayout(volume_container)
+        volume_layout.setSpacing(8)
         
-        # Hold button
-        self.hold_button = QPushButton("HOLD")
-        self.hold_button.setStyleSheet("""
-            QPushButton {
-                background-color: #FFD700;
-                font-size: 18px;
-                font-weight: bold;
-                padding: 15px;
-                border-radius: 5px;
-            }
-            QPushButton:pressed {
-                background-color: #FFC700;
-            }
-        """)
-        self.hold_button.clicked.connect(self._on_hold)
-        action_layout.addWidget(self.hold_button)
-        
-        frame_layout.addLayout(action_layout)
-        
-        # Create mode controls
-        mode_layout = QVBoxLayout()
-        mode_label = QLabel("Difficulty Mode:")
-        mode_layout.addWidget(mode_label)
-        
-        button_layout = QHBoxLayout()
-        self.easy_button = QPushButton("Easy")
-        self.medium_button = QPushButton("Medium")
-        self.hard_button = QPushButton("Hard")
-        
-        for btn in [self.easy_button, self.medium_button, self.hard_button]:
-            btn.setCheckable(True)
-            button_layout.addWidget(btn)
-            
-        self.medium_button.setChecked(True)
-        
-        # Connect mode buttons to handlers
-        self.easy_button.clicked.connect(self._on_easy_mode)
-        self.medium_button.clicked.connect(self._on_medium_mode)
-        self.hard_button.clicked.connect(self._on_hard_mode)
-        
-        mode_layout.addLayout(button_layout)
-        frame_layout.addLayout(mode_layout)
-        
-        # Create volume control with meters
-        volume_container = QWidget()
-        volume_layout = QVBoxLayout(volume_container)
-        volume_layout.setContentsMargins(0, 0, 0, 0)
-        
-        # Volume slider layout
-        slider_layout = QHBoxLayout()
-        volume_label = QLabel("Max Volume:")
-        slider_layout.addWidget(volume_label)
-        
-        self.volume_slider = QSlider(Qt.Horizontal)
-        self.volume_slider.setRange(0, 100)
-        self.volume_slider.setValue(100)
-        slider_layout.addWidget(self.volume_slider)
-        
-        self.volume_value = QLabel("100%")
-        self.volume_value.setMinimumWidth(50)
-        slider_layout.addWidget(self.volume_value)
-        
-        volume_layout.addLayout(slider_layout)
-        
-        # Volume meters layout
-        meters_layout = QHBoxLayout()
-        meters_layout.setSpacing(10)
-        meters_layout.setContentsMargins(10, 0, 10, 0)  # Add some padding
-        
-        # Create volume meters
-        self.logger.debug("Creating volume meters")
-        self.left_meter = VolumeMeter("L")
-        self.right_meter = VolumeMeter("R")
-        
-        # Create containers for meters to control their size
-        left_container = QWidget()
-        right_container = QWidget()
-        
-        # Set fixed dimensions for containers (swapped for horizontal orientation)
-        left_container.setFixedWidth(200)  # Increased width for horizontal meter
-        right_container.setFixedWidth(200)  # Increased width for horizontal meter
-        left_container.setFixedHeight(40)   # Reduced height for horizontal meter
-        right_container.setFixedHeight(40)  # Reduced height for horizontal meter
-        
-        # Set background color for containers to make them visible
-        left_container.setAutoFillBackground(True)
-        right_container.setAutoFillBackground(True)
-        palette = left_container.palette()
-        palette.setColor(left_container.backgroundRole(), QColor(30, 30, 30))
-        left_container.setPalette(palette)
-        right_container.setPalette(palette)
-        
-        left_layout = QHBoxLayout(left_container)   # Changed to horizontal layout
-        right_layout = QHBoxLayout(right_container) # Changed to horizontal layout
-        left_layout.setContentsMargins(0, 0, 0, 0)
-        right_layout.setContentsMargins(0, 0, 0, 0)
-        left_layout.setSpacing(0)
-        right_layout.setSpacing(0)
-        
-        left_layout.addWidget(self.left_meter)
-        right_layout.addWidget(self.right_meter)
-        
-        meters_layout.addWidget(left_container)
-        meters_layout.addWidget(right_container)
-        meters_layout.addStretch()  # Add stretch to keep meters left-aligned
-        
-        volume_layout.addLayout(meters_layout)
-        self.logger.debug("Volume meters added to layout")
-        frame_layout.addWidget(volume_container)
-        
-        # Create yes command indicator
-        self.yes_indicator = QLabel("Yes!")
-        self.yes_indicator.setStyleSheet("""
+        # Volume label
+        volume_label = QLabel("Volume:")
+        volume_label.setStyleSheet("""
             QLabel {
-                font-size: 14px;
-                font-weight: bold;
-                color: #4CAF50;
-                padding: 5px;
-                border: 2px solid #4CAF50;
-                border-radius: 5px;
-                background: #E8F5E9;
+                color: #5f6368;
+                font-size: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
             }
         """)
-        self.yes_indicator.setAlignment(Qt.AlignCenter)
-        self.yes_indicator.hide()
-        frame_layout.addWidget(self.yes_indicator)
+        volume_layout.addWidget(volume_label)
         
-        # Add timer for hiding yes indicator
-        self.yes_timer = QTimer()
-        self.yes_timer.setSingleShot(True)
-        self.yes_timer.timeout.connect(lambda: self.yes_indicator.hide())
-        
-        # Add the frame to the main layout
-        main_layout.addWidget(frame)
-        
-        # Connect to position changes from the player
-        if hasattr(self.audio_player, 'player'):
-            self.audio_player.player.positionChanged.connect(self._on_player_position_changed)
-            self.audio_player.player.durationChanged.connect(self._on_duration_changed)
-
-        # Connect signals
-        self.hold_drop_slider.valueChanged.connect(self._on_hold_drop_changed)
-        self.wait_time_slider.valueChanged.connect(self._on_wait_time_changed)
+        # Volume slider
+        self.volume_slider = QSlider(Qt.Horizontal)
+        self.volume_slider.setStyleSheet(self.position_slider.styleSheet())
+        self.volume_slider.setRange(0, 100)
+        self.volume_slider.setValue(50)  # Default volume 50%
         self.volume_slider.valueChanged.connect(self._on_volume_changed)
+        volume_layout.addWidget(self.volume_slider)
+        
+        # Volume percentage
+        self.volume_value = QLabel("50%")
+        self.volume_value.setStyleSheet(volume_label.styleSheet())
+        volume_layout.addWidget(self.volume_value)
+        
+        controls_frame_layout.addWidget(volume_container)
+        
+        # Wait time controls
+        wait_container = QFrame()
+        wait_container.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border-radius: 8px;
+                padding: 8px;
+            }
+        """)
+        wait_layout = QVBoxLayout(wait_container)  # Changed to vertical layout
+        wait_layout.setSpacing(8)
+        
+        # Wait time slider row
+        wait_slider_row = QHBoxLayout()
+        wait_slider_row.setSpacing(8)
+        
+        # Wait time label
+        wait_label = QLabel("Wait Time:")
+        wait_label.setStyleSheet("""
+            QLabel {
+                color: #5f6368;
+                font-size: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+            }
+        """)
+        wait_slider_row.addWidget(wait_label)
+        
+        # Wait time slider
+        self.wait_slider = QSlider(Qt.Horizontal)
+        self.wait_slider.setStyleSheet(self.position_slider.styleSheet())
+        self.wait_slider.setMinimumWidth(250)  # Set minimum width
+        self.wait_slider.setRange(1, 60)
+        self.wait_slider.setValue(5)
+        self.wait_slider.valueChanged.connect(self._on_wait_time_changed)
+        wait_slider_row.addWidget(self.wait_slider)
+        
+        # Wait time value label
+        self.wait_time_value = QLabel("5s")
+        self.wait_time_value.setStyleSheet(wait_label.styleSheet())
+        wait_slider_row.addWidget(self.wait_time_value)
+        
+        wait_layout.addLayout(wait_slider_row)
+        
+        # NOW button
+        self.now_button = QPushButton("NOW")
+        self.now_button.setStyleSheet("""
+            QPushButton {
+                background-color: #34a853;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 6px;
+                font-size: 12px;
+                font-weight: 500;
+                margin-top: 4px;
+            }
+            QPushButton:hover {
+                background-color: #2d8e47;
+            }
+            QPushButton:pressed {
+                background-color: #2a8443;
+            }
+        """)
+        self.now_button.clicked.connect(self._on_hooray)
+        wait_layout.addWidget(self.now_button)
+        
+        controls_frame_layout.addWidget(wait_container)
+        layout.addWidget(controls_frame)
+        
+        # Connect button signals
+        self.play_button.clicked.connect(self._on_play_pause_toggle)
+        self.next_button.clicked.connect(self._on_play_next)
+        self.random_button.clicked.connect(self._on_play_random_file)
+        self.stop_button.clicked.connect(self._on_stop)
+        self.loop_button.clicked.connect(self._on_loop_toggled)
+        
+        # Initialize UI
+        self._update_file_list()
+        self._update_ui()
 
-    def _format_time(self, ms):
-        """Format milliseconds as MM:SS"""
-        total_seconds = int(ms / 1000)
-        minutes = total_seconds // 60
-        seconds = total_seconds % 60
+    def _format_time(self, seconds):
+        """Format time in MM:SS format."""
+        # Ensure input is a number, default to 0 if not
+        if not isinstance(seconds, (int, float)):
+            seconds = 0
+        # Prevent negative times
+        seconds = max(0, seconds)
+        minutes = int(seconds // 60)
+        seconds = int(seconds % 60)
         return f"{minutes}:{seconds:02d}"
 
     def _on_position_slider_pressed(self):
-        """Handle slider press - prepare for scrubbing"""
-        self._slider_updating = True
+        """Handle position slider pressed."""
+        self.dragging_position = True
+        self.logger.debug("Position slider pressed")
 
     def _on_position_slider_released(self):
-        """Handle slider release - perform the seek"""
-        if hasattr(self.audio_player, 'player'):
-            position = self.position_slider.value()
-            # Convert from slider range (0-1000) to actual duration
-            actual_position = int((position / 1000.0) * self.audio_player.player.duration())
-            self.audio_player.player.setPosition(actual_position)
-        self._slider_updating = False
+        """Handle position slider released."""
+        slider_value_ms = self.position_slider.value()
+        self.logger.debug(f"Position slider released at value: {slider_value_ms} ms")
+        self.dragging_position = False
+        # Allow seeking even when paused
+        if self.audio_player.is_playing() or self.audio_player.is_paused(): 
+            self.logger.debug(f"Setting player position to: {slider_value_ms} ms")
+            try:
+                # Pass milliseconds directly to the player's set_position
+                self.audio_player.set_position(slider_value_ms)
+            except OverflowError:
+                 # QMediaPlayer might have limits, log the error
+                 self.logger.error(f"OverflowError: Cannot set position to {slider_value_ms} ms. Value likely exceeds QMediaPlayer limits.")
+            except Exception as e:
+                self.logger.error(f"Error setting position to {slider_value_ms} ms: {e}")
+            
+            # Update time label immediately after seeking
+            position_seconds = slider_value_ms / 1000.0
+            formatted_time = self._format_time(position_seconds)
+            self.logger.debug(f"Updating current time label (on release) to: {formatted_time}")
+            self.current_time.setText(formatted_time)
 
     def _on_position_changed(self, value):
-        """Handle position slider value change"""
-        if self._slider_updating and hasattr(self.audio_player, 'player'):
-            # Update time label while scrubbing
-            duration = self.audio_player.player.duration()
-            current = int((value / 1000.0) * duration)
-            self.time_label.setText(f"{self._format_time(current)} / {self._format_time(duration)}")
-
-    def _on_player_position_changed(self, position):
-        """Handle position updates from the player"""
-        if not self._slider_updating and hasattr(self.audio_player, 'player'):
-            duration = self.audio_player.player.duration()
-            if duration > 0:
-                # Convert actual position to slider range (0-1000)
-                slider_pos = int((position / duration) * 1000)
-                self.position_slider.setValue(slider_pos)
-                self.time_label.setText(f"{self._format_time(position)} / {self._format_time(duration)}")
-
-    def _on_duration_changed(self, duration):
-        """Handle duration changes from the player"""
-        if duration > 0:
-            self.time_label.setText(f"0:00 / {self._format_time(duration)}")
-
-    def _on_volume_changed(self, value):
-        """Handle volume slider change initiated by user."""
-        if not self._slider_updating:  # Only update if not already being updated
-            self.volume_value.setText(f"{value}%")
-            self.audio_player.set_volume(value / 100.0)
+        """Handle position slider value changed (only while dragging)."""
+        if not self._slider_updating and self.dragging_position:
+            current_time_seconds = value / 1000.0  # Slider value is milliseconds
+            formatted_time = self._format_time(current_time_seconds)
+            self.logger.debug(f"Slider dragged to value: {value} ms, updating label to: {formatted_time}")
+            self.current_time.setText(formatted_time)
 
     def _on_playback_started(self):
         """Handle playback started."""
-        # Get current file from audio player
-        current_file = self.audio_player.get_current_file()
-        if current_file:
-            filename = os.path.basename(current_file)
+        self.logger.info("Playback started event received")
+        self.play_button.setChecked(True)
+        self._update_ui()
+        
+        # Update position slider range with actual duration
+        file_path = self.audio_player.get_current_file()
+        if file_path:
+            self.logger.debug(f"Getting duration for file: {file_path}")
+            duration_sec = self.audio_player.get_file_duration(file_path)
+            duration_ms = int(duration_sec * 1000)
+            self.logger.debug(f"Received duration: {duration_sec:.2f} sec ({duration_ms} ms)")
+            if duration_ms > 0:
+                self.position_slider.setRange(0, duration_ms) # Range in milliseconds
+                formatted_total_time = self._format_time(duration_sec)
+                self.logger.debug(f"Setting slider range 0-{duration_ms}, total time label: {formatted_total_time}")
+                self.total_time.setText(formatted_total_time)
+                self.current_time.setText("0:00")
+                self.position_slider.setValue(0) # Reset slider position
+            else:
+                self.logger.warning(f"Invalid duration ({duration_sec}) received for {file_path}. Resetting slider.")
+                 # Reset if duration is invalid
+                self.position_slider.setRange(0, 0)
+                self.total_time.setText("0:00")
+                self.current_time.setText("0:00")
         else:
-            filename = "Unknown"
-            
-        # Update favorite button state
-        is_favorite = self.audio_player.is_favorite(current_file) if current_file else False
-        self.favorite_button.setChecked(is_favorite)
-        self.favorite_button.setText("♥" if is_favorite else "♡")
-        
-        # Update current file display
-        self.current_file_label.setText(filename)
-        
+            self.logger.warning("Playback started but no current file reported by player. Resetting slider.")
+            # Reset if no file is loaded
+            self.position_slider.setRange(0, 0)
+            self.total_time.setText("0:00")
+            self.current_time.setText("0:00")
+
+    def _on_time_updated(self, current_position_ms):
+        """Handle time update from player (position in ms)."""
+        # Use current_position_ms directly from the player signal
+        if not self.dragging_position:
+            current_time_seconds = current_position_ms / 1000.0
+            formatted_time = self._format_time(current_time_seconds)
+            # Limit frequent logging
+            # self.logger.debug(f"Time updated: {current_position_ms} ms, label: {formatted_time}") 
+            self.current_time.setText(formatted_time)
+            self._slider_updating = True
+            self.position_slider.setValue(current_position_ms) # Update slider in milliseconds
+            self._slider_updating = False
+        # else: # Optional: log that update is skipped due to dragging
+            # self.logger.debug(f"Skipping time update ({current_position_ms} ms) due to dragging.")
+
     def _on_playback_stopped(self):
         """Handle playback stopped."""
-        self.current_file_label.setText("No file playing")
-        
-    def _on_time_updated(self, time_remaining):
-        """Handle time update."""
-        pass
-        
-    def _on_play_selected(self):
-        """Handle play selected button click."""
-        current_file = self.file_combo.currentText()
-        if current_file:
-            for file_path in self.audio_player.file_list:
-                if os.path.basename(file_path) == current_file:
-                    self.audio_player.play_file(file_path)
-                    break 
-        
-    def _update_file_list(self):
-        """Update the file combo box with current files."""
-        if not hasattr(self.audio_player, 'file_list'):
-            return
-            
-        current_text = self.file_combo.currentText()
-        self.file_combo.clear()
-        
-        # Get all filenames and filter based on favorites if needed
-        filenames = []
-        for file_path in self.audio_player.file_list:
-            filename = os.path.basename(file_path)
-            if not self.favorites_button.isChecked() or self.audio_player.is_favorite(file_path):
-                filenames.append(filename)
-        
-        # Add files to combo box
-        for filename in filenames:
-            self.file_combo.addItem(filename)
-                
-        # Try to restore the previous selection
-        index = self.file_combo.findText(current_text)
-        if index >= 0:
-            self.file_combo.setCurrentIndex(index)
-            
-        self.play_selected_button.setEnabled(self.file_combo.count() > 0)
+        self.logger.info("Playback stopped event received")
+        self.play_button.setChecked(False)
+        self._update_ui() # Update button states
+        # Optionally reset slider and times? Depends on desired behavior after stop.
+        # self.current_time.setText("0:00")
+        # self.position_slider.setValue(0)
+        # Keep total time as is
+        self.playing_label.setText("Playback Stopped")
         
     def _on_audio_data(self, audio_data):
-        """Handle incoming audio data and update volume meters."""
+        """Handle incoming audio data."""
         if not audio_data:
             return
             
@@ -484,22 +546,7 @@ class AudioControlWidget(QWidget):
         scaled_level = min(1.0, rms * 1.5)  # Reduced from 2.5 to 1.5
         
         self.logger.debug(f"Audio level - RMS: {rms:.3f}, scaled: {scaled_level:.3f}")
-        
-        # Update both meters with the same value since we're using mono audio
-        self.left_meter.set_level(scaled_level)
-        self.right_meter.set_level(scaled_level)
 
-    def show_yes_triggered(self):
-        """Show the yes indicator for 2 seconds."""
-        self.yes_indicator.show()
-        self.yes_timer.start(2000)  # Hide after 2 seconds
-        
-    def _on_hold_drop_changed(self, value):
-        """Handle hold drop slider change."""
-        self.hold_drop_value.setText(f"{value}%")
-        self.hold_drop_percent = value
-        self.logger.debug(f"Hold drop set to {value}%")
-        
     def _on_wait_time_changed(self, value):
         """Handle wait time slider change."""
         self.wait_time_value.setText(f"{value}s")
@@ -510,152 +557,176 @@ class AudioControlWidget(QWidget):
         # Increment hooray counter
         current_count = int(self.hooray_counter.text())
         self.hooray_counter.setText(str(current_count + 1))
-        self.audio_player.start_hooray_cycle(self.wait_time_slider.value())
+        self.audio_player.start_hooray_cycle(self.wait_slider.value())
         
-    def _on_hold(self):
-        """Handle hold button click."""
-        # Get current volume
-        current_volume = self.audio_player.get_volume()
+    def _on_loop_toggled(self):
+        """Handle loop button click."""
+        self.audio_player.toggle_loop()
         
-        # Calculate reduced volume based on hold drop percentage
-        hold_drop_factor = self.hold_drop_percent / 100.0
-        reduced_volume = current_volume * (1.0 - hold_drop_factor)
+    def _on_stop(self):
+        """Handle stop button click."""
+        self.audio_player.stop_playback()
         
-        # Set the reduced volume
-        self.audio_player.set_volume(reduced_volume)
-        self.logger.info(f"Hold activated: Volume reduced by {self.hold_drop_percent}% (from {current_volume:.2f} to {reduced_volume:.2f})")
-        
-        # Update the volume slider to reflect the new volume
-        new_volume_percent = int(reduced_volume * 100)
-        self.volume_slider.setValue(new_volume_percent)
-        
-    def _on_easy_mode(self):
-        """Handle easy mode button click."""
-        if self.easy_button.isChecked():
-            self.logger.info("Switching to Easy mode")
-            # Ensure other buttons are unchecked
-            self.medium_button.setChecked(False)
-            self.hard_button.setChecked(False)
-            
-            # Set wait time to longer value for easier gameplay
-            self.wait_time_slider.setValue(10)
-            # Manually trigger the wait time changed handler
-            self._on_wait_time_changed(10)
-            
-            # Set hold drop to lower value for easier gameplay
-            self.hold_drop_slider.setValue(10)
-            # Manually trigger the hold drop changed handler
-            self._on_hold_drop_changed(10)
-            
-            self.logger.debug("Easy mode activated: Wait time=10s, Hold drop=10%")
+    def _on_play_pause_toggle(self):
+        """Toggle play/pause for the currently loaded file."""
+        if self.audio_player.is_playing():
+            self.audio_player.pause()
+            self.logger.debug("Audio paused via button")
         else:
-            # If unchecked, default to medium
-            self.medium_button.setChecked(True)
-            self._on_medium_mode()
-    
-    def _on_medium_mode(self):
-        """Handle medium mode button click."""
-        if self.medium_button.isChecked():
-            self.logger.info("Switching to Medium mode")
-            # Ensure other buttons are unchecked
-            self.easy_button.setChecked(False)
-            self.hard_button.setChecked(False)
+            # If no file is technically "loaded" but one is selected, load and play it.
+            # Otherwise, resume/play the currently loaded one.
+            current_player_file = self.audio_player.get_current_file()
+            selected_combo_text = self.file_combo.currentText()
             
-            # Set wait time to default value
-            self.wait_time_slider.setValue(5)
-            # Manually trigger the wait time changed handler
-            self._on_wait_time_changed(5)
+            # Extract filename from the combo box text (remove duration part)
+            selected_filename = self.file_combo.currentData()
             
-            # Set hold drop to default value
-            self.hold_drop_slider.setValue(20)
-            # Manually trigger the hold drop changed handler
-            self._on_hold_drop_changed(20)
-            
-            self.logger.debug("Medium mode activated: Wait time=5s, Hold drop=20%")
-        else:
-            # If unchecked, default to medium
-            self.medium_button.setChecked(True)
-    
-    def _on_hard_mode(self):
-        """Handle hard mode button click."""
-        if self.hard_button.isChecked():
-            self.logger.info("Switching to Hard mode")
-            # Ensure other buttons are unchecked
-            self.easy_button.setChecked(False)
-            self.medium_button.setChecked(False)
-            
-            # Set wait time to shorter value for harder gameplay
-            self.wait_time_slider.setValue(2)
-            # Manually trigger the wait time changed handler
-            self._on_wait_time_changed(2)
-            
-            # Set hold drop to higher value for harder gameplay
-            self.hold_drop_slider.setValue(40)
-            # Manually trigger the hold drop changed handler
-            self._on_hold_drop_changed(40)
-            
-            self.logger.debug("Hard mode activated: Wait time=2s, Hold drop=40%")
-        else:
-            # If unchecked, default to medium
-            self.medium_button.setChecked(True)
-            self._on_medium_mode()
-        
-    def _on_volume_update(self, volume):
-        """Handle volume updates from the audio player."""
-        self._slider_updating = True  # Prevent feedback loop
-        value = int(volume * 100)
-        self.volume_slider.setValue(value)
-        self.volume_value.setText(f"{value}%")
-        self._slider_updating = False
-        
-    def _on_favorite_clicked(self):
-        """Handle favorite button click."""
-        if self.favorite_button.isChecked():
-            if self.audio_player.add_to_favorites():
-                self.favorite_button.setText("♥")  # Filled heart
-        else:
-            if self.audio_player.remove_from_favorites():
-                self.favorite_button.setText("♡")  # Empty heart
-        
+            target_file_to_play = None
+            if current_player_file:
+                 # If player has a file loaded (even if stopped), use that one
+                 target_file_to_play = current_player_file
+            elif selected_filename:
+                 # If player has no file, but one is selected in combo, find its full path
+                 for file_path in self.audio_player.file_list:
+                     if os.path.basename(file_path) == selected_filename:
+                         target_file_to_play = file_path
+                         break # Found the file path
+
+            if target_file_to_play:
+                # Ensure the target file is loaded before playing
+                if self.audio_player.get_current_file() != target_file_to_play:
+                     if not self.audio_player.load_file(target_file_to_play):
+                          self.logger.error(f"Failed to load file for play: {target_file_to_play}")
+                          return # Don't proceed if load failed
+                
+                self.audio_player.play()
+                self.logger.debug(f"Audio played/resumed via button: {target_file_to_play}")
+            else:
+                self.logger.warning("Play button clicked, but no file loaded or selected.")
+                # Optionally provide user feedback, e.g., status bar message
+
     def _on_play_next(self):
         """Handle play next button click."""
-        if not self.audio_player.file_list:
-            self.logger.warning("No files available in the list")
+        self.audio_player.play_next()
+
+    def _on_play_random_file(self):
+        """Handle play random button click by calling the correct player method."""
+        self.logger.debug("Random button clicked, calling play_random_file")
+        self.audio_player.play_random_file() # Correct method call
+
+    def _update_file_list(self):
+        """Update the file combo box with current files and their durations."""
+        if not hasattr(self.audio_player, 'file_list'):
             return
             
-        current_file = self.audio_player.current_file
-        if not current_file:
-            self.logger.info("No file currently playing, starting with first file")
-            self._play_file_at_index(0)
-            return
-            
-        # Get the sorted file list
-        sorted_files = sorted(self.audio_player.file_list)
-        self.logger.debug(f"Current file: {os.path.basename(current_file)}")
-        self.logger.debug(f"Total files in list: {len(sorted_files)}")
+        current_text = self.file_combo.currentText()
+        self.file_combo.clear()
         
-        # Find the current file in the sorted list
-        try:
-            current_index = sorted_files.index(current_file)
-            self.logger.debug(f"Current file index: {current_index}")
-            
-            # Play next file (wrap around to beginning if at end)
-            next_index = (current_index + 1) % len(sorted_files)
-            next_file = sorted_files[next_index]
-            self.logger.debug(f"Playing next file: {os.path.basename(next_file)}")
-            
-            self.audio_player.play_file(next_file)
-        except ValueError:
-            self.logger.warning(f"Current file {os.path.basename(current_file)} not found in sorted list")
-            # If current file not found in list, play first file
-            if sorted_files:
-                self.logger.info("Playing first file in list")
-                self.audio_player.play_file(sorted_files[0])
+        # Get all filenames and filter based on favorites if needed
+        file_info = []  # List to store tuples of (filename, display_text)
+        seen_filenames = set()  # Track unique filenames
         
-    def _play_file_at_index(self, index):
-        """Play file at specified index in the sorted file list."""
-        sorted_files = sorted(self.audio_player.file_list)
-        if sorted_files and 0 <= index < len(sorted_files):
-            self.logger.debug(f"Playing file at index {index}: {os.path.basename(sorted_files[index])}")
-            self.audio_player.play_file(sorted_files[index])
+        for file_path in self.audio_player.file_list:
+            if not self.favorites_button.isChecked() or self.audio_player.is_favorite(file_path):
+                filename = os.path.basename(file_path)
+                
+                # Skip if we've already seen this filename
+                if filename in seen_filenames:
+                    self.logger.warning(f"Skipping duplicate filename: {filename}")
+                    continue
+                    
+                seen_filenames.add(filename)
+                
+                # Get duration and format it
+                duration_sec = self.audio_player.get_file_duration(file_path)
+                
+                # Only show duration if it's valid (greater than 0)
+                if duration_sec and duration_sec > 0:
+                    duration_text = self._format_time(duration_sec)
+                    display_text = f"{filename} ({duration_text})"
+                else:
+                    # If duration retrieval failed, just show the filename
+                    display_text = filename
+                    self.logger.warning(f"Could not get duration for {filename}")
+                
+                file_info.append((filename, display_text))
+        
+        # Add files to combo box with durations (sorted by filename)
+        for filename, display_text in sorted(file_info, key=lambda x: x[0].lower()):
+            self.file_combo.addItem(display_text, filename)  # Store original filename as item data
+                
+        # Try to restore the previous selection
+        if current_text:
+            # Extract just the filename part for matching
+            current_filename = current_text.split(" (")[0] if " (" in current_text else current_text
+            # Find the index where the filename matches
+            for i in range(self.file_combo.count()):
+                if self.file_combo.itemData(i) == current_filename:
+                    self.file_combo.setCurrentIndex(i)
+                    break
+
+    def _on_volume_update(self, volume):
+        """Handle volume updates from the audio player."""
+        if not self._slider_updating:  # Prevent feedback loop
+            self._slider_updating = True
+            self.volume_slider.setValue(int(volume * 100))
+            self._slider_updating = False
+        
+    def resizeEvent(self, event):
+        """Handle widget resize events."""
+        super().resizeEvent(event)
+        # Update NOW button width to maintain 80% of container width
+        if hasattr(self, 'now_button'):
+            self.now_button.setFixedWidth(int(self.width() * 0.8))
+        
+    def _on_volume_changed(self, value):
+        """Handle volume slider change."""
+        if not self._slider_updating:  # Prevent feedback loop
+            volume = value / 100.0  # Convert percentage to float
+            self.audio_player.set_volume(volume)
+            self.volume_value.setText(f"{value}%")
+        
+    def _switch_to_voice_view(self):
+        """Switch to voice commands view."""
+        self.parent().switch_to_voice_view()  # Assuming the parent widget has this method
+        
+    def switch_back_from_voice(self):
+        """Called when switching back from voice view."""
+        self.voice_view_button.setChecked(False)
+        
+    def _update_ui(self):
+        """Update UI elements based on playback state."""
+        is_playing = self.audio_player.is_playing()
+        self.play_button.setChecked(is_playing)
+        self.play_button.setText("⏸" if is_playing else "▶")
+        
+        is_looping = self.audio_player.is_looping()
+        self.loop_button.setChecked(is_looping)
+        
+        # Update playing label
+        current_file = self.audio_player.get_current_file()
+        if is_playing:
+            filename = os.path.basename(current_file) if current_file else "Unknown File"
+            self.playing_label.setText(f"Playing: {filename}")
+        elif self.audio_player.is_paused() and current_file:
+            filename = os.path.basename(current_file)
+            self.playing_label.setText(f"Paused: {filename}")
+        else:
+            self.playing_label.setText("No file playing")
+        
+    def _on_duration_changed(self, duration_ms):
+        """Handle duration update from player (in milliseconds)."""
+        if duration_ms > 0:
+            duration_sec = duration_ms / 1000.0
+            formatted_total_time = self._format_time(duration_sec)
+            self.logger.debug(f"Duration updated: {duration_sec:.2f} sec, label: {formatted_total_time}")
+            self.total_time.setText(formatted_total_time)
+            self.position_slider.setRange(0, duration_ms)
+        
+    def _on_playback_paused(self):
+        """Handle playback paused event."""
+        self.logger.info("Playback paused event received")
+        self.play_button.setChecked(False)
+        self._update_ui()
+        # Keep the current position and duration, just update the UI state
         
