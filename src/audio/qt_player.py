@@ -2,7 +2,7 @@ import os
 import logging
 import random
 from PySide6.QtCore import QObject, Signal, Slot, QUrl, QTimer
-from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput, QAudioDevice, QMediaDevices
 from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 from mutagen import File as MutagenFile, MutagenError
@@ -33,16 +33,29 @@ class QtAudioPlayer(QObject):
         
         # Create media player and audio output
         self.player = QMediaPlayer()
+        self.logger.info("Created QMediaPlayer instance")
+        
+        # Create default audio output
         self.audio_output = QAudioOutput()
+        self.logger.info("Created QAudioOutput instance")
+        
+        # Log available audio devices
+        devices = self.get_available_devices()
+        self.logger.info(f"Available audio devices: {devices}")
+        
+        # Set audio output to player
         self.player.setAudioOutput(self.audio_output)
+        self.logger.info("Set audio output to media player")
         
         # Connect signals
         self.player.positionChanged.connect(self._on_position_changed)
         self.player.durationChanged.connect(self._on_duration_changed)
         self.player.playbackStateChanged.connect(self._on_state_changed)
+        self.player.errorOccurred.connect(self._on_error)  # Add error handling
         
-        # Set default volume
-        self.audio_output.setVolume(0.5)
+        # Set default volume to 100%
+        self.audio_output.setVolume(1.0)
+        self.logger.info(f"Initialized audio player with default device and 100% volume. Current device: {self.audio_output.device().description() if self.audio_output.device() else 'None'}")
         
         # Initialize additional properties
         self.current_file = None
@@ -164,9 +177,17 @@ class QtAudioPlayer(QObject):
         return True
     
     def play(self):
-        """Start or resume playback."""
+        """Start playback of the current file."""
+        if not self.current_file:
+            self.logger.warning("No file loaded to play")
+            return
+            
+        self.logger.info(f"Starting playback of {self.current_file}")
+        self.logger.info(f"Current audio device: {self.audio_output.device().description() if self.audio_output.device() else 'None'}")
+        self.logger.info(f"Current volume: {self.audio_output.volume()}")
+        
         self.player.play()
-        self.logger.info("Playback started")
+        self._explicit_stop = False
     
     def pause(self):
         """Pause playback."""
@@ -355,9 +376,11 @@ class QtAudioPlayer(QObject):
         """
         # Ensure volume is within valid range
         volume = max(0.0, min(1.0, volume))
+        self.logger.info(f"Setting volume to {volume}")
+        self.logger.info(f"Current device: {self.audio_output.device().description() if self.audio_output.device() else 'None'}")
         self.audio_output.setVolume(volume)
         self.volume_changed.emit(volume)
-        self.logger.debug(f"Set volume to {volume}")
+        self.logger.debug(f"Volume set to {volume}")
     
     def get_volume(self):
         """Get the current volume level (0.0 to 1.0)."""
@@ -560,3 +583,102 @@ class QtAudioPlayer(QObject):
         else: # No current file, play the first file
              self.logger.info("No current file, playing first file in list.")
              self.play_file(self.file_list[0]) 
+    
+    def get_available_devices(self):
+        """Get list of available audio output devices."""
+        devices = []
+        
+        try:
+            # Get all output devices from Qt
+            for device in QMediaDevices.audioOutputs():
+                devices.append({
+                    'name': device.description(),
+                    'id': device.id(),
+                    'is_default': device.isDefault()
+                })
+                self.logger.debug(f"Found audio device: {device.description()} (ID: {device.id()})")
+            
+            if not devices:
+                # Add system default if no devices found
+                devices.append({
+                    'name': 'System Default',
+                    'id': 'default',
+                    'is_default': True
+                })
+                
+            return devices
+        except Exception as e:
+            self.logger.error(f"Error getting audio devices: {e}")
+            # Return default device as fallback
+            return [{
+                'name': 'System Default',
+                'id': 'default',
+                'is_default': True
+            }]
+    
+    def set_output_device(self, device_id):
+        """Set the audio output device by ID."""
+        try:
+            # Find the device with matching ID
+            from PySide6.QtMultimedia import QMediaDevices
+            for device in QMediaDevices.audioOutputs():
+                if device.id() == device_id:
+                    # Create new audio output with selected device
+                    new_output = QAudioOutput(device)
+                    new_output.setVolume(self.audio_output.volume())  # Preserve volume
+                    
+                    # Store old position if playing
+                    old_position = self.player.position() if self.player.isPlaying() else 0
+                    was_playing = self.player.isPlaying()
+                    
+                    # Set new audio output
+                    self.player.setAudioOutput(new_output)
+                    self.audio_output = new_output
+                    
+                    # Restore playback state
+                    if was_playing:
+                        self.player.setPosition(old_position)
+                        self.player.play()
+                    
+                    self.logger.info(f"Successfully set audio device to: {device.description()}")
+                    return True
+            
+            self.logger.warning(f"Could not find audio device with ID: {device_id}")
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"Error setting audio device: {e}")
+            return False
+    
+    def get_current_device(self):
+        """Get the current audio output device info."""
+        current_device = self.audio_output.device()
+        if current_device:
+            return {
+                'name': current_device.description(),
+                'id': current_device.id(),
+                'is_default': current_device.isDefault()
+            }
+        else:
+            return {
+                'name': 'System Default',
+                'id': 'default',
+                'is_default': True
+            }
+    
+    def _on_error(self, error, error_string):
+        """Handle media player errors."""
+        self.logger.error(f"Media player error: {error} - {error_string}")
+    
+    def play(self):
+        """Start playback of the current file."""
+        if not self.current_file:
+            self.logger.warning("No file loaded to play")
+            return
+            
+        self.logger.info(f"Starting playback of {self.current_file}")
+        self.logger.info(f"Current audio device: {self.audio_output.device().description() if self.audio_output.device() else 'None'}")
+        self.logger.info(f"Current volume: {self.audio_output.volume()}")
+        
+        self.player.play()
+        self._explicit_stop = False 

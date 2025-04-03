@@ -6,6 +6,7 @@ import os
 import logging
 from PySide6.QtGui import QColor, QIcon, QFont
 from PySide6.QtMultimedia import QMediaPlayer
+from ..device_dialog import DeviceSelectionDialog
 
 class AudioControlWidget(QWidget):
     def __init__(self, audio_player, parent=None):
@@ -34,6 +35,11 @@ class AudioControlWidget(QWidget):
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
         layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Add device selection button
+        device_button = QPushButton("Select Audio Device")
+        device_button.clicked.connect(self._show_device_dialog)
+        layout.addWidget(device_button)
         
         # Create playback info section with reduced height
         info_frame = QFrame()
@@ -232,7 +238,26 @@ class AudioControlWidget(QWidget):
         # Loop button
         self.loop_button = QPushButton("🔁") # Repeat symbol
         self.loop_button.setFixedSize(40, 40)
-        self.loop_button.setStyleSheet(self.next_button.styleSheet()) # Reuse style from Next
+        self.loop_button.setStyleSheet("""
+            QPushButton {
+                background-color: #f8f9fa;
+                border-radius: 20px;
+                border: none;
+                color: #5f6368;
+                font-size: 18px;
+            }
+            QPushButton:hover {
+                background-color: #e8f0fe;
+            }
+            QPushButton:pressed {
+                background-color: #e1e8ed;
+            }
+            QPushButton:checked {
+                background-color: #1a73e8;
+                color: white;
+                border: 2px solid #1557b0;
+            }
+        """)
         self.loop_button.setCheckable(True)
         controls_layout.addWidget(self.loop_button)
         
@@ -424,6 +449,9 @@ class AudioControlWidget(QWidget):
         # Initialize UI
         self._update_file_list()
         self._update_ui()
+        
+        # Connect file combo box signal
+        self.file_combo.currentIndexChanged.connect(self._on_file_selected)
 
     def _format_time(self, seconds):
         """Format time in MM:SS format."""
@@ -623,7 +651,7 @@ class AudioControlWidget(QWidget):
         self.file_combo.clear()
         
         # Get all filenames and filter based on favorites if needed
-        file_info = []  # List to store tuples of (filename, display_text)
+        file_info = []  # List to store tuples of (file_path, display_text)
         seen_filenames = set()  # Track unique filenames
         
         for file_path in self.audio_player.file_list:
@@ -649,19 +677,18 @@ class AudioControlWidget(QWidget):
                     display_text = filename
                     self.logger.warning(f"Could not get duration for {filename}")
                 
-                file_info.append((filename, display_text))
+                file_info.append((file_path, display_text))
         
         # Add files to combo box with durations (sorted by filename)
-        for filename, display_text in sorted(file_info, key=lambda x: x[0].lower()):
-            self.file_combo.addItem(display_text, filename)  # Store original filename as item data
+        for file_path, display_text in sorted(file_info, key=lambda x: os.path.basename(x[0]).lower()):
+            self.file_combo.addItem(display_text, file_path)  # Store full file path as item data
                 
         # Try to restore the previous selection
         if current_text:
             # Extract just the filename part for matching
             current_filename = current_text.split(" (")[0] if " (" in current_text else current_text
-            # Find the index where the filename matches
             for i in range(self.file_combo.count()):
-                if self.file_combo.itemData(i) == current_filename:
+                if os.path.basename(self.file_combo.itemData(i)) == current_filename:
                     self.file_combo.setCurrentIndex(i)
                     break
 
@@ -729,4 +756,22 @@ class AudioControlWidget(QWidget):
         self.play_button.setChecked(False)
         self._update_ui()
         # Keep the current position and duration, just update the UI state
+        
+    def _show_device_dialog(self):
+        """Show the device selection dialog."""
+        dialog = DeviceSelectionDialog(self.audio_player, self)
+        dialog.device_selected.connect(self._on_device_selected)
+        dialog.exec()
+        
+    def _on_device_selected(self, device_name, device_id):
+        """Handle device selection."""
+        print(f"Selected audio device: {device_name} (ID: {device_id})")
+        
+    def _on_file_selected(self, index):
+        """Handle file selection from combo box."""
+        if index >= 0:  # Valid selection
+            selected_file = self.file_combo.currentData()
+            if selected_file:
+                self.logger.debug(f"File selected from combo box: {selected_file}")
+                self.audio_player.play_file(selected_file)
         

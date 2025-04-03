@@ -1,9 +1,10 @@
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, 
                                  QHBoxLayout, QPushButton, QLabel, QFrame, QSpacerItem, QSizePolicy, QSlider, QSpinBox, QStatusBar,
-                                 QScrollArea, QGridLayout)
+                                 QScrollArea, QGridLayout, QStackedWidget)
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QFont
 from ui.widgets.audio_control_widget import AudioControlWidget
+from ui.widgets.voice_command_widget import VoiceCommandWidget
 from audio.voice_control import VoiceController
 from ui.device_dialog import DeviceSelectionDialog
 import os
@@ -23,105 +24,164 @@ class MainWindow(QMainWindow):
         
         # Set window properties
         self.setWindowTitle("Audio Control")
-        self.setMinimumSize(800, 600)  # Increased size to accommodate command list
+        self.setMinimumSize(400, 600)
+        
+        # Set window style
+        self.setStyleSheet("""
+            QMainWindow {
+                background-color: #f5f5f5;
+            }
+            QWidget {
+                font-family: -apple-system, 'Helvetica Neue', sans-serif;
+            }
+        """)
         
         # Create central widget and layout
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
-        layout = QHBoxLayout(central_widget)  # Changed to horizontal layout
+        layout = QVBoxLayout(central_widget)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
         
-        # Create left panel for audio controls
-        left_panel = QWidget()
-        left_layout = QVBoxLayout(left_panel)
+        # Create stacked widget for different views
+        self.stacked_widget = QStackedWidget()
         
-        # Create audio control widget
+        # Create audio control view
+        audio_view = QWidget()
+        audio_layout = QVBoxLayout(audio_view)
+        audio_layout.setContentsMargins(0, 0, 0, 0)
         self.audio_control = AudioControlWidget(audio_player)
-        left_layout.addWidget(self.audio_control)
+        audio_layout.addWidget(self.audio_control)
+        self.stacked_widget.addWidget(audio_view)
         
-        # Add left panel to main layout
-        layout.addWidget(left_panel, stretch=2)
+        # Create voice commands view
+        voice_view = QWidget()
+        voice_layout = QVBoxLayout(voice_view)
+        voice_layout.setContentsMargins(0, 0, 0, 0)
         
-        # Create right panel for voice commands reference
-        right_panel = QWidget()
-        right_layout = QVBoxLayout(right_panel)
+        # Add voice command widget
+        self.voice_command = VoiceCommandWidget(voice_controller=self.voice_controller)
+        voice_layout.addWidget(self.voice_command)
         
-        # Create voice commands reference
+        # Add voice commands reference
         commands_frame = QFrame()
-        commands_frame.setFrameStyle(QFrame.StyledPanel)
+        commands_frame.setStyleSheet("""
+            QFrame {
+                background-color: #e8f0fe;
+                border-radius: 12px;
+                padding: 12px;
+            }
+        """)
         commands_layout = QVBoxLayout(commands_frame)
         
-        # Add title
-        title = QLabel("Voice Commands Reference")
-        title.setStyleSheet("font-size: 14px; font-weight: bold; color: #2196F3; margin-bottom: 10px;")
-        title.setAlignment(Qt.AlignCenter)
-        commands_layout.addWidget(title)
-        
-        # Create scrollable area for commands
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll_content = QWidget()
-        grid_layout = QGridLayout(scroll_content)
-        
-        # Define command categories and their commands
-        commands = {
-            "Playback Controls": {
-                "hooray/edge/now": "Trigger hooray action",
-                "hold": "Trigger hold action",
-                "skip": "Play random file",
-                "pause": "Pause playback",
-                "playback": "Resume playback",
-                "stop": "Stop playback"
-            },
-            "Volume Controls": {
-                "up/more": "Increase volume by 10%",
-                "down/less": "Decrease volume by 10%",
-                "max": "Set volume to 100%",
-                "half": "Set volume to 50%"
-            },
-            "Mode Controls": {
-                "easy": "Switch to easy mode",
-                "medium": "Switch to medium mode",
-                "hard": "Switch to hard mode"
-            },
-            "Other Commands": {
-                "yes": "Trigger yes indicator",
-                "favorite": "Add current track to favorites"
+        # Title for commands section
+        commands_title = QLabel("Voice Commands")
+        commands_title.setStyleSheet("""
+            QLabel {
+                color: #1a73e8;
+                font-size: 16px;
+                font-weight: 500;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+                padding-bottom: 8px;
+                border-bottom: 1px solid #dadce0;
             }
-        }
+        """)
+        commands_layout.addWidget(commands_title)
         
-        row = 0
-        for category, category_commands in commands.items():
-            # Add category header
-            category_label = QLabel(category)
-            category_label.setStyleSheet("font-weight: bold; color: #4CAF50; padding-top: 10px;")
-            grid_layout.addWidget(category_label, row, 0, 1, 2)
-            row += 1
+        # Add command descriptions
+        commands = [
+            ("Play/Pause", "Toggle playback"),
+            ("Next", "Play next track"),
+            ("Previous", "Play previous track"),
+            ("Stop", "Stop playback"),
+            ("Random", "Play random track"),
+            ("Loop", "Toggle loop mode"),
+            ("Volume Up/Down", "Adjust volume"),
+            ("Favorite", "Add current track to favorites"),
+            ("Unfavorite", "Remove current track from favorites")
+        ]
+        
+        for command, description in commands:
+            command_layout = QHBoxLayout()
             
-            # Add commands in this category
-            for command, description in category_commands.items():
-                cmd_label = QLabel(f"{command}")
-                cmd_label.setStyleSheet("color: #FF5722; font-family: monospace;")
-                desc_label = QLabel(description)
-                grid_layout.addWidget(cmd_label, row, 0)
-                grid_layout.addWidget(desc_label, row, 1)
-                row += 1
+            cmd_label = QLabel(command)
+            cmd_label.setStyleSheet("""
+                QLabel {
+                    color: #1a73e8;
+                    font-weight: 500;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+                }
+            """)
+            desc_label = QLabel(description)
+            desc_label.setStyleSheet("""
+                QLabel {
+                    color: #5f6368;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+                }
+            """)
+            
+            command_layout.addWidget(cmd_label)
+            command_layout.addWidget(desc_label)
+            command_layout.addStretch()
+            
+            commands_layout.addLayout(command_layout)
         
-        scroll.setWidget(scroll_content)
-        commands_layout.addWidget(scroll)
-        right_layout.addWidget(commands_frame)
+        voice_layout.addWidget(commands_frame)
+        self.stacked_widget.addWidget(voice_view)
         
-        # Add right panel to main layout
-        layout.addWidget(right_panel, stretch=1)
+        # Add stacked widget to main layout
+        layout.addWidget(self.stacked_widget)
         
-        # Connect volume control
-        self.audio_control.volume_slider.valueChanged.connect(self._on_volume_changed)
+        # Create bottom navigation bar
+        nav_bar = QFrame()
+        nav_bar.setStyleSheet("""
+            QFrame {
+                background-color: white;
+                border-top: 1px solid #e0e0e0;
+            }
+        """)
+        nav_layout = QHBoxLayout(nav_bar)
+        nav_layout.setSpacing(8)
         
-        # Load audio files
-        self._load_audio_files()
+        # Create navigation buttons
+        self.audio_button = QPushButton("Playback")
+        self.voice_button = QPushButton("Voice Command")
         
-        # Create status bar
+        for button in [self.audio_button, self.voice_button]:
+            button.setStyleSheet("""
+                QPushButton {
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 16px;
+                    background: #f8f9fa;
+                    color: #5f6368;
+                    font-size: 14px;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+                }
+                QPushButton:checked {
+                    background: #e8f0fe;
+                    color: #1a73e8;
+                }
+            """)
+            button.setCheckable(True)
+            nav_layout.addWidget(button)
+            
+        self.audio_button.setChecked(True)  # Start with audio view
+        
+        nav_layout.addStretch()  # Push buttons to the left
+        layout.addLayout(nav_layout)
+        
+        # Create status bar with modern styling
         self.status_bar = QStatusBar()
+        self.status_bar.setStyleSheet("""
+            QStatusBar {
+                background-color: white;
+                color: #666;
+                padding: 3px 8px;
+                border-top: 1px solid #e0e0e0;
+                font-size: 12px;
+            }
+        """)
         self.setStatusBar(self.status_bar)
         self.status_bar.showMessage("Ready")
         
@@ -133,46 +193,25 @@ class MainWindow(QMainWindow):
         # Start voice control
         self.voice_controller.start_listening()
 
-    def _load_audio_files(self):
-        """Load audio files from the audio directory."""
-        try:
-            # Use relative path for audio directory
-            script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            audio_dir = os.path.join(script_dir, "data", "audio")
-            self.logger.info(f"Loading audio files from: {audio_dir}")
-            
-            # Create directory if it doesn't exist
-            os.makedirs(audio_dir, exist_ok=True)
-            
-            # Load the files
-            if self.audio_player.load_files(audio_dir):
-                self.logger.info("Audio files loaded successfully")
-                # Update the file list in the audio control widget
-                self.audio_control._update_file_list()
-            else:
-                self.logger.warning(f"No audio files found in audio directory: {audio_dir}")
-                
-        except Exception as e:
-            self.logger.error(f"Error loading audio files: {e}")
-        
-    def _on_volume_changed(self, value):
-        """Handle volume slider changes."""
-        self.audio_player.set_volume(value / 100.0)
-        self.status_bar.showMessage(f"Volume set to {value}%")
-
-    def update_status(self):
-        """Update status bar with current state."""
-        volume = int(self.audio_player.get_volume() * 100)
-        self.status_bar.showMessage(f"Volume: {volume}%")
+        # Connect navigation buttons
+        self.audio_button.clicked.connect(lambda: self._switch_view(0))
+        self.voice_button.clicked.connect(lambda: self._switch_view(1))
 
     def _handle_voice_command(self, command):
         """Handle voice commands."""
         self.logger.debug(f"Received voice command: {command}")
-        
-        if command in ["hooray", "edge", "now"]:
+
+        # Update voice command widget
+        self.audio_control.voice_status.setText(f"Command: {command}")
+
+        if command in ["now", "edge"]:
             self.audio_control._on_hooray()
         elif command == "hold":
-            self.audio_control._on_hold()
+            # Assuming _on_hold exists in AudioControlWidget, add if needed
+            if hasattr(self.audio_control, '_on_hold'): 
+                self.audio_control._on_hold()
+            else:
+                self.logger.warning("_on_hold method not found in AudioControlWidget")
         elif command == "skip":
             self.audio_player.play_random_file()
         elif command in ["up", "more"]:
@@ -186,38 +225,66 @@ class MainWindow(QMainWindow):
         elif command == "half":
             self.audio_control.volume_slider.setValue(50)
         elif command == "pause":
-            if hasattr(self.audio_player, 'player'):
-                self.audio_player.player.pause()
-        elif command == "playback":
-            if hasattr(self.audio_player, 'player'):
-                self.audio_player.player.play()
+            if hasattr(self.audio_player, 'pause'):
+                self.audio_player.pause()
+            else:
+                 self.logger.warning("pause method not found in audio_player")
+        elif command == "play":
+            if hasattr(self.audio_player, 'play'):
+                self.audio_player.play()
+            else:
+                 self.logger.warning("play method not found in audio_player")
         elif command == "stop":
             self.audio_player.stop_playback()
-        elif command in ["easy", "easy_mode"]:
-            self.logger.info("Voice command: Switching to Easy mode")
-            self.audio_control._on_easy_mode()
-            self.status_bar.showMessage("Voice command: Switched to Easy mode")
-        elif command in ["medium", "medium_mode"]:
-            self.logger.info("Voice command: Switching to Medium mode")
-            self.audio_control._on_medium_mode()
-            self.status_bar.showMessage("Voice command: Switched to Medium mode")
-        elif command in ["hard", "hard_mode"]:
-            self.logger.info("Voice command: Switching to Hard mode")
-            self.audio_control._on_hard_mode()
-            self.status_bar.showMessage("Voice command: Switched to Hard mode")
         elif command == "yes":
-            self.audio_control.show_yes_triggered()
+            self.status_bar.showMessage("Yes indicator triggered", 2000)
         elif command == "favorite":
             current_file = self.audio_control.file_combo.currentText()
             if current_file:
-                self.audio_control.favorites_button.setChecked(True)
-                self.status_bar.showMessage(f"Added {current_file} to favorites")
-            
+                # Logic to add to favorites (potentially toggle)
+                # Assuming add_to_favorites exists and handles UI update
+                if hasattr(self.audio_player, 'add_to_favorites'):
+                    if self.audio_player.add_to_favorites():
+                        self.status_bar.showMessage(f"Added {current_file} to favorites", 2000)
+                else:
+                     self.logger.warning("add_to_favorites method not found in audio_player")
+        # Add other commands as needed
+        # else:
+        #     self.logger.warning(f"Unknown voice command: {command}")
+
         # Update status bar to show the recognized command
-        self.status_bar.showMessage(f"Voice command: {command}")
+        self.status_bar.showMessage(f"Voice command: {command}", 3000)
+
+        # Clear the command display after 3 seconds
+        QTimer.singleShot(3000, lambda: self.audio_control.voice_status.setText("Listening..."))
+
+    def update_status(self):
+        """Update status bar with current state."""
+        volume = int(self.audio_player.get_volume() * 100)
+        self.status_bar.showMessage(f"Volume: {volume}%")
 
     def closeEvent(self, event):
         """Handle window close event."""
-        # Stop voice control when window is closed
-        self.voice_controller.stop_listening()
+        self.logger.info("Closing application, stopping voice listener.")
+        try:
+            # Stop voice control when window is closed
+            self.voice_controller.stop_listening()
+        except Exception as e:
+            self.logger.error(f"Error stopping voice controller: {e}")
         super().closeEvent(event)
+
+    def _switch_view(self, index):
+        """Switch between views and update button states."""
+        self.stacked_widget.setCurrentIndex(index)
+        self.audio_button.setChecked(index == 0)
+        self.voice_button.setChecked(index == 1)
+
+    def _show_device_dialog(self):
+        """Show the device selection dialog."""
+        dialog = DeviceSelectionDialog(self.audio_player, self)
+        dialog.device_selected.connect(self._on_device_selected)
+        dialog.exec()
+        
+    def _on_device_selected(self, device_name, device_id):
+        """Handle device selection."""
+        print(f"Selected audio device: {device_name} (ID: {device_id})")
