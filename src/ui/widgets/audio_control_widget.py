@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-                                 QLabel, QSlider, QFrame, QSpinBox, QComboBox, QGroupBox)
+                                 QLabel, QSlider, QFrame, QSpinBox, QComboBox, QGroupBox, QDialog)
 from PySide6.QtCore import Qt, Slot, QTimer, QSize
 from .volume_meter import VolumeMeter
 import os
@@ -57,8 +57,6 @@ class AudioControlWidget(QWidget):
         
         # View switching buttons
         self.voice_view_button = QPushButton("🎙️") # Microphone symbol
-        # self.voice_view_button.setIcon(QIcon("src/ui/icons/mic.png"))
-        # self.voice_view_button.setIconSize(QSize(16, 16))
         self.voice_view_button.setFixedSize(28, 28)
         self.voice_view_button.setCheckable(True)
         self.voice_view_button.setStyleSheet("""
@@ -67,8 +65,8 @@ class AudioControlWidget(QWidget):
                 border-radius: 14px;
                 border: none;
                 padding: 4px;
-                color: #5f6368; /* Ensure symbol is visible */
-                font-size: 14px; /* Adjust font size for symbol */
+                color: #5f6368;
+                font-size: 14px;
             }
             QPushButton:hover {
                 background-color: #e8f0fe;
@@ -84,21 +82,32 @@ class AudioControlWidget(QWidget):
         self.voice_view_button.clicked.connect(self._switch_to_voice_view)
         info_layout.addWidget(self.voice_view_button)
         
+        # Add voice commands button
+        self.voice_commands_button = QPushButton("📋")  # Clipboard symbol
+        self.voice_commands_button.setFixedSize(28, 28)
+        self.voice_commands_button.setToolTip("Show Voice Commands")
+        self.voice_commands_button.setStyleSheet("""
+            QPushButton {
+                background-color: #f8f9fa;
+                border-radius: 14px;
+                border: none;
+                padding: 4px;
+                color: #5f6368;
+                font-size: 14px;
+            }
+            QPushButton:hover {
+                background-color: #e8f0fe;
+            }
+            QPushButton:pressed {
+                background-color: #e1e8ed;
+            }
+        """)
+        self.voice_commands_button.clicked.connect(self._show_voice_commands)
+        info_layout.addWidget(self.voice_commands_button)
+        
         # Status section (left side)
         status_layout = QVBoxLayout()
         status_layout.setSpacing(0)  # Minimal spacing between labels
-        
-        # Now Playing label with smaller font
-        self.playing_label = QLabel("No file playing")
-        self.playing_label.setStyleSheet("""
-            QLabel {
-                color: #1a73e8;
-                font-size: 11px;
-                font-weight: 500;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
-            }
-        """)
-        status_layout.addWidget(self.playing_label)
         
         # Voice Status with smaller font
         self.voice_status = QLabel("Listening...")
@@ -177,12 +186,34 @@ class AudioControlWidget(QWidget):
                 border-radius: 8px;
                 background: white;
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+                font-size: 13px;
+                color: #202124;
+                min-width: 200px;
             }
             QComboBox::drop-down {
                 border: none;
+                width: 20px;
             }
             QComboBox::down-arrow {
                 image: url(resources/down-arrow.png);
+                width: 12px;
+                height: 12px;
+            }
+            QComboBox QAbstractItemView {
+                border: 1px solid #dadce0;
+                border-radius: 8px;
+                background: white;
+                selection-background-color: #e8f0fe;
+                selection-color: #1a73e8;
+                padding: 4px;
+            }
+            QComboBox QAbstractItemView::item {
+                padding: 6px;
+                min-height: 24px;
+                border-radius: 4px;
+            }
+            QComboBox QAbstractItemView::item:hover {
+                background: #f8f9fa;
             }
         """)
         
@@ -190,50 +221,147 @@ class AudioControlWidget(QWidget):
         file_row.addWidget(self.file_combo)
         controls_frame_layout.addLayout(file_row)
         
-        # Playback controls
-        controls_layout = QHBoxLayout()
-        controls_layout.setSpacing(8)
+        # File name display
+        file_name_row = QHBoxLayout()
+        file_name_row.setSpacing(8)
         
-        # Play button
-        self.play_button = QPushButton("▶")  # Play symbol
+        # File name label with larger font and centered text
+        self.file_name_label = QLabel("No file playing")
+        self.file_name_label.setStyleSheet("""
+            QLabel {
+                color: #1a73e8;
+                font-size: 16px;
+                font-weight: 500;
+                padding: 4px 0;
+            }
+        """)
+        self.file_name_label.setAlignment(Qt.AlignCenter)
+        file_name_row.addWidget(self.file_name_label)
+        
+        # Add favorite button next to file name
+        self.quick_favorite_button = QPushButton("⭐")
+        self.quick_favorite_button.setFixedSize(28, 28)
+        self.quick_favorite_button.setToolTip("Add to Favorites")
+        self.quick_favorite_button.setStyleSheet("""
+            QPushButton {
+                background-color: #f8f9fa;
+                border-radius: 14px;
+                border: none;
+                padding: 4px;
+                color: #5f6368;
+                font-size: 14px;
+            }
+            QPushButton:hover {
+                background-color: #e8f0fe;
+            }
+            QPushButton:pressed {
+                background-color: #e1e8ed;
+            }
+            QPushButton:checked {
+                background-color: #1a73e8;
+                color: white;
+            }
+        """)
+        self.quick_favorite_button.setCheckable(True)
+        self.quick_favorite_button.clicked.connect(self._on_quick_favorite_clicked)
+        file_name_row.addWidget(self.quick_favorite_button)
+        
+        controls_frame_layout.addLayout(file_name_row)
+        
+        # Create playback controls section
+        controls_group = QGroupBox("Playback Controls")
+        controls_layout = QVBoxLayout(controls_group)
+        controls_layout.setSpacing(8)
+        controls_layout.setContentsMargins(12, 12, 12, 12)
+        
+        # Create playback buttons row
+        buttons_row = QHBoxLayout()
+        buttons_row.setSpacing(8)
+        
+        # Previous file button
+        self.prev_button = QPushButton("⏮")
+        self.prev_button.setToolTip("Previous File")
+        self.prev_button.setFixedSize(40, 40)
+        self.prev_button.setStyleSheet("""
+            QPushButton {
+                background-color: #f8f9fa;
+                border: 1px solid #dadce0;
+                border-radius: 20px;
+                color: #202124;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #f1f3f4;
+                border-color: #d2e3fc;
+            }
+            QPushButton:pressed {
+                background-color: #e8f0fe;
+                border-color: #1a73e8;
+            }
+        """)
+        self.prev_button.clicked.connect(self._on_play_previous)
+        buttons_row.addWidget(self.prev_button)
+        
+        # Play/Pause button
+        self.play_button = QPushButton("▶")
+        self.play_button.setCheckable(True)
+        self.play_button.setToolTip("Play/Pause")
         self.play_button.setFixedSize(40, 40)
         self.play_button.setStyleSheet("""
             QPushButton {
-                background-color: #1a73e8;
+                background-color: #f8f9fa;
+                border: 1px solid #dadce0;
                 border-radius: 20px;
-                border: none;
-                color: white; /* Ensure symbol is visible */
-                font-size: 18px; /* Adjust font size for symbol */
+                color: #202124;
+                font-size: 16px;
             }
             QPushButton:hover {
-                background-color: #1557b0;
-            }
-            QPushButton:pressed {
-                background-color: #174ea6;
+                background-color: #f1f3f4;
+                border-color: #d2e3fc;
             }
             QPushButton:checked {
-                background-color: #1557b0;
+                background-color: #e8f0fe;
+                border-color: #1a73e8;
             }
         """)
-        controls_layout.addWidget(self.play_button)
+        self.play_button.clicked.connect(self._on_play_pause_toggle)
+        buttons_row.addWidget(self.play_button)
         
-        # Next button
-        self.next_button = QPushButton("⏭")  # Next symbol
+        # Next file button
+        self.next_button = QPushButton("⏭")
+        self.next_button.setToolTip("Next File")
         self.next_button.setFixedSize(40, 40)
-        self.next_button.setStyleSheet(self.play_button.styleSheet().replace("#1a73e8", "#f8f9fa").replace("white", "#5f6368").replace("#1557b0", "#e8f0fe").replace("#174ea6", "#e1e8ed")) # Base style on play, but use secondary colors
-        controls_layout.addWidget(self.next_button)
+        self.next_button.setStyleSheet("""
+            QPushButton {
+                background-color: #f8f9fa;
+                border: 1px solid #dadce0;
+                border-radius: 20px;
+                color: #202124;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #f1f3f4;
+                border-color: #d2e3fc;
+            }
+            QPushButton:pressed {
+                background-color: #e8f0fe;
+                border-color: #1a73e8;
+            }
+        """)
+        self.next_button.clicked.connect(self._on_play_next)
+        buttons_row.addWidget(self.next_button)
         
         # Random button
         self.random_button = QPushButton("🔀") # Shuffle symbol
         self.random_button.setFixedSize(40, 40)
         self.random_button.setStyleSheet(self.next_button.styleSheet()) # Reuse style from Next
-        controls_layout.addWidget(self.random_button)
+        buttons_row.addWidget(self.random_button)
         
         # Stop button
         self.stop_button = QPushButton("⏹") # Stop symbol
         self.stop_button.setFixedSize(40, 40)
         self.stop_button.setStyleSheet(self.next_button.styleSheet()) # Reuse style from Next
-        controls_layout.addWidget(self.stop_button)
+        buttons_row.addWidget(self.stop_button)
         
         # Loop button
         self.loop_button = QPushButton("🔁") # Repeat symbol
@@ -259,19 +387,10 @@ class AudioControlWidget(QWidget):
             }
         """)
         self.loop_button.setCheckable(True)
-        controls_layout.addWidget(self.loop_button)
+        buttons_row.addWidget(self.loop_button)
         
-        # Add playback controls to layout
-        controls_layout.addStretch()
-        controls_layout.addWidget(self.play_button)
-        controls_layout.addWidget(self.next_button)
-        controls_layout.addWidget(self.random_button)
-        controls_layout.addWidget(self.stop_button)
-        controls_layout.addWidget(self.loop_button)
-        controls_layout.addStretch()
-        
-        # Add controls layout to main controls layout
-        controls_frame_layout.addLayout(controls_layout)
+        # Add playback buttons to layout
+        controls_layout.addLayout(buttons_row)
         
         # Progress bar and time labels
         progress_container = QFrame()
@@ -285,22 +404,21 @@ class AudioControlWidget(QWidget):
         progress_layout = QVBoxLayout(progress_container)
         progress_layout.setSpacing(4)
         
-        # Time labels
-        time_labels = QHBoxLayout()
-        self.current_time = QLabel("0:00")
-        self.current_time.setStyleSheet("""
-            QLabel {
-                color: #5f6368;
-                font-size: 12px;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+        # Position slider container
+        position_container = QFrame()
+        position_container.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border-radius: 8px;
+                padding: 8px;
             }
         """)
-        self.total_time = QLabel("0:00")
-        self.total_time.setStyleSheet(self.current_time.styleSheet())
-        time_labels.addWidget(self.current_time)
-        time_labels.addStretch()
-        time_labels.addWidget(self.total_time)
-        progress_layout.addLayout(time_labels)
+        position_layout = QVBoxLayout(position_container)
+        position_layout.setSpacing(8)
+        
+        # Position slider row
+        position_slider_row = QHBoxLayout()
+        position_slider_row.setSpacing(8)
         
         # Position slider
         self.position_slider = QSlider(Qt.Horizontal)
@@ -328,9 +446,50 @@ class AudioControlWidget(QWidget):
         self.position_slider.sliderPressed.connect(self._on_position_slider_pressed)
         self.position_slider.sliderReleased.connect(self._on_position_slider_released)
         self.position_slider.valueChanged.connect(self._on_position_changed)
-        progress_layout.addWidget(self.position_slider)
+        position_slider_row.addWidget(self.position_slider)
         
-        controls_frame_layout.addWidget(progress_container)
+        position_layout.addLayout(position_slider_row)
+        
+        # Time labels row
+        time_labels_row = QHBoxLayout()
+        time_labels_row.setSpacing(4)  # Reduced spacing for tighter time display
+        
+        # Current time label
+        self.current_time = QLabel("0:00")
+        self.current_time.setStyleSheet("""
+            QLabel {
+                color: #5f6368;
+                font-size: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+                padding: 0;
+            }
+        """)
+        time_labels_row.addWidget(self.current_time)
+        
+        # Add a separator
+        separator = QLabel("/")
+        separator.setStyleSheet("""
+            QLabel {
+                color: #5f6368;
+                font-size: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+                padding: 0 2px;
+            }
+        """)
+        time_labels_row.addWidget(separator)
+        
+        # Total time label
+        self.total_time = QLabel("0:00")
+        self.total_time.setStyleSheet(self.current_time.styleSheet())
+        time_labels_row.addWidget(self.total_time)
+        
+        # Add stretch at the end to keep time labels left-aligned
+        time_labels_row.addStretch()
+        
+        position_layout.addLayout(time_labels_row)
+        
+        position_container.setLayout(position_layout)
+        controls_frame_layout.addWidget(position_container)
         
         # Volume control
         volume_container = QFrame()
@@ -402,12 +561,12 @@ class AudioControlWidget(QWidget):
         self.wait_slider.setStyleSheet(self.position_slider.styleSheet())
         self.wait_slider.setMinimumWidth(250)  # Set minimum width
         self.wait_slider.setRange(1, 60)
-        self.wait_slider.setValue(5)
+        self.wait_slider.setValue(8)  # Default value of 8 seconds
         self.wait_slider.valueChanged.connect(self._on_wait_time_changed)
         wait_slider_row.addWidget(self.wait_slider)
         
         # Wait time value label
-        self.wait_time_value = QLabel("5s")
+        self.wait_time_value = QLabel("8s")
         self.wait_time_value.setStyleSheet(wait_label.styleSheet())
         wait_slider_row.addWidget(self.wait_time_value)
         
@@ -437,6 +596,7 @@ class AudioControlWidget(QWidget):
         wait_layout.addWidget(self.now_button)
         
         controls_frame_layout.addWidget(wait_container)
+        layout.addWidget(controls_group)
         layout.addWidget(controls_frame)
         
         # Connect button signals
@@ -506,6 +666,9 @@ class AudioControlWidget(QWidget):
         self.play_button.setChecked(True)
         self._update_ui()
         
+        # Update the file name display
+        self._update_file_name_display()
+        
         # Update position slider range with actual duration
         file_path = self.audio_player.get_current_file()
         if file_path:
@@ -533,6 +696,47 @@ class AudioControlWidget(QWidget):
             self.total_time.setText("0:00")
             self.current_time.setText("0:00")
 
+    def _update_file_name_display(self):
+        """Update the file name display and favorite button state."""
+        current_file = self.file_combo.currentData()
+        if current_file:
+            filename = os.path.basename(current_file)
+            self.file_name_label.setText(filename)
+            
+            # Update quick favorite button state
+            is_favorite = current_file in self.audio_player.favorites
+            self.quick_favorite_button.setChecked(is_favorite)
+            self.quick_favorite_button.setStyleSheet("""
+                QPushButton {
+                    background-color: %s;
+                    border-radius: 14px;
+                    border: none;
+                    padding: 4px;
+                    color: %s;
+                    font-size: 14px;
+                }
+            """ % ("#1a73e8" if is_favorite else "#f8f9fa", 
+                   "white" if is_favorite else "#5f6368"))
+            
+            # Update combo box selection
+            for i in range(self.file_combo.count()):
+                if self.file_combo.itemData(i) == current_file:
+                    self.file_combo.setCurrentIndex(i)
+                    break
+        else:
+            self.file_name_label.setText("No file playing")
+            self.quick_favorite_button.setChecked(False)
+            self.quick_favorite_button.setStyleSheet("""
+                QPushButton {
+                    background-color: #f8f9fa;
+                    border-radius: 14px;
+                    border: none;
+                    padding: 4px;
+                    color: #5f6368;
+                    font-size: 14px;
+                }
+            """)
+
     def _on_time_updated(self, current_position_ms):
         """Handle time update from player (position in ms)."""
         # Use current_position_ms directly from the player signal
@@ -547,17 +751,13 @@ class AudioControlWidget(QWidget):
             self._slider_updating = False
         # else: # Optional: log that update is skipped due to dragging
             # self.logger.debug(f"Skipping time update ({current_position_ms} ms) due to dragging.")
-
+        
     def _on_playback_stopped(self):
         """Handle playback stopped."""
         self.logger.info("Playback stopped event received")
         self.play_button.setChecked(False)
-        self._update_ui() # Update button states
-        # Optionally reset slider and times? Depends on desired behavior after stop.
-        # self.current_time.setText("0:00")
-        # self.position_slider.setValue(0)
-        # Keep total time as is
-        self.playing_label.setText("Playback Stopped")
+        self._update_ui()
+        self._update_file_name_display()  # Update file name display
         
     def _on_audio_data(self, audio_data):
         """Handle incoming audio data."""
@@ -641,7 +841,7 @@ class AudioControlWidget(QWidget):
         """Handle play random button click by calling the correct player method."""
         self.logger.debug("Random button clicked, calling play_random_file")
         self.audio_player.play_random_file() # Correct method call
-
+        
     def _update_file_list(self):
         """Update the file combo box with current files and their durations."""
         if not hasattr(self.audio_player, 'file_list'):
@@ -730,16 +930,13 @@ class AudioControlWidget(QWidget):
         is_looping = self.audio_player.is_looping()
         self.loop_button.setChecked(is_looping)
         
-        # Update playing label
-        current_file = self.audio_player.get_current_file()
+        # Update voice status
         if is_playing:
-            filename = os.path.basename(current_file) if current_file else "Unknown File"
-            self.playing_label.setText(f"Playing: {filename}")
-        elif self.audio_player.is_paused() and current_file:
-            filename = os.path.basename(current_file)
-            self.playing_label.setText(f"Paused: {filename}")
+            self.voice_status.setText("Listening...")
+        elif self.audio_player.is_paused():
+            self.voice_status.setText("Paused")
         else:
-            self.playing_label.setText("No file playing")
+            self.voice_status.setText("Stopped")
         
     def _on_duration_changed(self, duration_ms):
         """Handle duration update from player (in milliseconds)."""
@@ -751,11 +948,11 @@ class AudioControlWidget(QWidget):
             self.position_slider.setRange(0, duration_ms)
         
     def _on_playback_paused(self):
-        """Handle playback paused event."""
+        """Handle playback paused."""
         self.logger.info("Playback paused event received")
         self.play_button.setChecked(False)
         self._update_ui()
-        # Keep the current position and duration, just update the UI state
+        self._update_file_name_display()  # Update file name display
         
     def _show_device_dialog(self):
         """Show the device selection dialog."""
@@ -769,9 +966,157 @@ class AudioControlWidget(QWidget):
         
     def _on_file_selected(self, index):
         """Handle file selection from combo box."""
-        if index >= 0:  # Valid selection
-            selected_file = self.file_combo.currentData()
-            if selected_file:
-                self.logger.debug(f"File selected from combo box: {selected_file}")
-                self.audio_player.play_file(selected_file)
+        if index >= 0 and index < self.file_combo.count():
+            file_path = self.file_combo.currentData()
+            if file_path:
+                self.file_name_label.setText(f"Playing: {os.path.basename(file_path)}")
+                self._update_favorite_button()
+                self.audio_player.play_file(file_path)
+                
+    def _update_favorite_button(self):
+        """Update the favorite button state based on current file."""
+        current_file = self.file_combo.currentData()
+        if current_file:
+            is_favorite = current_file in self.audio_player.favorites
+            self.favorites_button.setChecked(is_favorite)
+            
+    def _on_quick_favorite_clicked(self):
+        """Handle quick favorite button click."""
+        current_file = self.file_combo.currentData()
+        if current_file:
+            if self.audio_player.add_to_favorites():
+                self.quick_favorite_button.setChecked(True)
+                self.quick_favorite_button.setStyleSheet("""
+                    QPushButton {
+                        background-color: #1a73e8;
+                        border-radius: 14px;
+                        border: none;
+                        padding: 4px;
+                        color: white;
+                        font-size: 14px;
+                    }
+                """)
+            else:
+                self.quick_favorite_button.setChecked(False)
+                self.quick_favorite_button.setStyleSheet("""
+                    QPushButton {
+                        background-color: #f8f9fa;
+                        border-radius: 14px;
+                        border: none;
+                        padding: 4px;
+                        color: #5f6368;
+                        font-size: 14px;
+                    }
+                """)
+        
+    def _on_play_previous(self):
+        """Handle play previous button click."""
+        self.audio_player.play_previous()
+        
+    def _show_voice_commands(self):
+        """Show the voice commands dialog."""
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Voice Commands")
+        dialog.setMinimumWidth(400)
+        dialog.setStyleSheet("""
+            QDialog {
+                background-color: #ffffff;
+            }
+            QLabel {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+            }
+        """)
+        
+        layout = QVBoxLayout(dialog)
+        
+        # Title
+        title = QLabel("Available Voice Commands")
+        title.setStyleSheet("""
+            QLabel {
+                color: #1a73e8;
+                font-size: 18px;
+                font-weight: bold;
+                padding: 10px 0;
+            }
+        """)
+        title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title)
+        
+        # Commands list
+        commands_frame = QFrame()
+        commands_frame.setStyleSheet("""
+            QFrame {
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                padding: 12px;
+            }
+        """)
+        commands_layout = QVBoxLayout(commands_frame)
+        
+        commands = [
+            ("🎯 Hooray/Edge/Now", "Trigger hooray action"),
+            ("⏸ Hold", "Trigger hold action"),
+            ("⏭ Skip", "Play random file"),
+            ("🔊 Up/More", "Increase volume by 10%"),
+            ("🔉 Down/Less", "Decrease volume by 10%"),
+            ("🔈 Max", "Set volume to 100%"),
+            ("🔉 Half", "Set volume to 50%"),
+            ("⏸ Pause", "Pause playback"),
+            ("▶ Playback", "Resume playback"),
+            ("⏹ Stop", "Stop playback"),
+            ("⭐ Favorite", "Add current track to favorites")
+        ]
+        
+        for command, description in commands:
+            command_layout = QHBoxLayout()
+            
+            cmd_label = QLabel(command)
+            cmd_label.setStyleSheet("""
+                QLabel {
+                    color: #1a73e8;
+                    font-weight: 500;
+                    font-size: 14px;
+                }
+            """)
+            desc_label = QLabel(description)
+            desc_label.setStyleSheet("""
+                QLabel {
+                    color: #5f6368;
+                    font-size: 14px;
+                }
+            """)
+            
+            command_layout.addWidget(cmd_label)
+            command_layout.addWidget(desc_label)
+            command_layout.addStretch()
+            
+            commands_layout.addLayout(command_layout)
+        
+        layout.addWidget(commands_frame)
+        
+        # Close button
+        close_button = QPushButton("Close")
+        close_button.setStyleSheet("""
+            QPushButton {
+                background-color: #1a73e8;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 8px 16px;
+                font-size: 14px;
+                min-width: 100px;
+            }
+            QPushButton:hover {
+                background-color: #1557b0;
+            }
+        """)
+        close_button.clicked.connect(dialog.accept)
+        
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(close_button)
+        button_layout.addStretch()
+        layout.addLayout(button_layout)
+        
+        dialog.exec()
         

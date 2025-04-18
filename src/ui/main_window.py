@@ -228,12 +228,12 @@ class MainWindow(QMainWindow):
             if hasattr(self.audio_player, 'pause'):
                 self.audio_player.pause()
             else:
-                 self.logger.warning("pause method not found in audio_player")
+                self.logger.warning("pause method not found in audio_player")
         elif command == "play":
             if hasattr(self.audio_player, 'play'):
                 self.audio_player.play()
             else:
-                 self.logger.warning("play method not found in audio_player")
+                self.logger.warning("play method not found in audio_player")
         elif command == "stop":
             self.audio_player.stop_playback()
         elif command == "yes":
@@ -247,44 +247,35 @@ class MainWindow(QMainWindow):
                     if self.audio_player.add_to_favorites():
                         self.status_bar.showMessage(f"Added {current_file} to favorites", 2000)
                 else:
-                     self.logger.warning("add_to_favorites method not found in audio_player")
-        # Add other commands as needed
-        # else:
-        #     self.logger.warning(f"Unknown voice command: {command}")
-
-        # Update status bar to show the recognized command
-        self.status_bar.showMessage(f"Voice command: {command}", 3000)
-
-        # Clear the command display after 3 seconds
-        QTimer.singleShot(3000, lambda: self.audio_control.voice_status.setText("Listening..."))
+                    self.logger.warning("add_to_favorites method not found in audio_player")
 
     def update_status(self):
-        """Update status bar with current state."""
-        volume = int(self.audio_player.get_volume() * 100)
-        self.status_bar.showMessage(f"Volume: {volume}%")
+        """Update status bar with current playback information."""
+        if self.audio_player.current_file:
+            self.status_bar.showMessage(f"Playing: {os.path.basename(self.audio_player.current_file)}")
+        else:
+            self.status_bar.showMessage("Ready")
 
     def closeEvent(self, event):
-        """Handle window close event."""
+        """Handle application close event."""
         self.logger.info("Closing application, stopping voice listener.")
-        try:
-            # Stop voice control when window is closed
+        if hasattr(self.voice_controller, 'stop_listening'):
             self.voice_controller.stop_listening()
-        except Exception as e:
-            self.logger.error(f"Error stopping voice controller: {e}")
-        super().closeEvent(event)
+        event.accept()
 
     def _switch_view(self, index):
-        """Switch between views and update button states."""
+        """Switch between audio control and voice command views."""
         self.stacked_widget.setCurrentIndex(index)
         self.audio_button.setChecked(index == 0)
         self.voice_button.setChecked(index == 1)
 
     def _show_device_dialog(self):
-        """Show the device selection dialog."""
-        dialog = DeviceSelectionDialog(self.audio_player, self)
+        """Show dialog for selecting audio output device."""
+        dialog = DeviceSelectionDialog(self)
         dialog.device_selected.connect(self._on_device_selected)
-        dialog.exec()
-        
+        dialog.exec_()
+
     def _on_device_selected(self, device_name, device_id):
-        """Handle device selection."""
-        print(f"Selected audio device: {device_name} (ID: {device_id})")
+        """Handle audio device selection."""
+        self.audio_player.set_output_device(device_id)
+        self.status_bar.showMessage(f"Audio device changed to: {device_name}", 2000) 
