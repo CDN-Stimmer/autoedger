@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
-                                 QLabel, QSlider, QFrame, QSpinBox, QComboBox, QGroupBox, QDialog)
+                                 QLabel, QSlider, QFrame, QSpinBox, QComboBox, QGroupBox, QDialog, QCheckBox)
 from PySide6.QtCore import Qt, Slot, QTimer, QSize
 from .volume_meter import VolumeMeter
 import os
@@ -14,6 +14,7 @@ class AudioControlWidget(QWidget):
         self.audio_player = audio_player
         self.audio_player.audio_control_widget = self  # Pass widget reference to player
         self._slider_updating = False  # Flag to prevent feedback loops
+        self._suppress_playback = False  # Flag to suppress playback on combo update
         self.logger = logging.getLogger(__name__)  # Initialize logger
         
         # Initialize variables
@@ -151,6 +152,27 @@ class AudioControlWidget(QWidget):
         """)
         self.favorites_button.setCheckable(True)
         self.favorites_button.clicked.connect(self._update_file_list)
+        file_row.addWidget(self.favorites_button)
+        
+        # Duration filter combo box
+        self.duration_filter_combo = QComboBox()
+        self.duration_filter_combo.addItems([
+            "All", "< 1 min", "1–3 min", "3–10 min", "> 10 min"
+        ])
+        self.duration_filter_combo.setStyleSheet("""
+            QComboBox {
+                padding: 8px;
+                border: 1px solid #dadce0;
+                border-radius: 8px;
+                background: white;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+                font-size: 13px;
+                color: #202124;
+                min-width: 100px;
+            }
+        """)
+        self.duration_filter_combo.currentIndexChanged.connect(self._update_file_list)
+        file_row.addWidget(self.duration_filter_combo)
         
         self.file_combo = QComboBox()
         self.file_combo.setStyleSheet("""
@@ -190,8 +212,6 @@ class AudioControlWidget(QWidget):
                 background: #f8f9fa;
             }
         """)
-        
-        file_row.addWidget(self.favorites_button)
         file_row.addWidget(self.file_combo)
         controls_frame_layout.addLayout(file_row)
         
@@ -532,7 +552,34 @@ class AudioControlWidget(QWidget):
         
         # Wait time slider
         self.wait_slider = QSlider(Qt.Horizontal)
-        self.wait_slider.setStyleSheet(self.position_slider.styleSheet())
+        self.wait_slider.setStyleSheet("""
+            QSlider::groove:horizontal {
+                border: 1px solid #dadce0;
+                height: 4px;
+                background: #e8f0fe;
+                border-radius: 2px;
+            }
+            QSlider::handle:horizontal {
+                background: #1a73e8;
+                border: none;
+                width: 12px;
+                height: 12px;
+                margin: -4px 0;
+                border-radius: 6px;
+            }
+            QSlider::sub-page:horizontal {
+                background: #1a73e8;
+                border-radius: 2px;
+            }
+            QSlider:disabled {
+                background: #f1f3f4;
+                color: #b0b0b0;
+            }
+            QSlider::handle:horizontal:disabled {
+                background: #b0b0b0;
+                border: none;
+            }
+        """)
         self.wait_slider.setMinimumWidth(250)  # Set minimum width
         self.wait_slider.setRange(1, 60)
         self.wait_slider.setValue(8)  # Default value of 8 seconds
@@ -543,6 +590,18 @@ class AudioControlWidget(QWidget):
         self.wait_time_value = QLabel("8s")
         self.wait_time_value.setStyleSheet(wait_label.styleSheet())
         wait_slider_row.addWidget(self.wait_time_value)
+        
+        # Auto mode checkbox
+        self.auto_wait_checkbox = QCheckBox("Auto")
+        self.auto_wait_checkbox.setStyleSheet("""
+            QCheckBox {
+                color: #5f6368;
+                font-size: 12px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+            }
+        """)
+        self.auto_wait_checkbox.stateChanged.connect(self._on_auto_wait_toggled)
+        wait_slider_row.addWidget(self.auto_wait_checkbox)
         
         wait_layout.addLayout(wait_slider_row)
         
@@ -756,10 +815,15 @@ class AudioControlWidget(QWidget):
         
     def _on_hooray(self):
         """Handle hooray button click."""
+        import random
         # Increment hooray counter
         current_count = int(self.hooray_counter.text())
         self.hooray_counter.setText(str(current_count + 1))
-        self.audio_player.start_hooray_cycle(self.wait_slider.value())
+        if self.auto_wait_checkbox.isChecked():
+            wait_time = random.randint(4, 20)
+        else:
+            wait_time = self.wait_slider.value()
+        self.audio_player.start_hooray_cycle(wait_time)
         
     def _on_loop_toggled(self):
         """Handle loop button click."""
@@ -826,51 +890,53 @@ class AudioControlWidget(QWidget):
         """Update the file combo box with current files and their durations."""
         if not hasattr(self.audio_player, 'file_list'):
             return
-            
+        
         current_text = self.file_combo.currentText()
+        self._suppress_playback = True
         self.file_combo.clear()
         
-        # Get all filenames and filter based on favorites if needed
+        # Get all filenames and filter based on favorites and duration if needed
         file_info = []  # List to store tuples of (file_path, display_text)
         seen_filenames = set()  # Track unique filenames
-        
+        show_favorites_only = self.favorites_button.isChecked()
+        duration_filter = self.duration_filter_combo.currentText() if hasattr(self, 'duration_filter_combo') else "All"
         for file_path in self.audio_player.file_list:
-            if not self.favorites_button.isChecked() or self.audio_player.is_favorite(file_path):
-                filename = os.path.basename(file_path)
-                
-                # Skip if we've already seen this filename
-                if filename in seen_filenames:
-                    self.logger.warning(f"Skipping duplicate filename: {filename}")
+            is_fav = self.audio_player.is_favorite(file_path)
+            if not show_favorites_only or is_fav:
+                # Show relative path from audio root
+                audio_root = os.path.dirname(os.path.abspath(self.audio_player.file_list[0])) if self.audio_player.file_list else ''
+                rel_path = os.path.relpath(file_path, audio_root) if audio_root else os.path.basename(file_path)
+                if rel_path in seen_filenames:
+                    self.logger.warning(f"Skipping duplicate filename: {rel_path}")
                     continue
-                    
-                seen_filenames.add(filename)
-                
-                # Get duration and format it
+                seen_filenames.add(rel_path)
                 duration_sec = self.audio_player.get_file_duration(file_path)
-                
-                # Only show duration if it's valid (greater than 0)
+                # Duration filter logic
+                if duration_filter == "< 1 min" and (not duration_sec or duration_sec >= 60):
+                    continue
+                elif duration_filter == "1–3 min" and (not duration_sec or not (60 <= duration_sec < 180)):
+                    continue
+                elif duration_filter == "3–10 min" and (not duration_sec or not (180 <= duration_sec < 600)):
+                    continue
+                elif duration_filter == "> 10 min" and (not duration_sec or duration_sec < 600):
+                    continue
                 if duration_sec and duration_sec > 0:
                     duration_text = self._format_time(duration_sec)
-                    display_text = f"{filename} ({duration_text})"
+                    display_text = f"{rel_path} ({duration_text})"
                 else:
-                    # If duration retrieval failed, just show the filename
-                    display_text = filename
-                    self.logger.warning(f"Could not get duration for {filename}")
-                
+                    display_text = rel_path
+                    self.logger.warning(f"Could not get duration for {rel_path}")
                 file_info.append((file_path, display_text))
-        
-        # Add files to combo box with durations (sorted by filename)
         for file_path, display_text in sorted(file_info, key=lambda x: os.path.basename(x[0]).lower()):
-            self.file_combo.addItem(display_text, file_path)  # Store full file path as item data
-                
+            self.file_combo.addItem(display_text, file_path)
         # Try to restore the previous selection
         if current_text:
-            # Extract just the filename part for matching
             current_filename = current_text.split(" (")[0] if " (" in current_text else current_text
             for i in range(self.file_combo.count()):
                 if os.path.basename(self.file_combo.itemData(i)) == current_filename:
                     self.file_combo.setCurrentIndex(i)
                     break
+        self._suppress_playback = False
 
     def _on_volume_update(self, volume):
         """Handle volume updates from the audio player."""
@@ -911,7 +977,8 @@ class AudioControlWidget(QWidget):
             if file_path:
                 self.file_name_label.setText(f"Playing: {os.path.basename(file_path)}")
                 self._update_favorite_button()
-                self.audio_player.play_file(file_path)
+                if not self._suppress_playback:
+                    self.audio_player.play_file(file_path)
                 
     def _update_favorite_button(self):
         """Update the favorite button state based on current file."""
@@ -921,33 +988,33 @@ class AudioControlWidget(QWidget):
             self.favorites_button.setChecked(is_favorite)
             
     def _on_quick_favorite_clicked(self):
-        """Handle quick favorite button click."""
+        """Handle quick favorite button click (toggle)."""
         current_file = self.file_combo.currentData()
         if current_file:
-            if self.audio_player.add_to_favorites():
-                self.quick_favorite_button.setChecked(True)
-                self.quick_favorite_button.setStyleSheet("""
-                    QPushButton {
-                        background-color: #1a73e8;
-                        border-radius: 14px;
-                        border: none;
-                        padding: 4px;
-                        color: white;
-                        font-size: 14px;
-                    }
-                """)
+            if self.quick_favorite_button.isChecked():
+                if self.audio_player.add_to_favorites():
+                    self.quick_favorite_button.setStyleSheet("""
+                        QPushButton {
+                            background-color: #1a73e8;
+                            border-radius: 14px;
+                            border: none;
+                            padding: 4px;
+                            color: white;
+                            font-size: 14px;
+                        }
+                    """)
             else:
-                self.quick_favorite_button.setChecked(False)
-                self.quick_favorite_button.setStyleSheet("""
-                    QPushButton {
-                        background-color: #f8f9fa;
-                        border-radius: 14px;
-                        border: none;
-                        padding: 4px;
-                        color: #5f6368;
-                        font-size: 14px;
-                    }
-                """)
+                if self.audio_player.remove_from_favorites():
+                    self.quick_favorite_button.setStyleSheet("""
+                        QPushButton {
+                            background-color: #f8f9fa;
+                            border-radius: 14px;
+                            border: none;
+                            padding: 4px;
+                            color: #5f6368;
+                            font-size: 14px;
+                        }
+                    """)
         
     def _on_play_previous(self):
         """Handle play previous button click."""
@@ -1092,4 +1159,10 @@ class AudioControlWidget(QWidget):
         self.play_button.setChecked(False)
         self._update_ui()
         self._update_file_name_display()  # Update file name display
+        
+    def _on_auto_wait_toggled(self, state):
+        """Enable/disable wait time slider and value label based on auto mode."""
+        auto = self.auto_wait_checkbox.isChecked()
+        self.wait_slider.setEnabled(not auto)
+        self.wait_time_value.setEnabled(not auto)
         

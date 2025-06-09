@@ -1,6 +1,7 @@
 import os
 import logging
 import random
+import json
 from PySide6.QtCore import QObject, Signal, Slot, QUrl, QTimer
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput, QAudioDevice, QMediaDevices
 from mutagen.mp3 import MP3
@@ -64,6 +65,8 @@ class QtAudioPlayer(QObject):
         self.audio_files = []
         self.wait_time = 8  # Default wait time in seconds
         self._explicit_stop = False  # Flag to track explicit stop vs natural end
+        self._favorites_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/favorites.json'))
+        self._load_favorites()
         
         # Create timer for updating time and generating dummy audio data
         self.update_timer = QTimer(self)
@@ -87,63 +90,45 @@ class QtAudioPlayer(QObject):
         return sorted(self.audio_files)
     
     def _scan_audio_files(self):
-        """Scan for audio files in the src/audio directory."""
+        """Scan for audio files in the src/audio directory and subfolders."""
         try:
-            # Get the path to the script directory
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            
-            # Define audio directory
             audio_dir = script_dir
-            
             self.audio_files = []
-            
-            # Check audio directory
             if os.path.exists(audio_dir):
-                for file in os.listdir(audio_dir):
-                    if file.lower().endswith(('.mp3', '.wav')):
-                        self.audio_files.append(os.path.join(audio_dir, file))
-            
-            self.logger.info(f"Found {len(self.audio_files)} audio files")
+                for root, dirs, files in os.walk(audio_dir):
+                    for file in files:
+                        if file.lower().endswith(('.mp3', '.wav')):
+                            self.audio_files.append(os.path.join(root, file))
+            self.logger.info(f"Found {len(self.audio_files)} audio files (including subfolders)")
         except Exception as e:
             self.logger.error(f"Error scanning audio files: {e}")
     
     def load_files(self, directory=None):
         """
-        Load audio files from a directory.
-        
-        Args:
-            directory (str, optional): Directory to load files from. If None, uses default audio directory.
-        
-        Returns:
-            list: List of loaded audio file paths
+        Load audio files from a directory (recursively).
         """
         try:
             self.audio_files = []
-            
             if directory is not None:
-                # If a specific directory is provided, only use that one
                 self.logger.info(f"Loading audio files from: {directory}")
-                
                 if not os.path.exists(directory):
                     self.logger.warning(f"Directory not found: {directory}")
                     return []
-                
-                for file in os.listdir(directory):
-                    if file.lower().endswith(('.mp3', '.wav')):
-                        self.audio_files.append(os.path.join(directory, file))
+                for root, dirs, files in os.walk(directory):
+                    for file in files:
+                        if file.lower().endswith(('.mp3', '.wav')):
+                            self.audio_files.append(os.path.join(root, file))
             else:
-                # Otherwise, use the default audio directory
                 script_dir = os.path.dirname(os.path.abspath(__file__))
                 audio_dir = script_dir
-                
-                # Check audio directory
                 if os.path.exists(audio_dir):
                     self.logger.info(f"Loading audio files from: {audio_dir}")
-                    for file in os.listdir(audio_dir):
-                        if file.lower().endswith(('.mp3', '.wav')):
-                            self.audio_files.append(os.path.join(audio_dir, file))
-            
-            self.logger.info(f"Loaded {len(self.audio_files)} audio files")
+                    for root, dirs, files in os.walk(audio_dir):
+                        for file in files:
+                            if file.lower().endswith(('.mp3', '.wav')):
+                                self.audio_files.append(os.path.join(root, file))
+            self.logger.info(f"Loaded {len(self.audio_files)} audio files (including subfolders)")
             return self.audio_files
         except Exception as e:
             self.logger.error(f"Error loading audio files: {e}")
@@ -224,11 +209,12 @@ class QtAudioPlayer(QObject):
         """
         if self.current_file:
             self.favorites.add(self.current_file)
+            self._save_favorites()
             self.favorites_changed.emit()
             self.logger.info(f"Added to favorites: {os.path.basename(self.current_file)}")
             return True
         return False
-    
+            
     def remove_from_favorites(self):
         """
         Remove current file from favorites.
@@ -238,11 +224,12 @@ class QtAudioPlayer(QObject):
         """
         if self.current_file and self.current_file in self.favorites:
             self.favorites.remove(self.current_file)
+            self._save_favorites()
             self.favorites_changed.emit()
             self.logger.info(f"Removed from favorites: {os.path.basename(self.current_file)}")
             return True
         return False
-    
+            
     def is_favorite(self, file_path):
         """
         Check if a file is in favorites.
@@ -306,7 +293,7 @@ class QtAudioPlayer(QObject):
         except Exception as e:
             self.logger.error(f"Error getting duration for {file_path}: {e}")
             return None
-    
+        
     def set_volume(self, volume):
         """
         Set the playback volume.
@@ -319,7 +306,7 @@ class QtAudioPlayer(QObject):
         self.audio_output.setVolume(volume)
         self.volume_changed.emit(volume)
         self.logger.info(f"Set volume to {volume}")
-    
+            
     def get_volume(self):
         """Get the current volume level (0.0 to 1.0)."""
         return self.audio_output.volume()
@@ -412,7 +399,7 @@ class QtAudioPlayer(QObject):
         if seconds >= 0:
             self.wait_time = seconds
             self.logger.info(f"Set wait time to {seconds} seconds")
-    
+            
     def start_hooray_cycle(self, wait_time=None):
         """
         Start the hooray cycle with gradually increasing volume.
@@ -422,7 +409,7 @@ class QtAudioPlayer(QObject):
         """
         if wait_time is not None:
             self.wait_time = wait_time
-        
+            
         # Start with minimum volume
         self.set_volume(0.1)
         
@@ -461,19 +448,31 @@ class QtAudioPlayer(QObject):
             self.logger.warning("No audio files available")
             return False
         
+        # Get the current file list in the order they appear in the combo box
+        combo_files = []
+        if hasattr(self, 'audio_control_widget') and hasattr(self.audio_control_widget, 'file_combo'):
+            for i in range(self.audio_control_widget.file_combo.count()):
+                file_path = self.audio_control_widget.file_combo.itemData(i)
+                if file_path:
+                    combo_files.append(file_path)
+        
+        # If we couldn't get the combo box order, fall back to sorted files
+        if not combo_files:
+            combo_files = sorted(self.audio_files, key=lambda x: os.path.basename(x).lower())
+        
         if not self.current_file:
             # If no file is currently playing, play the first one
-            next_file = self.audio_files[0]
+            next_file = combo_files[0]
         else:
-            # Find the current file in the list
+            # Find the current file in the combo box order
             try:
-                current_index = self.audio_files.index(self.current_file)
+                current_index = combo_files.index(self.current_file)
                 # Get the next file (wrap around to beginning if at end)
-                next_index = (current_index + 1) % len(self.audio_files)
-                next_file = self.audio_files[next_index]
+                next_index = (current_index + 1) % len(combo_files)
+                next_file = combo_files[next_index]
             except ValueError:
                 # Current file not in list, start from beginning
-                next_file = self.audio_files[0]
+                next_file = combo_files[0]
         
         # Load and play the next file
         if self.load_file(next_file):
@@ -493,19 +492,22 @@ class QtAudioPlayer(QObject):
             self.logger.warning("No audio files available")
             return False
         
+        # Get the sorted list of files
+        sorted_files = sorted(self.audio_files, key=lambda x: os.path.basename(x).lower())
+        
         if not self.current_file:
             # If no file is currently playing, play the last one
-            prev_file = self.audio_files[-1]
+            prev_file = sorted_files[-1]
         else:
-            # Find the current file in the list
+            # Find the current file in the sorted list
             try:
-                current_index = self.audio_files.index(self.current_file)
+                current_index = sorted_files.index(self.current_file)
                 # Get the previous file (wrap around to end if at beginning)
-                prev_index = (current_index - 1) % len(self.audio_files)
-                prev_file = self.audio_files[prev_index]
+                prev_index = (current_index - 1) % len(sorted_files)
+                prev_file = sorted_files[prev_index]
             except ValueError:
                 # Current file not in list, start from end
-                prev_file = self.audio_files[-1]
+                prev_file = sorted_files[-1]
         
         # Load and play the previous file
         if self.load_file(prev_file):
@@ -575,7 +577,7 @@ class QtAudioPlayer(QObject):
         except Exception as e:
             self.logger.error(f"Error setting audio output device: {e}")
             return False
-    
+
     def get_current_device(self):
         """
         Get information about the current audio output device.
@@ -599,4 +601,21 @@ class QtAudioPlayer(QObject):
     
     def _on_error(self, error, error_string):
         """Handle media player errors."""
-        self.logger.error(f"Media player error {error}: {error_string}") 
+        self.logger.error(f"Media player error {error}: {error_string}")
+
+    def _load_favorites(self):
+        try:
+            if os.path.exists(self._favorites_path):
+                with open(self._favorites_path, 'r') as f:
+                    favs = json.load(f)
+                    if isinstance(favs, list):
+                        self.favorites = set(favs)
+        except Exception as e:
+            self.logger.warning(f"Could not load favorites: {e}")
+
+    def _save_favorites(self):
+        try:
+            with open(self._favorites_path, 'w') as f:
+                json.dump(list(self.favorites), f, indent=2)
+        except Exception as e:
+            self.logger.warning(f"Could not save favorites: {e}") 
