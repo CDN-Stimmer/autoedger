@@ -12,6 +12,7 @@ class AudioControlWidget(QWidget):
     def __init__(self, audio_player, parent=None):
         super().__init__(parent)
         self.audio_player = audio_player
+        self.audio_player.audio_control_widget = self  # Pass widget reference to player
         self._slider_updating = False  # Flag to prevent feedback loops
         self.logger = logging.getLogger(__name__)  # Initialize logger
         
@@ -54,33 +55,6 @@ class AudioControlWidget(QWidget):
         info_layout = QHBoxLayout(info_frame)
         info_layout.setSpacing(6)
         info_layout.setContentsMargins(6, 2, 6, 2)  # Minimal padding
-        
-        # View switching buttons
-        self.voice_view_button = QPushButton("🎙️") # Microphone symbol
-        self.voice_view_button.setFixedSize(28, 28)
-        self.voice_view_button.setCheckable(True)
-        self.voice_view_button.setStyleSheet("""
-            QPushButton {
-                background-color: #f8f9fa;
-                border-radius: 14px;
-                border: none;
-                padding: 4px;
-                color: #5f6368;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #e8f0fe;
-            }
-            QPushButton:pressed {
-                background-color: #e1e8ed;
-            }
-            QPushButton:checked {
-                background-color: #1a73e8;
-                color: white;
-            }
-        """)
-        self.voice_view_button.clicked.connect(self._switch_to_voice_view)
-        info_layout.addWidget(self.voice_view_button)
         
         # Add voice commands button
         self.voice_commands_button = QPushButton("📋")  # Clipboard symbol
@@ -698,7 +672,7 @@ class AudioControlWidget(QWidget):
 
     def _update_file_name_display(self):
         """Update the file name display and favorite button state."""
-        current_file = self.file_combo.currentData()
+        current_file = self.audio_player.get_current_file()
         if current_file:
             filename = os.path.basename(current_file)
             self.file_name_label.setText(filename)
@@ -835,7 +809,13 @@ class AudioControlWidget(QWidget):
 
     def _on_play_next(self):
         """Handle play next button click."""
-        self.audio_player.play_next()
+        count = self.file_combo.count()
+        if count == 0:
+            return
+        current_index = self.file_combo.currentIndex()
+        next_index = (current_index + 1) % count
+        self.file_combo.setCurrentIndex(next_index)
+        # This will trigger _on_file_selected and start playback
 
     def _on_play_random_file(self):
         """Handle play random button click by calling the correct player method."""
@@ -913,47 +893,6 @@ class AudioControlWidget(QWidget):
             self.audio_player.set_volume(volume)
             self.volume_value.setText(f"{value}%")
         
-    def _switch_to_voice_view(self):
-        """Switch to voice commands view."""
-        self.parent().switch_to_voice_view()  # Assuming the parent widget has this method
-        
-    def switch_back_from_voice(self):
-        """Called when switching back from voice view."""
-        self.voice_view_button.setChecked(False)
-        
-    def _update_ui(self):
-        """Update UI elements based on playback state."""
-        is_playing = self.audio_player.is_playing()
-        self.play_button.setChecked(is_playing)
-        self.play_button.setText("⏸" if is_playing else "▶")
-        
-        is_looping = self.audio_player.is_looping()
-        self.loop_button.setChecked(is_looping)
-        
-        # Update voice status
-        if is_playing:
-            self.voice_status.setText("Listening...")
-        elif self.audio_player.is_paused():
-            self.voice_status.setText("Paused")
-        else:
-            self.voice_status.setText("Stopped")
-        
-    def _on_duration_changed(self, duration_ms):
-        """Handle duration update from player (in milliseconds)."""
-        if duration_ms > 0:
-            duration_sec = duration_ms / 1000.0
-            formatted_total_time = self._format_time(duration_sec)
-            self.logger.debug(f"Duration updated: {duration_sec:.2f} sec, label: {formatted_total_time}")
-            self.total_time.setText(formatted_total_time)
-            self.position_slider.setRange(0, duration_ms)
-        
-    def _on_playback_paused(self):
-        """Handle playback paused."""
-        self.logger.info("Playback paused event received")
-        self.play_button.setChecked(False)
-        self._update_ui()
-        self._update_file_name_display()  # Update file name display
-        
     def _show_device_dialog(self):
         """Show the device selection dialog."""
         dialog = DeviceSelectionDialog(self.audio_player, self)
@@ -962,7 +901,8 @@ class AudioControlWidget(QWidget):
         
     def _on_device_selected(self, device_name, device_id):
         """Handle device selection."""
-        print(f"Selected audio device: {device_name} (ID: {device_id})")
+        self.audio_player.set_output_device(device_id)
+        self.logger.info(f"Selected audio device: {device_name} (ID: {device_id})")
         
     def _on_file_selected(self, index):
         """Handle file selection from combo box."""
@@ -1119,4 +1059,37 @@ class AudioControlWidget(QWidget):
         layout.addLayout(button_layout)
         
         dialog.exec()
+        
+    def _update_ui(self):
+        """Update UI elements based on playback state."""
+        is_playing = self.audio_player.is_playing()
+        self.play_button.setChecked(is_playing)
+        self.play_button.setText("⏸" if is_playing else "▶")
+        
+        is_looping = self.audio_player.is_looping()
+        self.loop_button.setChecked(is_looping)
+        
+        # Update voice status
+        if is_playing:
+            self.voice_status.setText("Listening...")
+        elif self.audio_player.is_paused():
+            self.voice_status.setText("Paused")
+        else:
+            self.voice_status.setText("Stopped")
+        
+    def _on_duration_changed(self, duration_ms):
+        """Handle duration update from player (in milliseconds)."""
+        if duration_ms > 0:
+            duration_sec = duration_ms / 1000.0
+            formatted_total_time = self._format_time(duration_sec)
+            self.logger.debug(f"Duration updated: {duration_sec:.2f} sec, label: {formatted_total_time}")
+            self.total_time.setText(formatted_total_time)
+            self.position_slider.setRange(0, duration_ms)
+        
+    def _on_playback_paused(self):
+        """Handle playback paused."""
+        self.logger.info("Playback paused event received")
+        self.play_button.setChecked(False)
+        self._update_ui()
+        self._update_file_name_display()  # Update file name display
         
