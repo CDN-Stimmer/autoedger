@@ -22,7 +22,6 @@ class AudioControlWidget(QWidget):
         self.hold_drop_percent = 20  # Default hold drop percentage
         
         # Connect audio player signals
-        self.logger.debug("Connecting audio player signals")
         self.audio_player.playback_started.connect(self._on_playback_started)
         self.audio_player.playback_paused.connect(self._on_playback_paused)
         self.audio_player.playback_stopped.connect(self._on_playback_stopped)
@@ -31,7 +30,6 @@ class AudioControlWidget(QWidget):
         self.audio_player.volume_changed.connect(self._on_volume_update)
         self.audio_player.favorites_changed.connect(self._update_file_list)
         self.audio_player.playback_duration_changed.connect(self._on_duration_changed)
-        self.logger.debug("Audio player signals connected")
         
         # Create main layout
         layout = QVBoxLayout(self)
@@ -660,16 +658,13 @@ class AudioControlWidget(QWidget):
     def _on_position_slider_pressed(self):
         """Handle position slider pressed."""
         self.dragging_position = True
-        self.logger.debug("Position slider pressed")
 
     def _on_position_slider_released(self):
         """Handle position slider released."""
         slider_value_ms = self.position_slider.value()
-        self.logger.debug(f"Position slider released at value: {slider_value_ms} ms")
         self.dragging_position = False
         # Allow seeking even when paused
         if self.audio_player.is_playing() or self.audio_player.is_paused(): 
-            self.logger.debug(f"Setting player position to: {slider_value_ms} ms")
             try:
                 # Pass milliseconds directly to the player's set_position
                 self.audio_player.set_position(slider_value_ms)
@@ -682,7 +677,6 @@ class AudioControlWidget(QWidget):
             # Update time label immediately after seeking
             position_seconds = slider_value_ms / 1000.0
             formatted_time = self._format_time(position_seconds)
-            self.logger.debug(f"Updating current time label (on release) to: {formatted_time}")
             self.current_time.setText(formatted_time)
 
     def _on_position_changed(self, value):
@@ -690,7 +684,6 @@ class AudioControlWidget(QWidget):
         if not self._slider_updating and self.dragging_position:
             current_time_seconds = value / 1000.0  # Slider value is milliseconds
             formatted_time = self._format_time(current_time_seconds)
-            self.logger.debug(f"Slider dragged to value: {value} ms, updating label to: {formatted_time}")
             self.current_time.setText(formatted_time)
 
     def _on_playback_started(self):
@@ -705,14 +698,11 @@ class AudioControlWidget(QWidget):
         # Update position slider range with actual duration
         file_path = self.audio_player.get_current_file()
         if file_path:
-            self.logger.debug(f"Getting duration for file: {file_path}")
             duration_sec = self.audio_player.get_file_duration(file_path)
             duration_ms = int(duration_sec * 1000)
-            self.logger.debug(f"Received duration: {duration_sec:.2f} sec ({duration_ms} ms)")
             if duration_ms > 0:
                 self.position_slider.setRange(0, duration_ms) # Range in milliseconds
                 formatted_total_time = self._format_time(duration_sec)
-                self.logger.debug(f"Setting slider range 0-{duration_ms}, total time label: {formatted_total_time}")
                 self.total_time.setText(formatted_total_time)
                 self.current_time.setText("0:00")
                 self.position_slider.setValue(0) # Reset slider position
@@ -805,8 +795,6 @@ class AudioControlWidget(QWidget):
         # Scale the RMS value to a reasonable range (0-1)
         # Using a smaller scaling factor to prevent maxing out
         scaled_level = min(1.0, rms * 1.5)  # Reduced from 2.5 to 1.5
-        
-        self.logger.debug(f"Audio level - RMS: {rms:.3f}, scaled: {scaled_level:.3f}")
 
     def _on_wait_time_changed(self, value):
         """Handle wait time slider change."""
@@ -837,7 +825,6 @@ class AudioControlWidget(QWidget):
         """Toggle play/pause for the currently loaded file."""
         if self.audio_player.is_playing():
             self.audio_player.pause()
-            self.logger.debug("Audio paused via button")
         else:
             # If no file is technically "loaded" but one is selected, load and play it.
             # Otherwise, resume/play the currently loaded one.
@@ -866,7 +853,6 @@ class AudioControlWidget(QWidget):
                           return # Don't proceed if load failed
                 
                 self.audio_player.play()
-                self.logger.debug(f"Audio played/resumed via button: {target_file_to_play}")
             else:
                 self.logger.warning("Play button clicked, but no file loaded or selected.")
                 # Optionally provide user feedback, e.g., status bar message
@@ -883,7 +869,6 @@ class AudioControlWidget(QWidget):
 
     def _on_play_random_file(self):
         """Handle play random button click by calling the correct player method."""
-        self.logger.debug("Random button clicked, calling play_random_file")
         self.audio_player.play_random_file() # Correct method call
         
     def _update_file_list(self):
@@ -1145,11 +1130,10 @@ class AudioControlWidget(QWidget):
             self.voice_status.setText("Stopped")
         
     def _on_duration_changed(self, duration_ms):
-        """Handle duration update from player (in milliseconds)."""
+        """Handle duration change from player."""
         if duration_ms > 0:
             duration_sec = duration_ms / 1000.0
             formatted_total_time = self._format_time(duration_sec)
-            self.logger.debug(f"Duration updated: {duration_sec:.2f} sec, label: {formatted_total_time}")
             self.total_time.setText(formatted_total_time)
             self.position_slider.setRange(0, duration_ms)
         

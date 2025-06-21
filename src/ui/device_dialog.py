@@ -44,7 +44,6 @@ class DeviceSelectionDialog(QDialog):
         
         # Get available devices
         devices = self.audio_player.get_available_devices()
-        self.logger.info(f"Available audio devices: {devices}")
         
         # Add devices to combo box
         for device in devices:
@@ -52,25 +51,20 @@ class DeviceSelectionDialog(QDialog):
             if device['is_default']:
                 display_name += " (Default)"
             self.output_combo.addItem(display_name, device['id'])
-            self.logger.info(f"Added device to combo box: {display_name} (ID: {device['id']})")
         
         # Select current device if available
         current_device = self.audio_player.get_current_device()
-        self.logger.info(f"Current audio device: {current_device}")
         if current_device:
             for i in range(self.output_combo.count()):
                 if self.output_combo.itemData(i) == current_device['id']:
                     self.output_combo.setCurrentIndex(i)
-                    self.logger.info(f"Selected current device in combo box: {current_device['name']}")
                     break
     
     def _on_accepted(self):
         """Handle dialog acceptance."""
         selected_device_id = self.output_combo.currentData()
         if selected_device_id:
-            self.logger.info(f"Attempting to set audio output device to: {selected_device_id}")
             if self.audio_player.set_output_device(selected_device_id):
-                self.logger.info("Successfully set audio output device")
                 self.device_selected.emit(self.output_combo.currentText(), selected_device_id)
                 self.accept()
             else:

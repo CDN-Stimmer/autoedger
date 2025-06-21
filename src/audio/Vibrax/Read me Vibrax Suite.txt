@@ -1,0 +1,22 @@
+Vibrax Suite
+Designed by Mr. T. for Smartstim.com
+Designed using Goldwave
+
+Recommended Trode Configurations:
+Channel 1: Cock Head (Clit)
+Channel 2: Anus 
+Common: Balls or Base of Cock (Vagina)
+
+Channel 1: Cock Head 
+Channel 2: Urethral Tode
+Common: Balls or Base of Cock 
+
+Vibrax wave form uses a base Freq of 840 Hz, with -200Hz  Down wave and +400 Hz Up wave, All Pulses are 8-18 pps with Bump & Bump Squeeze effects
+
+File 1: Symmetrical signals both channel the same
+File 2: Channel 1 is same as File 1, Channel 2 is a Bump Squeeze at 250 Hz shift
+File 3: Symmetrical signals both channel the same,  Up & Down with 3 second base wave
+File 4: Channel 1 is same as File 1, Channel 2 is modified Down Wave
+Bonus: Symettrical Channel 4 Channel 2, all Downwaves
+
+Kit file of all the components is included so you can design your own

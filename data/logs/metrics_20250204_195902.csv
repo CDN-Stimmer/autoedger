@@ -1,0 +1,14 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type,playhead_time
+2025-02-04 20:11:07.725305,0.00,0.00,839.8,0,EM-09-Your so wet now arnt you.Mp3,hooray_started,317.5
+2025-02-04 20:26:42.761998,0.00,0.00,839.8,0,finisher 2.mp3,hooray_started,64.2
+2025-02-04 20:28:35.505548,0.00,0.00,710.6,0,finisher 2.mp3,hooray_started,176.9
+2025-02-04 20:29:06.754582,0.00,0.00,689.1,0,finisher 2.mp3,hooray_started,208.2
+2025-02-04 20:43:05.789500,0.00,0.00,796.9,0,Pounder-03 - Stroke 3-00-50 - Pound 3.mp3,hooray_started,279.6
+2025-02-04 20:54:51.049775,0.00,0.00,602.9,0,Sybianne8.mp3,hooray_started,126.0
+2025-02-04 21:03:26.316776,0.00,0.00,796.9,0,Pounder - On - Pound 0-25-0-25-0-01.mp3,hooray_started,170.2
+2025-02-04 21:04:00.697613,0.00,0.00,796.9,0,Pounder - On - Pound 0-25-0-25-0-01.mp3,hooray_started,204.6
+2025-02-04 21:04:31.583595,0.00,0.00,796.9,0,Pounder - On - Pound 0-25-0-25-0-01.mp3,hooray_started,235.5
+2025-02-04 21:05:16.933974,0.00,0.00,796.9,0,Pounder - On - Pound 0-25-0-25-0-01.mp3,hooray_started,280.8
+2025-02-04 21:06:59.977658,0.00,0.00,602.9,0,d2644f594631ef20aa7958458cc85958cdd53444.mp3,hooray_started,33.3
+2025-02-04 21:07:28.089937,0.00,0.00,602.9,0,d2644f594631ef20aa7958458cc85958cdd53444.mp3,hooray_started,61.4
+2025-02-04 21:07:50.595199,0.00,0.00,602.9,0,d2644f594631ef20aa7958458cc85958cdd53444.mp3,hooray_started,83.9

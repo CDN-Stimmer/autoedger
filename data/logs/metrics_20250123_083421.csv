@@ -1,0 +1,2 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type,playhead_time
+2025-01-23 08:34:30.091049,0.00,0.00,495.3,0,15a0044832a10fe2bbf595e638f59659760d3da9.mp3,hooray_started,4.9

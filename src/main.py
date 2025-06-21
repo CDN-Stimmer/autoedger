@@ -17,7 +17,7 @@ from audio.qt_player import QtAudioPlayer
 def setup_logging():
     """Set up logging configuration."""
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
     return logging.getLogger(__name__)

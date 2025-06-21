@@ -34,19 +34,15 @@ class QtAudioPlayer(QObject):
         
         # Create media player and audio output
         self.player = QMediaPlayer()
-        self.logger.info("Created QMediaPlayer instance")
         
         # Create default audio output
         self.audio_output = QAudioOutput()
-        self.logger.info("Created QAudioOutput instance")
         
         # Log available audio devices
         devices = self.get_available_devices()
-        self.logger.info(f"Available audio devices: {devices}")
         
         # Set audio output to player
         self.player.setAudioOutput(self.audio_output)
-        self.logger.info("Set audio output to media player")
         
         # Connect signals
         self.player.positionChanged.connect(self._on_position_changed)
@@ -56,7 +52,6 @@ class QtAudioPlayer(QObject):
         
         # Set default volume to 100%
         self.audio_output.setVolume(1.0)
-        self.logger.info(f"Initialized audio player with default device and 100% volume. Current device: {self.audio_output.device().description() if self.audio_output.device() else 'None'}")
         
         # Initialize additional properties
         self.current_file = None
@@ -157,10 +152,6 @@ class QtAudioPlayer(QObject):
             self.logger.warning("No file loaded to play")
             return
             
-        self.logger.info(f"Starting playback of {self.current_file}")
-        self.logger.info(f"Current audio device: {self.audio_output.device().description() if self.audio_output.device() else 'None'}")
-        self.logger.info(f"Current volume: {self.audio_output.volume()}")
-        
         self.player.play()
         self._explicit_stop = False
     

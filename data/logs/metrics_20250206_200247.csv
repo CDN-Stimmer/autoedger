@@ -1,0 +1,23 @@
+timestamp,pressure_kpa,volume_db,frequency_hz,cycle_number,audio_file,event_type,playhead_time
+2025-02-06 20:09:42.405535,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe1-50.Mp3,hooray_started,107.9
+2025-02-06 20:23:35.936009,0.00,0.00,562.5,0,SA - Bastard the directors cut.mp3,hooray_started,464.2
+2025-02-06 20:28:40.782915,0.00,0.00,656.2,0,SA - Bastard the directors cut.mp3,hooray_started,769.1
+2025-02-06 20:29:22.556433,0.00,0.00,632.8,0,SA - Bastard the directors cut.mp3,hooray_started,810.8
+2025-02-06 20:30:04.280397,0.00,0.00,585.9,0,SA - Bastard the directors cut.mp3,hooray_started,852.6
+2025-02-06 20:30:30.669835,0.00,0.00,562.5,0,SA - Bastard the directors cut.mp3,hooray_started,878.9
+2025-02-06 20:35:41.743445,0.00,0.00,679.7,0,SA - Bastard the directors cut.mp3,hooray_started,1190.1
+2025-02-06 20:36:00.022958,0.00,0.00,562.5,0,SA - Bastard the directors cut.mp3,hooray_started,1208.3
+2025-02-06 20:48:31.987427,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe0-50.Mp3,hooray_started,193.7
+2025-02-06 20:49:20.011931,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe0-50.Mp3,hooray_started,241.7
+2025-02-06 20:53:41.578097,0.00,0.00,602.9,0,JV Squirt2.mp3,hooray_started,185.6
+2025-02-06 20:54:38.921065,0.00,0.00,602.9,0,JV Squirt2.mp3,hooray_started,242.8
+2025-02-06 20:55:06.048108,0.00,0.00,602.9,0,JV Squirt2.mp3,hooray_started,269.9
+2025-02-06 20:56:23.057167,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe0-50.Mp3,hooray_started,28.0
+2025-02-06 20:58:19.148195,0.00,0.00,796.7,0,EFun-800-Square-StrokeMe0-50.Mp3,hooray_started,144.0
+2025-02-06 20:59:36.298289,0.00,0.00,2401.0,0,EFun-800-Square-StrokeMe0-50.Mp3,hooray_started,221.2
+2025-02-06 21:02:09.685382,0.00,0.00,646.0,0,f4e28c267ea99289227382944aad429ddbbb4f7b.mp3,hooray_started,9.2
+2025-02-06 21:02:50.679298,0.00,0.00,646.0,0,f4e28c267ea99289227382944aad429ddbbb4f7b.mp3,hooray_started,50.2
+2025-02-06 21:04:38.440200,0.00,0.00,796.7,0,EFun-800-Sign-StrokeMe1-75.Mp3,hooray_started,50.9
+2025-02-06 21:06:04.570577,0.00,0.00,796.7,0,EFun-800-Sign-StrokeMe1-75.Mp3,hooray_started,136.9
+2025-02-06 21:09:12.041141,0.00,0.00,1367.4,0,Sybianne15.mp3,hooray_started,16.3
+2025-02-06 21:13:55.693276,0.00,0.00,1184.3,0,Sybianne15.mp3,hooray_started,300.0

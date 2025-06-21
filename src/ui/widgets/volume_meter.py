@@ -50,7 +50,6 @@ class VolumeMeter(QWidget):
         else:
             self._peak_level = max(self._level, self._peak_level - self._peak_decay)
             
-        self.logger.debug(f"{self.label.text()} meter - level: {self._level:.3f}, peak: {self._peak_level:.3f}")
         self.update()
         
     def paintEvent(self, event):
@@ -65,8 +64,6 @@ class VolumeMeter(QWidget):
             x = self.label.width() + 5  # Start after label with margin
             y = 2  # Add margin
             meter_height = height - 4  # Account for margins
-            
-            self.logger.debug(f"{self.label.text()} meter painted - width: {width}, level_width: {int(width * self._level)}")
             
             # Create gradient (horizontal)
             gradient = QLinearGradient(x, y, x + width, y)

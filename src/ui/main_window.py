@@ -199,8 +199,6 @@ class MainWindow(QMainWindow):
 
     def _handle_voice_command(self, command):
         """Handle voice commands."""
-        self.logger.debug(f"Received voice command: {command}")
-
         # Update voice command widget
         self.audio_control.voice_status.setText(f"Command: {command}")
 

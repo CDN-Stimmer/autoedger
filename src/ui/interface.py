@@ -186,7 +186,6 @@ class Interface:
                 new_text = f"File: {current_file}"
                 if current_text != new_text:
                     self.file_name_label.config(text=new_text)
-                    self.logger.debug(f"Updated filename display to: {current_file}")
             
             # Update volume only if it has changed
             volume = int(self.audio_player.get_volume() * 100)
@@ -200,7 +199,6 @@ class Interface:
 
     def _skip_file(self):
         """Skip to the next random file."""
-        self.logger.debug("Skipping to next file")
         # Update UI immediately to show action is being taken
         self.file_name_label.config(text="File: Loading...")
         self.root.update_idletasks()
@@ -221,7 +219,6 @@ class Interface:
 
     def _stop_playback(self):
         """Stop the current playback."""
-        self.logger.debug("Stopping playback")
         if self.audio_player.stop_playback():
             self.file_name_label.config(text="File: --")
             self.time_remaining_label.config(text="Time Remaining: --:--")
@@ -278,7 +275,6 @@ class Interface:
         """Handle the pause and resume functionality."""
         try:
             time.sleep(self.wait_time)
-            self.logger.debug("Resuming after pause")
             if self.audio_player.play_random_file(self._handle_time_update):
                 self._update_ui_state()  # Update UI immediately
                 self.audio_player.fade_in_volume()
@@ -310,6 +306,5 @@ class Interface:
             volume = int(self.audio_player.get_volume() * 100)
             self.volume_label.config(text=f"Volume: {volume}%")
             
-            self.logger.debug("UI state updated")
         except Exception as e:
             self.logger.error(f"Error updating UI state: {str(e)}") 
