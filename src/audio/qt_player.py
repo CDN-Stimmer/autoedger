@@ -2,6 +2,7 @@ import os
 import logging
 import random
 import json
+import time
 from PySide6.QtCore import QObject, Signal, Slot, QUrl, QTimer
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput, QAudioDevice, QMediaDevices
 from mutagen.mp3 import MP3
@@ -21,6 +22,7 @@ class QtAudioPlayer(QObject):
     time_updated = Signal(int)  # Current position in milliseconds
     audio_data_ready = Signal(list)  # Audio data for visualization
     favorites_changed = Signal()  # Signal emitted when favorites list changes
+    ramp_active_changed = Signal(bool)
     
     def __init__(self, logger=None):
         """
@@ -52,6 +54,7 @@ class QtAudioPlayer(QObject):
         
         # Set default volume to 100%
         self.audio_output.setVolume(1.0)
+        self.volume_changed.emit(1.0)
         
         # Initialize additional properties
         self.current_file = None
@@ -68,6 +71,15 @@ class QtAudioPlayer(QObject):
         self.update_timer.setInterval(100)  # 100ms update interval
         self.update_timer.timeout.connect(self._update_time_and_audio)
         self.update_timer.start()
+        
+        # Ramp state
+        self._ramp_timer = None
+        self._ramp_remaining_steps = 0
+        self._ramp_step_increment = 0.0
+        self._ramp_active = False
+        self._ramp_start_time_s = 0.0
+        self._ramp_duration_s = 0
+        self._ramp_start_volume = 0.0
         
         # Scan for audio files
         self._scan_audio_files()
@@ -301,6 +313,95 @@ class QtAudioPlayer(QObject):
     def get_volume(self):
         """Get the current volume level (0.0 to 1.0)."""
         return self.audio_output.volume()
+
+    def start_volume_ramp(self, start_volume: float, duration_seconds: int) -> None:
+        """Ramp volume from start_volume to 1.0 over duration_seconds.
+        If a previous ramp is in progress, it will be cancelled.
+        """
+        # Clamp inputs
+        start_volume = max(0.0, min(1.0, float(start_volume)))
+        duration_seconds = max(1, int(duration_seconds))
+        
+        # Cancel existing ramp
+        if self._ramp_timer is not None:
+            try:
+                self._ramp_timer.stop()
+            except Exception:
+                pass
+            self._ramp_timer = None
+        
+        # Set starting volume immediately
+        self.set_volume(start_volume)
+        
+        # Compute steps: 100ms interval
+        interval_ms = 100
+        total_steps = max(1, int((duration_seconds * 1000) / interval_ms))
+        current_volume = self.get_volume()
+        target_volume = 1.0
+        self._ramp_remaining_steps = total_steps
+        self._ramp_step_increment = (target_volume - current_volume) / float(total_steps)
+        self._ramp_active = True
+        self._ramp_start_time_s = time.time()
+        self._ramp_duration_s = duration_seconds
+        self._ramp_start_volume = start_volume
+        self.ramp_active_changed.emit(True)
+        
+        # If already at or above target, nothing to do
+        if self._ramp_step_increment <= 0:
+            self.set_volume(1.0)
+            self._ramp_active = False
+            self.ramp_active_changed.emit(False)
+            return
+        
+        # Create and start timer
+        self._ramp_timer = QTimer(self)
+        self._ramp_timer.setInterval(interval_ms)
+        self._ramp_timer.timeout.connect(self._on_ramp_tick)
+        self._ramp_timer.start()
+        self.logger.info(f"Starting volume ramp: start={start_volume}, duration={duration_seconds}s, steps={total_steps}")
+
+    def _on_ramp_tick(self) -> None:
+        if self._ramp_remaining_steps <= 0:
+            if self._ramp_timer is not None:
+                self._ramp_timer.stop()
+                self._ramp_timer = None
+            self.set_volume(1.0)
+            self._ramp_active = False
+            self.ramp_active_changed.emit(False)
+            return
+        new_volume = self.get_volume() + self._ramp_step_increment
+        if new_volume >= 1.0:
+            if self._ramp_timer is not None:
+                self._ramp_timer.stop()
+                self._ramp_timer = None
+            self.set_volume(1.0)
+            self._ramp_active = False
+            self.ramp_active_changed.emit(False)
+            return
+        self.set_volume(new_volume)
+        self._ramp_remaining_steps -= 1
+
+    def _get_ramp_target_volume_now(self) -> float:
+        """Return the target volume per the active main ramp at current time."""
+        if not self._ramp_active:
+            return 1.0
+        elapsed = max(0.0, time.time() - self._ramp_start_time_s)
+        if self._ramp_duration_s <= 0:
+            return 1.0
+        progress = min(1.0, elapsed / float(self._ramp_duration_s))
+        return min(1.0, self._ramp_start_volume + progress * (1.0 - self._ramp_start_volume))
+
+    def stop_volume_ramp(self) -> None:
+        """Stop any ongoing volume ramp and mark as inactive."""
+        if self._ramp_timer is not None:
+            try:
+                self._ramp_timer.stop()
+            except Exception:
+                pass
+            self._ramp_timer = None
+        if self._ramp_active:
+            self._ramp_active = False
+            self.ramp_active_changed.emit(False)
     
     def is_playing(self):
         """Check if audio is currently playing."""
@@ -421,11 +522,12 @@ class QtAudioPlayer(QObject):
     def _hooray_volume_step(self):
         """Increase volume by one step."""
         current_volume = self.get_volume()
-        if current_volume >= 1.0:
+        target = self._get_ramp_target_volume_now()
+        if current_volume >= target:
             self.volume_timer.stop()
             return
         
-        new_volume = min(1.0, current_volume + 0.01)
+        new_volume = min(target, current_volume + 0.01)
         self.set_volume(new_volume)
     
     def play_next(self):

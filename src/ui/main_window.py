@@ -1,19 +1,21 @@
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, 
                                  QHBoxLayout, QPushButton, QLabel, QFrame, QSpacerItem, QSizePolicy, QSlider, QSpinBox, QStatusBar,
                                  QScrollArea, QGridLayout, QStackedWidget)
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, QDateTime
 from PySide6.QtGui import QIcon, QFont
 from ui.widgets.audio_control_widget import AudioControlWidget
 from ui.widgets.voice_command_widget import VoiceCommandWidget
 from audio.voice_control import VoiceController
 from ui.device_dialog import DeviceSelectionDialog
 import os
+import csv
 
 class MainWindow(QMainWindow):
     def __init__(self, logger, audio_player):
         super().__init__()
         self.logger = logger
         self.audio_player = audio_player
+        self.session_start_ms = QDateTime.currentMSecsSinceEpoch()
         
         # Initialize voice control with correct model path using relative paths
         script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,18 +25,18 @@ class MainWindow(QMainWindow):
         self.voice_controller.command_recognized.connect(self._handle_voice_command)
         
         # Set window properties
-        self.setWindowTitle("Audio Control")
+        self.setWindowTitle("The Controller")
         self.setMinimumSize(400, 600)
         
-        # Set window style
-        self.setStyleSheet("""
-            QMainWindow {
-                background-color: #f5f5f5;
-            }
-            QWidget {
-                font-family: -apple-system, 'Helvetica Neue', sans-serif;
-            }
-        """)
+        # Top App Bar
+        app_bar = QFrame()
+        app_bar.setObjectName("AppBar")
+        app_bar_layout = QHBoxLayout(app_bar)
+        app_bar_layout.setContentsMargins(12, 6, 12, 6)
+        # Removed left title label
+        app_bar_layout.addStretch()
+
+        # Removed theme toggle
         
         # Create central widget and layout
         central_widget = QWidget()
@@ -42,6 +44,9 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(central_widget)
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Add app bar at the top
+        layout.addWidget(app_bar)
         
         # Create stacked widget for different views
         self.stacked_widget = QStackedWidget()
@@ -65,27 +70,12 @@ class MainWindow(QMainWindow):
         
         # Add voice commands reference
         commands_frame = QFrame()
-        commands_frame.setStyleSheet("""
-            QFrame {
-                background-color: #e8f0fe;
-                border-radius: 12px;
-                padding: 12px;
-            }
-        """)
+        commands_frame.setObjectName("Card")
         commands_layout = QVBoxLayout(commands_frame)
         
         # Title for commands section
         commands_title = QLabel("Voice Commands")
-        commands_title.setStyleSheet("""
-            QLabel {
-                color: #1a73e8;
-                font-size: 16px;
-                font-weight: 500;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
-                padding-bottom: 8px;
-                border-bottom: 1px solid #dadce0;
-            }
-        """)
+        commands_title.setObjectName("AppTitle")
         commands_layout.addWidget(commands_title)
         
         # Add command descriptions
@@ -105,20 +95,7 @@ class MainWindow(QMainWindow):
             command_layout = QHBoxLayout()
             
             cmd_label = QLabel(command)
-            cmd_label.setStyleSheet("""
-                QLabel {
-                    color: #1a73e8;
-                    font-weight: 500;
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
-                }
-            """)
             desc_label = QLabel(description)
-            desc_label.setStyleSheet("""
-                QLabel {
-                    color: #5f6368;
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
-                }
-            """)
             
             command_layout.addWidget(cmd_label)
             command_layout.addWidget(desc_label)
@@ -134,12 +111,6 @@ class MainWindow(QMainWindow):
         
         # Create bottom navigation bar
         nav_bar = QFrame()
-        nav_bar.setStyleSheet("""
-            QFrame {
-                background-color: white;
-                border-top: 1px solid #e0e0e0;
-            }
-        """)
         nav_layout = QHBoxLayout(nav_bar)
         nav_layout.setSpacing(8)
         
@@ -169,19 +140,26 @@ class MainWindow(QMainWindow):
         self.audio_button.setChecked(True)  # Start with audio view
         
         nav_layout.addStretch()  # Push buttons to the left
-        layout.addLayout(nav_layout)
+        # Add "I'm done" button on the right
+        self.done_button = QPushButton("I'm done")
+        self.done_button.setStyleSheet("""
+            QPushButton {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 16px;
+                background: #ea4335;
+                color: white;
+                font-size: 14px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+            }
+            QPushButton:hover { background: #d93025; }
+        """)
+        self.done_button.clicked.connect(self._on_done_clicked)
+        nav_layout.addWidget(self.done_button)
+        layout.addWidget(nav_bar)
         
         # Create status bar with modern styling
         self.status_bar = QStatusBar()
-        self.status_bar.setStyleSheet("""
-            QStatusBar {
-                background-color: white;
-                color: #666;
-                padding: 3px 8px;
-                border-top: 1px solid #e0e0e0;
-                font-size: 12px;
-            }
-        """)
         self.setStatusBar(self.status_bar)
         self.status_bar.showMessage("Ready")
         
@@ -246,6 +224,10 @@ class MainWindow(QMainWindow):
                         self.status_bar.showMessage(f"Added {current_file} to favorites", 2000)
                 else:
                     self.logger.warning("add_to_favorites method not found in audio_player")
+        elif command in ["easy", "medium", "hard"]:
+            # Set difficulty in the audio control widget
+            self.audio_control.set_auto_mode_difficulty(command)
+            self.status_bar.showMessage(f"Difficulty set to {command.capitalize()}", 2000)
 
     def update_status(self):
         """Update status bar with current playback information."""
@@ -276,4 +258,41 @@ class MainWindow(QMainWindow):
     def _on_device_selected(self, device_name, device_id):
         """Handle audio device selection."""
         self.audio_player.set_output_device(device_id)
-        self.status_bar.showMessage(f"Audio device changed to: {device_name}", 2000) 
+        self.status_bar.showMessage(f"Audio device changed to: {device_name}", 2000)
+
+    def _on_done_clicked(self):
+        """Write session performance stats and close the app."""
+        try:
+            # Compute total length
+            end_ms = QDateTime.currentMSecsSinceEpoch()
+            total_seconds = max(0, (end_ms - self.session_start_ms) // 1000)
+            minutes = total_seconds // 60
+            seconds = total_seconds % 60
+            total_length_str = f"{minutes}:{seconds:02d}"
+
+            # Total edges from UI label
+            try:
+                total_edges = int(self.audio_control.hooray_counter.text())
+            except Exception:
+                total_edges = 0
+
+            # Final file name
+            final_file_path = self.audio_player.get_current_file() if hasattr(self.audio_player, 'get_current_file') else None
+            final_file = os.path.basename(final_file_path) if final_file_path else ""
+
+            # CSV path (project root or src/data/logs if preferred)
+            csv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../PerformanceStats.CSV'))
+
+            # Ensure header exists; append row
+            file_exists = os.path.exists(csv_path)
+            with open(csv_path, 'a', newline='') as f:
+                writer = csv.writer(f)
+                if not file_exists:
+                    writer.writerow(["Total length", "Total edges", "Final file"])
+                writer.writerow([total_length_str, total_edges, final_file])
+            self.logger.info(f"Session stats written to {csv_path}")
+        except Exception as e:
+            self.logger.error(f"Failed to write PerformanceStats: {e}")
+        finally:
+            # Close the application
+            self.close() 

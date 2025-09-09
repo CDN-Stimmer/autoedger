@@ -7,6 +7,7 @@ import logging
 from PySide6.QtGui import QColor, QIcon, QFont
 from PySide6.QtMultimedia import QMediaPlayer
 from ..device_dialog import DeviceSelectionDialog
+from PySide6.QtWidgets import QRadioButton, QButtonGroup, QStyle
 
 class AudioControlWidget(QWidget):
     def __init__(self, audio_player, parent=None):
@@ -30,6 +31,8 @@ class AudioControlWidget(QWidget):
         self.audio_player.volume_changed.connect(self._on_volume_update)
         self.audio_player.favorites_changed.connect(self._update_file_list)
         self.audio_player.playback_duration_changed.connect(self._on_duration_changed)
+        if hasattr(self.audio_player, 'ramp_active_changed'):
+            self.audio_player.ramp_active_changed.connect(self._on_ramp_active_changed)
         
         # Create main layout
         layout = QVBoxLayout(self)
@@ -37,9 +40,7 @@ class AudioControlWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         
         # Add device selection button
-        device_button = QPushButton("Select Audio Device")
-        device_button.clicked.connect(self._show_device_dialog)
-        layout.addWidget(device_button)
+        # Removed device selection button
         
         # Create playback info section with reduced height
         info_frame = QFrame()
@@ -103,16 +104,17 @@ class AudioControlWidget(QWidget):
         self.hooray_counter.setStyleSheet("""
             QLabel {
                 color: #34a853;
-                font-size: 14px;
-                font-weight: 500;
-                padding: 2px 6px;
+                font-size: 20px;
+                font-weight: 700;
+                padding: 4px 10px;
                 background: #f1f8f1;
-                border-radius: 4px;
-                min-width: 20px;
+                border-radius: 6px;
+                min-width: 32px;
                 text-align: center;
             }
         """)
         self.hooray_counter.setAlignment(Qt.AlignCenter)
+        counter_container.addWidget(QLabel("Edges"))
         counter_container.addWidget(self.hooray_counter)
         info_layout.addLayout(counter_container)
         
@@ -292,6 +294,9 @@ class AudioControlWidget(QWidget):
             }
         """)
         self.prev_button.clicked.connect(self._on_play_previous)
+        self.prev_button.setText("")
+        self.prev_button.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipBackward))
+        self.prev_button.setIconSize(QSize(20, 20))
         buttons_row.addWidget(self.prev_button)
         
         # Play/Pause button
@@ -317,6 +322,9 @@ class AudioControlWidget(QWidget):
             }
         """)
         self.play_button.clicked.connect(self._on_play_pause_toggle)
+        self.play_button.setText("")
+        self.play_button.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        self.play_button.setIconSize(QSize(20, 20))
         buttons_row.addWidget(self.play_button)
         
         # Next file button
@@ -341,6 +349,9 @@ class AudioControlWidget(QWidget):
             }
         """)
         self.next_button.clicked.connect(self._on_play_next)
+        self.next_button.setText("")
+        self.next_button.setIcon(self.style().standardIcon(QStyle.SP_MediaSkipForward))
+        self.next_button.setIconSize(QSize(20, 20))
         buttons_row.addWidget(self.next_button)
         
         # Random button
@@ -353,6 +364,9 @@ class AudioControlWidget(QWidget):
         self.stop_button = QPushButton("⏹") # Stop symbol
         self.stop_button.setFixedSize(40, 40)
         self.stop_button.setStyleSheet(self.next_button.styleSheet()) # Reuse style from Next
+        self.stop_button.setText("")
+        self.stop_button.setIcon(self.style().standardIcon(QStyle.SP_MediaStop))
+        self.stop_button.setIconSize(QSize(20, 20))
         buttons_row.addWidget(self.stop_button)
         
         # Loop button
@@ -523,21 +537,49 @@ class AudioControlWidget(QWidget):
         
         # Wait time controls
         wait_container = QFrame()
+        self.wait_container = wait_container  # For color feedback
         wait_container.setStyleSheet("""
             QFrame {
-                background-color: #ffffff;
+                background-color: #fffbe6;
                 border-radius: 8px;
                 padding: 8px;
             }
         """)
         wait_layout = QVBoxLayout(wait_container)  # Changed to vertical layout
         wait_layout.setSpacing(8)
+
+        # Ramp-up controls
+        ramp_container = QFrame()
+        ramp_container.setStyleSheet("""
+            QFrame {
+                background-color: #ffffff;
+                border-radius: 8px;
+                padding: 8px;
+            }
+        """)
+        ramp_layout = QHBoxLayout(ramp_container)
+        ramp_layout.setSpacing(8)
+        ramp_start_label = QLabel("Ramp start %:")
+        ramp_start_label.setStyleSheet(volume_label.styleSheet())
+        self.ramp_start_spin = QSpinBox()
+        self.ramp_start_spin.setRange(0, 100)
+        self.ramp_start_spin.setValue(10)
+        ramp_duration_label = QLabel("Duration (s):")
+        ramp_duration_label.setStyleSheet(volume_label.styleSheet())
+        self.ramp_duration_spin = QSpinBox()
+        self.ramp_duration_spin.setRange(1, 180)
+        self.ramp_duration_spin.setValue(10)
+        ramp_duration_label.setText("Duration (min):")
+        self.ramp_button = QPushButton("Start Ramp")
+        self.ramp_button.clicked.connect(self._on_start_ramp)
+        ramp_layout.addWidget(ramp_start_label)
+        ramp_layout.addWidget(self.ramp_start_spin)
+        ramp_layout.addWidget(ramp_duration_label)
+        ramp_layout.addWidget(self.ramp_duration_spin)
+        ramp_layout.addWidget(self.ramp_button)
+        controls_frame_layout.addWidget(ramp_container)
         
-        # Wait time slider row
-        wait_slider_row = QHBoxLayout()
-        wait_slider_row.setSpacing(8)
-        
-        # Wait time label
+        # Wait time label (define early for style reuse)
         wait_label = QLabel("Wait Time:")
         wait_label.setStyleSheet("""
             QLabel {
@@ -546,8 +588,32 @@ class AudioControlWidget(QWidget):
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
             }
         """)
-        wait_slider_row.addWidget(wait_label)
         
+        # Difficulty selector row
+        difficulty_row = QHBoxLayout()
+        difficulty_row.setSpacing(8)
+        difficulty_label = QLabel("Difficulty:")
+        difficulty_label.setStyleSheet(wait_label.styleSheet())
+        difficulty_row.addWidget(difficulty_label)
+        self.difficulty_group = QButtonGroup(self)
+        self.easy_radio = QRadioButton("Easy")
+        self.medium_radio = QRadioButton("Medium")
+        self.hard_radio = QRadioButton("Hard")
+        self.difficulty_group.addButton(self.easy_radio, 0)
+        self.difficulty_group.addButton(self.medium_radio, 1)
+        self.difficulty_group.addButton(self.hard_radio, 2)
+        self.medium_radio.setChecked(True)
+        difficulty_row.addWidget(self.easy_radio)
+        difficulty_row.addWidget(self.medium_radio)
+        difficulty_row.addWidget(self.hard_radio)
+        wait_layout.addLayout(difficulty_row)
+        self.auto_mode_difficulty = 'medium'  # Default
+        self.difficulty_group.buttonClicked.connect(self._on_difficulty_changed)
+        
+        # Wait time slider row
+        wait_slider_row = QHBoxLayout()
+        wait_slider_row.setSpacing(8)
+        wait_slider_row.addWidget(wait_label)
         # Wait time slider
         self.wait_slider = QSlider(Qt.Horizontal)
         self.wait_slider.setStyleSheet("""
@@ -583,12 +649,10 @@ class AudioControlWidget(QWidget):
         self.wait_slider.setValue(8)  # Default value of 8 seconds
         self.wait_slider.valueChanged.connect(self._on_wait_time_changed)
         wait_slider_row.addWidget(self.wait_slider)
-        
         # Wait time value label
         self.wait_time_value = QLabel("8s")
         self.wait_time_value.setStyleSheet(wait_label.styleSheet())
         wait_slider_row.addWidget(self.wait_time_value)
-        
         # Auto mode checkbox
         self.auto_wait_checkbox = QCheckBox("Auto")
         self.auto_wait_checkbox.setStyleSheet("""
@@ -600,8 +664,9 @@ class AudioControlWidget(QWidget):
         """)
         self.auto_wait_checkbox.stateChanged.connect(self._on_auto_wait_toggled)
         wait_slider_row.addWidget(self.auto_wait_checkbox)
-        
         wait_layout.addLayout(wait_slider_row)
+        # Only enable when auto mode is checked (now that auto_wait_checkbox exists)
+        self._set_difficulty_enabled(self.auto_wait_checkbox.isChecked())
         
         # NOW button
         self.now_button = QPushButton("NOW")
@@ -640,9 +705,38 @@ class AudioControlWidget(QWidget):
         # Initialize UI
         self._update_file_list()
         self._update_ui()
+        # Set startup volume to 100% and reflect in UI
+        try:
+            self.audio_player.set_volume(1.0)
+        except Exception:
+            pass
+        self.volume_slider.setValue(100)
+        self.volume_value.setText("100%")
+        # Default wait mode to Auto and Easy
+        self.auto_wait_checkbox.setChecked(True)
+        self.easy_radio.setChecked(True)
+        self._on_auto_wait_toggled(True)
+        self._on_difficulty_changed()
         
         # Connect file combo box signal
         self.file_combo.currentIndexChanged.connect(self._on_file_selected)
+
+    def _on_start_ramp(self):
+        # Toggle behavior: start or stop ramp
+        if hasattr(self.audio_player, '_ramp_active') and self.audio_player._ramp_active:
+            if hasattr(self.audio_player, 'stop_volume_ramp'):
+                self.audio_player.stop_volume_ramp()
+            return
+        start_percent = self.ramp_start_spin.value()
+        duration_minutes = self.ramp_duration_spin.value()
+        duration_seconds = duration_minutes * 60
+        self.audio_player.start_volume_ramp(start_percent / 100.0, duration_seconds)
+
+    def _on_ramp_active_changed(self, active: bool):
+        self.ramp_button.setText("Stop Ramp" if active else "Start Ramp")
+        self.ramp_button.setProperty("primary", active)
+        self.ramp_button.style().unpolish(self.ramp_button)
+        self.ramp_button.style().polish(self.ramp_button)
 
     def _format_time(self, seconds):
         """Format time in MM:SS format."""
@@ -808,7 +902,14 @@ class AudioControlWidget(QWidget):
         current_count = int(self.hooray_counter.text())
         self.hooray_counter.setText(str(current_count + 1))
         if self.auto_wait_checkbox.isChecked():
-            wait_time = random.randint(4, 20)
+            if self.auto_mode_difficulty == 'easy':
+                wait_time = random.randint(12, 25)
+            elif self.auto_mode_difficulty == 'medium':
+                wait_time = random.randint(8, 15)
+            elif self.auto_mode_difficulty == 'hard':
+                wait_time = random.randint(4, 8)
+            else:
+                wait_time = random.randint(8, 15)  # fallback
         else:
             wait_time = self.wait_slider.value()
         self.audio_player.start_hooray_cycle(wait_time)
@@ -929,6 +1030,8 @@ class AudioControlWidget(QWidget):
             self._slider_updating = True
             self.volume_slider.setValue(int(volume * 100))
             self._slider_updating = False
+        # Always reflect label to the latest value
+        self.volume_value.setText(f"{int(round(volume * 100))}%")
         
     def resizeEvent(self, event):
         """Handle widget resize events."""
@@ -946,9 +1049,7 @@ class AudioControlWidget(QWidget):
         
     def _show_device_dialog(self):
         """Show the device selection dialog."""
-        dialog = DeviceSelectionDialog(self.audio_player, self)
-        dialog.device_selected.connect(self._on_device_selected)
-        dialog.exec()
+        pass
         
     def _on_device_selected(self, device_name, device_id):
         """Handle device selection."""
@@ -1116,7 +1217,10 @@ class AudioControlWidget(QWidget):
         """Update UI elements based on playback state."""
         is_playing = self.audio_player.is_playing()
         self.play_button.setChecked(is_playing)
-        self.play_button.setText("⏸" if is_playing else "▶")
+        # Toggle play/pause icon
+        self.play_button.setIcon(
+            self.style().standardIcon(QStyle.SP_MediaPause) if is_playing else self.style().standardIcon(QStyle.SP_MediaPlay)
+        )
         
         is_looping = self.audio_player.is_looping()
         self.loop_button.setChecked(is_looping)
@@ -1144,9 +1248,44 @@ class AudioControlWidget(QWidget):
         self._update_ui()
         self._update_file_name_display()  # Update file name display
         
+    def _on_difficulty_changed(self):
+        if self.easy_radio.isChecked():
+            self.auto_mode_difficulty = 'easy'
+        elif self.medium_radio.isChecked():
+            self.auto_mode_difficulty = 'medium'
+        elif self.hard_radio.isChecked():
+            self.auto_mode_difficulty = 'hard'
+        self._update_wait_container_color()
+    def _set_difficulty_enabled(self, enabled):
+        self.easy_radio.setEnabled(enabled)
+        self.medium_radio.setEnabled(enabled)
+        self.hard_radio.setEnabled(enabled)
+    def _update_wait_container_color(self):
+        color = {
+            'easy': '#e6ffe6',   # green
+            'medium': '#fffbe6', # yellow
+            'hard': '#ffe6e6'    # red
+        }.get(self.auto_mode_difficulty, '#fffbe6')
+        self.wait_container.setStyleSheet(f"""
+            QFrame {{
+                background-color: {color};
+                border-radius: 8px;
+                padding: 8px;
+            }}
+        """)
+    def set_auto_mode_difficulty(self, difficulty):
+        # For programmatic (voice) changes
+        if difficulty == 'easy':
+            self.easy_radio.setChecked(True)
+        elif difficulty == 'medium':
+            self.medium_radio.setChecked(True)
+        elif difficulty == 'hard':
+            self.hard_radio.setChecked(True)
+        self._on_difficulty_changed()
     def _on_auto_wait_toggled(self, state):
-        """Enable/disable wait time slider and value label based on auto mode."""
         auto = self.auto_wait_checkbox.isChecked()
         self.wait_slider.setEnabled(not auto)
         self.wait_time_value.setEnabled(not auto)
+        self._set_difficulty_enabled(auto)
+        self._update_wait_container_color()
         

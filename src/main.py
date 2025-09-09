@@ -14,6 +14,7 @@ from qasync import QEventLoop
 from ui.main_window import MainWindow
 from audio.qt_player import QtAudioPlayer
 
+
 def setup_logging():
     """Set up logging configuration."""
     logging.basicConfig(
@@ -36,6 +37,8 @@ def main():
         if app is None:
             app = QApplication(sys.argv)
             
+        # Theme application removed; using default Qt styling
+
         loop = QEventLoop(app)
         asyncio.set_event_loop(loop)
         
@@ -117,5 +120,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+    
     
