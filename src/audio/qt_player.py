@@ -8,6 +8,7 @@ from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput, QAudioDevice, QMedi
 from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 from mutagen import File as MutagenFile, MutagenError
+from .playlist_manager import PlaylistManager
 
 class QtAudioPlayer(QObject):
     """
@@ -23,6 +24,7 @@ class QtAudioPlayer(QObject):
     audio_data_ready = Signal(list)  # Audio data for visualization
     favorites_changed = Signal()  # Signal emitted when favorites list changes
     ramp_active_changed = Signal(bool)
+    playlists_changed = Signal()  # Signal emitted when playlists change
     
     def __init__(self, logger=None):
         """
@@ -65,6 +67,9 @@ class QtAudioPlayer(QObject):
         self._explicit_stop = False  # Flag to track explicit stop vs natural end
         self._favorites_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/favorites.json'))
         self._load_favorites()
+        
+        # Initialize playlist manager
+        self.playlist_manager = PlaylistManager(logger)
         
         # Create timer for updating time and generating dummy audio data
         self.update_timer = QTimer(self)
@@ -537,6 +542,11 @@ class QtAudioPlayer(QObject):
         Returns:
             bool: True if successful, False otherwise
         """
+        # Check if we're in playlist mode
+        current_playlist_files = self.get_current_playlist_files()
+        if current_playlist_files:
+            return self._play_next_in_playlist(current_playlist_files)
+        
         if not self.audio_files:
             self.logger.warning("No audio files available")
             return False
@@ -574,6 +584,29 @@ class QtAudioPlayer(QObject):
         
         return False
     
+    def _play_next_in_playlist(self, playlist_files):
+        """Play next file in playlist."""
+        if not self.current_file:
+            # If no file is currently playing, play the first one in playlist
+            next_file = playlist_files[0]
+        else:
+            # Find the current file in the playlist
+            try:
+                current_index = playlist_files.index(self.current_file)
+                # Get the next file (wrap around to beginning if at end)
+                next_index = (current_index + 1) % len(playlist_files)
+                next_file = playlist_files[next_index]
+            except ValueError:
+                # Current file not in playlist, start from beginning
+                next_file = playlist_files[0]
+        
+        # Load and play the next file
+        if self.load_file(next_file):
+            self.play()
+            return True
+        
+        return False
+    
     def play_previous(self):
         """
         Play the previous file in the list.
@@ -581,6 +614,11 @@ class QtAudioPlayer(QObject):
         Returns:
             bool: True if successful, False otherwise
         """
+        # Check if we're in playlist mode
+        current_playlist_files = self.get_current_playlist_files()
+        if current_playlist_files:
+            return self._play_previous_in_playlist(current_playlist_files)
+        
         if not self.audio_files:
             self.logger.warning("No audio files available")
             return False
@@ -608,6 +646,77 @@ class QtAudioPlayer(QObject):
             return True
         
         return False
+    
+    def _play_previous_in_playlist(self, playlist_files):
+        """Play previous file in playlist."""
+        if not self.current_file:
+            # If no file is currently playing, play the last one in playlist
+            prev_file = playlist_files[-1]
+        else:
+            # Find the current file in the playlist
+            try:
+                current_index = playlist_files.index(self.current_file)
+                # Get the previous file (wrap around to end if at beginning)
+                prev_index = (current_index - 1) % len(playlist_files)
+                prev_file = playlist_files[prev_index]
+            except ValueError:
+                # Current file not in list, start from end
+                prev_file = playlist_files[-1]
+        
+        # Load and play the previous file
+        if self.load_file(prev_file):
+            self.play()
+            return True
+        
+        return False
+    
+    def get_current_playlist_files(self):
+        """Get files in the current playlist."""
+        return self.playlist_manager.get_current_playlist_files()
+    
+    def set_current_playlist(self, playlist_name):
+        """Set the current active playlist."""
+        return self.playlist_manager.set_current_playlist(playlist_name)
+    
+    def get_current_playlist_name(self):
+        """Get the current playlist name."""
+        return self.playlist_manager.get_current_playlist()
+    
+    def get_playlist_names(self):
+        """Get all playlist names."""
+        return self.playlist_manager.get_playlist_names()
+    
+    def create_playlist(self, name, file_paths=None):
+        """Create a new playlist."""
+        result = self.playlist_manager.create_playlist(name, file_paths)
+        if result:
+            self.playlists_changed.emit()
+        return result
+    
+    def delete_playlist(self, name):
+        """Delete a playlist."""
+        result = self.playlist_manager.delete_playlist(name)
+        if result:
+            self.playlists_changed.emit()
+        return result
+    
+    def add_to_playlist(self, playlist_name, file_path):
+        """Add a file to a playlist."""
+        result = self.playlist_manager.add_to_playlist(playlist_name, file_path)
+        if result:
+            self.playlists_changed.emit()
+        return result
+    
+    def remove_from_playlist(self, playlist_name, file_path):
+        """Remove a file from a playlist."""
+        result = self.playlist_manager.remove_from_playlist(playlist_name, file_path)
+        if result:
+            self.playlists_changed.emit()
+        return result
+    
+    def is_file_in_playlist(self, playlist_name, file_path):
+        """Check if a file is in a playlist."""
+        return self.playlist_manager.is_file_in_playlist(playlist_name, file_path)
     
     def get_available_devices(self):
         """

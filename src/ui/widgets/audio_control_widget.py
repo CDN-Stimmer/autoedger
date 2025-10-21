@@ -33,6 +33,8 @@ class AudioControlWidget(QWidget):
         self.audio_player.playback_duration_changed.connect(self._on_duration_changed)
         if hasattr(self.audio_player, 'ramp_active_changed'):
             self.audio_player.ramp_active_changed.connect(self._on_ramp_active_changed)
+        if hasattr(self.audio_player, 'playlists_changed'):
+            self.audio_player.playlists_changed.connect(self._update_playlist_combo)
         
         # Create main layout
         layout = QVBoxLayout(self)
@@ -154,6 +156,24 @@ class AudioControlWidget(QWidget):
         self.favorites_button.clicked.connect(self._update_file_list)
         file_row.addWidget(self.favorites_button)
         
+        # Playlist selection combo
+        self.playlist_combo = QComboBox()
+        self.playlist_combo.setStyleSheet("""
+            QComboBox {
+                padding: 8px;
+                border: 1px solid #dadce0;
+                border-radius: 8px;
+                background: white;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI';
+                font-size: 13px;
+                color: #202124;
+                min-width: 120px;
+            }
+        """)
+        self.playlist_combo.addItem("All Files")
+        self.playlist_combo.currentTextChanged.connect(self._on_playlist_changed)
+        file_row.addWidget(self.playlist_combo)
+        
         # Duration filter combo box
         self.duration_filter_combo = QComboBox()
         self.duration_filter_combo.addItems([
@@ -259,6 +279,29 @@ class AudioControlWidget(QWidget):
         self.quick_favorite_button.setCheckable(True)
         self.quick_favorite_button.clicked.connect(self._on_quick_favorite_clicked)
         file_name_row.addWidget(self.quick_favorite_button)
+        
+        # Add to playlist button
+        self.add_to_playlist_button = QPushButton("📁")
+        self.add_to_playlist_button.setFixedSize(28, 28)
+        self.add_to_playlist_button.setToolTip("Add to Playlist")
+        self.add_to_playlist_button.setStyleSheet("""
+            QPushButton {
+                background-color: #f8f9fa;
+                border-radius: 14px;
+                border: none;
+                padding: 4px;
+                color: #5f6368;
+                font-size: 14px;
+            }
+            QPushButton:hover {
+                background-color: #e8f0fe;
+            }
+            QPushButton:pressed {
+                background-color: #e1e8ed;
+            }
+        """)
+        self.add_to_playlist_button.clicked.connect(self._on_add_to_playlist_clicked)
+        file_name_row.addWidget(self.add_to_playlist_button)
         
         controls_frame_layout.addLayout(file_name_row)
         
@@ -704,6 +747,7 @@ class AudioControlWidget(QWidget):
         
         # Initialize UI
         self._update_file_list()
+        self._update_playlist_combo()
         self._update_ui()
         # Set startup volume to 100% and reflect in UI
         try:
@@ -981,12 +1025,23 @@ class AudioControlWidget(QWidget):
         self._suppress_playback = True
         self.file_combo.clear()
         
+        # Get files to display (playlist or all files)
+        files_to_show = []
+        if hasattr(self.audio_player, 'get_current_playlist_files'):
+            playlist_files = self.audio_player.get_current_playlist_files()
+            if playlist_files:
+                files_to_show = playlist_files
+            else:
+                files_to_show = self.audio_player.file_list
+        else:
+            files_to_show = self.audio_player.file_list
+        
         # Get all filenames and filter based on favorites and duration if needed
         file_info = []  # List to store tuples of (file_path, display_text)
         seen_filenames = set()  # Track unique filenames
         show_favorites_only = self.favorites_button.isChecked()
         duration_filter = self.duration_filter_combo.currentText() if hasattr(self, 'duration_filter_combo') else "All"
-        for file_path in self.audio_player.file_list:
+        for file_path in files_to_show:
             is_fav = self.audio_player.is_favorite(file_path)
             if not show_favorites_only or is_fav:
                 # Show relative path from audio root
@@ -1288,4 +1343,78 @@ class AudioControlWidget(QWidget):
         self.wait_time_value.setEnabled(not auto)
         self._set_difficulty_enabled(auto)
         self._update_wait_container_color()
+    
+    def _update_playlist_combo(self):
+        """Update the playlist combo box with available playlists."""
+        current_text = self.playlist_combo.currentText()
+        self.playlist_combo.clear()
+        self.playlist_combo.addItem("All Files")
+        
+        if hasattr(self.audio_player, 'get_playlist_names'):
+            playlist_names = self.audio_player.get_playlist_names()
+            for name in playlist_names:
+                self.playlist_combo.addItem(name)
+        
+        # Try to restore selection
+        if current_text and current_text != "All Files":
+            index = self.playlist_combo.findText(current_text)
+            if index >= 0:
+                self.playlist_combo.setCurrentIndex(index)
+    
+    def _on_playlist_changed(self, playlist_name):
+        """Handle playlist selection change."""
+        if playlist_name == "All Files":
+            self.audio_player.set_current_playlist(None)
+        else:
+            self.audio_player.set_current_playlist(playlist_name)
+        self._update_file_list()
+    
+    def _on_add_to_playlist_clicked(self):
+        """Handle add to playlist button click."""
+        current_file = self.file_combo.currentData()
+        if not current_file:
+            return
+        
+        # Get available playlists
+        if not hasattr(self.audio_player, 'get_playlist_names'):
+            return
+        
+        playlist_names = self.audio_player.get_playlist_names()
+        if not playlist_names:
+            # No playlists exist, create one
+            self._create_new_playlist_dialog(current_file)
+        else:
+            # Show playlist selection dialog
+            self._show_playlist_selection_dialog(current_file, playlist_names)
+    
+    def _create_new_playlist_dialog(self, file_path):
+        """Create a new playlist with the given file."""
+        from PySide6.QtWidgets import QInputDialog
+        
+        name, ok = QInputDialog.getText(self, "New Playlist", "Enter playlist name:")
+        if ok and name.strip():
+            if hasattr(self.audio_player, 'create_playlist'):
+                if self.audio_player.create_playlist(name.strip(), [file_path]):
+                    self.logger.info(f"Created playlist '{name}' with {os.path.basename(file_path)}")
+                else:
+                    self.logger.warning(f"Failed to create playlist '{name}'")
+    
+    def _show_playlist_selection_dialog(self, file_path, playlist_names):
+        """Show dialog to select which playlist to add the file to."""
+        from PySide6.QtWidgets import QInputDialog
+        
+        playlist_name, ok = QInputDialog.getItem(
+            self, "Add to Playlist", "Select playlist:", 
+            playlist_names + ["Create New..."], 0, False
+        )
+        
+        if ok and playlist_name:
+            if playlist_name == "Create New...":
+                self._create_new_playlist_dialog(file_path)
+            else:
+                if hasattr(self.audio_player, 'add_to_playlist'):
+                    if self.audio_player.add_to_playlist(playlist_name, file_path):
+                        self.logger.info(f"Added {os.path.basename(file_path)} to playlist '{playlist_name}'")
+                    else:
+                        self.logger.info(f"File already in playlist '{playlist_name}'")
         
